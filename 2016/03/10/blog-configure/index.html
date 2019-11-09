@@ -141,7 +141,7 @@
 <meta property="og:site_name" content="Liu Baoshuai&#39;s Blog">
 <meta property="og:description" content="记录 Hexo Blog 的搭建与配置 对 Next 主题进行定制，添加搜索，统计，置顶，加密阅读，自定义CSS等">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-09T15:49:26.088Z">
+<meta property="og:updated_time" content="2019-11-09T15:50:33.844Z">
 <meta name="twitter:card" content="summary">
 
 
@@ -491,7 +491,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2019-11-09 23:49:26" itemprop="dateModified" datetime="2019-11-09T23:49:26+08:00">2019-11-09</time>
+                <time title="Modified: 2019-11-09 23:50:33" itemprop="dateModified" datetime="2019-11-09T23:50:33+08:00">2019-11-09</time>
               
             
           </span>
@@ -573,12 +573,15 @@
 </ul>
 <a id="more"></a>
 
+
+
+
 <h2 id="Changelog"><a href="#Changelog" class="headerlink" title="Changelog"></a>Changelog</h2><ul>
 <li>2018/08/23，撰写</li>
 <li>2018/09/04，整理</li>
 <li>2018/09/25，添加 <code>Font Awesome</code>使用</li>
 <li>2019/03/18，添加文章加密阅读</li>
-<li>本博客全部配置信息可在 <a href="https://github.com/lbs0912/HexoBlog" target="_blank" rel="noopener">HexoBlog | lbs0912-github</a> 查看</li>
+<li>本博客全部配置信息可在 <a href="https://github.com/lbs0912/BlogSpace" target="_blank" rel="noopener">BlogSpace | lbs0912-github</a> 查看</li>
 </ul>
 <h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2><h3 id="Hexo-基础使用"><a href="#Hexo-基础使用" class="headerlink" title="Hexo 基础使用"></a>Hexo 基础使用</h3><ul>
 <li><a href="https://wsgzao.github.io/post/hexo-guide/" target="_blank" rel="noopener">使用GitHub和Hexo搭建免费静态Blog</a></li>
@@ -679,6 +682,9 @@
 <td>192.30.252.153</td>
 </tr>
 </tbody></table>
+<blockquote>
+<p><a href="https://help.github.com/en/articles/troubleshooting-custom-domains#dns-configuration-errors" target="_blank" rel="noopener">DNS Update | github</a></p>
+</blockquote>
 <p>其中A记录为GitHub Page提供的IP地址，可以访问 <a href="https://help.github.com/articles/github-s-ip-addresses/" target="_blank" rel="noopener">GitHub Page</a> 查询最新 <code>IP</code> 地址。</p>
 <p>最后，执行如下命令，并访问 <code>liubaoshuai.com</code> 查看修改效果。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo clean  </span><br><span class="line">hexo g    <span class="comment"># or hexo generate</span></span><br><span class="line">hexo d    <span class="comment"># or hexo deploy</span></span><br></pre></td></tr></table></figure>
@@ -749,6 +755,7 @@
 <li>用户名：15821929853</li>
 <li>密码：Ab758123aB</li>
 <li>百度统计-脚本 ID：17082ee15df20dad9762c5512f336eb2</li>
+<li>登陆 <a href="https://tongji.baidu.com/web/homepage/index?castk=df83afg752126b970d267" target="_blank" rel="noopener">百度统计</a> 网站，可以查阅网站访问量</li>
 </ul>
 <h4 id="阅读次数统计-LeanCloud"><a href="#阅读次数统计-LeanCloud" class="headerlink" title="阅读次数统计 LeanCloud"></a>阅读次数统计 LeanCloud</h4><ul>
 <li><a href="https://leancloud.cn/" target="_blank" rel="noopener">leancloud</a></li>
@@ -762,21 +769,24 @@
 </ul>
 <p><code>NexT</code> 主题支持集成 <code>Swiftype</code>，<code>微搜索</code>，<code>Local Search</code> 和 <code>Algolia</code> 搜索功能。<code>Swiftype</code> 和 <code>Algolia</code> 均收费，可以采用 <code>Hexo</code> 提供的 <code>Local Search</code> 搜索服务，其原理是通过 <code>hexo-generator-searchdb</code> 插件在本地生成一个 <code>search.xml</code> 文件，搜索的时候从这个文件中根据关键字检索出相应的链接。</p>
 <h4 id="博文分享功能"><a href="#博文分享功能" class="headerlink" title="博文分享功能"></a>博文分享功能</h4><ul>
-<li><a href="https://blog.csdn.net/lanuage/article/details/78991798" target="_blank" rel="noopener">hexo next主题为博客添加分享功能</a></li>
-<li>百度分享</li>
-</ul>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">baidushare:</span></span><br><span class="line"><span class="attr">  type:</span> <span class="string">button</span>  <span class="comment"># 需要设置 type: button</span></span><br><span class="line"><span class="attr">  baidushare:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>likely 分享</li>
+<li><p><a href="https://blog.csdn.net/lanuage/article/details/78991798" target="_blank" rel="noopener">hexo next主题为博客添加分享功能</a></p>
+</li>
+<li><p>百度分享</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">baidushare:</span></span><br><span class="line"><span class="attr">  type:</span> <span class="string">button</span>  <span class="comment"># 需要设置 type: button </span></span><br><span class="line"><span class="attr">  baidushare:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>likely 分享</p>
+</li>
 </ul>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">likely:</span></span><br><span class="line"><span class="attr">  enable:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">  look:</span> <span class="string">light</span>  <span class="comment"># available values: normal, light, small, big</span></span><br><span class="line"><span class="attr">  networks:</span></span><br><span class="line"><span class="attr">    twitter:</span> <span class="string">Tweet</span></span><br><span class="line"><span class="attr">    facebook:</span> <span class="string">Share</span></span><br><span class="line"><span class="attr">    linkedin:</span> <span class="string">Link</span></span><br><span class="line">    <span class="comment">#gplus: Plus</span></span><br><span class="line">    <span class="comment">#vkontakte: Share</span></span><br><span class="line">    <span class="comment">#odnoklassniki: Class</span></span><br><span class="line">    <span class="comment">#telegram: Send</span></span><br><span class="line"><span class="attr">    whatsapp:</span> <span class="string">Send</span></span><br><span class="line">    <span class="comment">#pinterest: Pin</span></span><br></pre></td></tr></table></figure>
 
 
 <h4 id="Disqus-评论"><a href="#Disqus-评论" class="headerlink" title="Disqus 评论"></a>Disqus 评论</h4><ul>
-<li>使用谷歌账户登录Disqus</li>
-<li>shortName：liubaoshuaiBlog</li>
-<li>之后，在撰写文章时，顶部信息添加 <code>comments</code> 字段可控制是否展示评论</li>
+<li><p>使用谷歌账户登录Disqus</p>
+</li>
+<li><p>shortName：liubaoshuaiBlog</p>
+</li>
+<li><p>之后，在撰写文章时，顶部信息添加 <code>comments</code> 字段可控制是否展示评论</p>
+</li>
 </ul>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">title:</span> <span class="string">Demo</span></span><br><span class="line"><span class="attr">date:</span> <span class="number">2017</span><span class="bullet">-03</span><span class="bullet">-10</span> <span class="number">14</span><span class="string">:35:26</span></span><br><span class="line"><span class="attr">categories:</span> <span class="string">Demo</span></span><br><span class="line"><span class="attr">tags:</span> <span class="string">[LeetCode,Programing,Algorithm]</span></span><br><span class="line"><span class="attr">keywords:</span> <span class="string">LeetCode</span></span><br><span class="line"><span class="attr">toc:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">password:</span> <span class="number">123456</span></span><br><span class="line"><span class="attr">top:</span> <span class="number">5</span></span><br><span class="line"><span class="attr">comments:</span> <span class="literal">true</span></span><br><span class="line"><span class="meta">---</span></span><br></pre></td></tr></table></figure>
 
@@ -804,7 +814,8 @@
 </ul>
 <figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">skip_render: <span class="module-access"><span class="module"><span class="identifier">README</span>.</span></span>md</span><br></pre></td></tr></table></figure>
 
-<h4 id="方式2"><a href="#方式2" class="headerlink" title="方式2"></a>方式2</h4><ul>
+<h4 id="方式2"><a href="#方式2" class="headerlink" title="方式2"></a>方式2</h4><p>正确的解决方法如下。</p>
+<ul>
 <li>把 <code>README.md</code> 文件的后缀名改成 <code>.MDOWN</code></li>
 <li>仍将该文件置于 <code>blog/source</code> 文件夹</li>
 <li>这样可以保证 <code>hexo</code> 不会解析该文件，同时 <code>Github</code> 也会将其作为<code>.MD</code> 文件解析</li>
@@ -837,8 +848,10 @@
 <li>该标识后的博文会被收起折叠。</li>
 </ul>
 <h3 id="文章加密阅读"><a href="#文章加密阅读" class="headerlink" title="文章加密阅读"></a>文章加密阅读</h3><ul>
-<li>Ref - <a href="https://segmentfault.com/a/1190000009544924#articleHeader23" target="_blank" rel="noopener">next主题 - 文章加密阅读</a></li>
-<li>打开 <code>themes-&gt;next-&gt;layout-&gt;_partials-&gt;head.swig</code> 文件，添加如下代码</li>
+<li><p>Ref - <a href="https://segmentfault.com/a/1190000009544924#articleHeader23" target="_blank" rel="noopener">next主题 - 文章加密阅读</a></p>
+</li>
+<li><p>打开 <code>themes-&gt;next-&gt;layout-&gt;_partials-&gt;head.swig</code> 文件，添加如下代码</p>
+</li>
 </ul>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript">    (<span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>&#123;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">if</span> (<span class="string">'&#123;&#123; page.password &#125;&#125;'</span>) &#123;</span></span><br><span class="line"><span class="actionscript">            <span class="keyword">if</span> (prompt(<span class="string">'请输入文章密码'</span>) !== <span class="string">'&#123;&#123; page.password &#125;&#125;'</span>) &#123;</span></span><br><span class="line"><span class="actionscript">                alert(<span class="string">'密码错误！'</span>);</span></span><br><span class="line"><span class="actionscript">                <span class="keyword">if</span> (history.length === <span class="number">1</span>) &#123;</span></span><br><span class="line"><span class="actionscript">                    location.replace(<span class="string">"http://xxxxxxx.xxx"</span>); <span class="comment">// 这里替换成你的首页</span></span></span><br><span class="line"><span class="actionscript">                &#125; <span class="keyword">else</span> &#123;</span></span><br><span class="line"><span class="undefined">                    history.back();</span></span><br><span class="line"><span class="undefined">                &#125;</span></span><br><span class="line"><span class="undefined">            &#125;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined">    &#125;)();</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
@@ -853,21 +866,16 @@
 </ul>
 <p>定制CSS样式后，可以使用如下效果。</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">"inline-blue"</span>&gt;</span>Demo<span class="tag">&lt;/<span class="name">span</span>&gt;</span>， </span><br><span class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">"inline-purple"</span>&gt;</span>Demo<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">"inline-green"</span>&gt;</span>Demo<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">"inline-yellow"</span>&gt;</span>Demo<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">id</span>=<span class="string">"div-border-left-red"</span>&gt;</span>Demo<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">id</span>=<span class="string">"div-border-left-yellow"</span>&gt;</span>Demo<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">id</span>=<span class="string">"div-border-left-green"</span>&gt;</span>Demo<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">id</span>=<span class="string">"div-border-left-blue"</span>&gt;</span>Demo<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">id</span>=<span class="string">"div-border-left-purple"</span>&gt;</span>Demo<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">id</span>=<span class="string">"div-border-right-red"</span>&gt;</span>Demo<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">id</span>=<span class="string">"div-border-right-yellow"</span>&gt;</span>Demo<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">id</span>=<span class="string">"div-border-right-green"</span>&gt;</span>Demo<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">id</span>=<span class="string">"div-border-right-blue"</span>&gt;</span>Demo<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">id</span>=<span class="string">"div-border-right-purple"</span>&gt;</span>Demo<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">id</span>=<span class="string">"div-border-top-red"</span>&gt;</span>Demo<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">id</span>=<span class="string">"div-border-top-yellow"</span>&gt;</span>Demo<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">id</span>=<span class="string">"div-border-top-green"</span>&gt;</span>Demo<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">id</span>=<span class="string">"div-border-top-blue"</span>&gt;</span>Demo<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">id</span>=<span class="string">"div-border-top-purple"</span>&gt;</span>Demo<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">"yu-1"</span>&gt;</span>动画<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">id</span>=<span class="string">"download"</span> <span class="attr">href</span>=<span class="string">"https://git-scm.com/download/win"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"fa fa-download"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span><span class="tag">&lt;<span class="name">span</span>&gt;</span> Download Now<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">blockquote</span> <span class="attr">class</span>=<span class="string">"blockquote-center"</span>&gt;</span>引用居中效果<span class="tag">&lt;/<span class="name">blockquote</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p><span id="inline-blue">Demo</span><span id="inline-purple">Demo</span><span id="inline-green">Demo</span><span id="inline-yellow">Demo</span></p>
-<p id="div-border-left-red">red | yellow | green | blue | purple</p>
-<p id="div-border-right-yellow">red | yellow | green | blue | purple</p>
-<p id="div-border-top-green">red | yellow | green | blue | purple</p>
 
-<p><span id="yu-1">动画</span></p>
-<p><a id="download" href="https://git-scm.com/download/win" target="_blank" rel="noopener"><i class="fa fa-download"></i><span> Download Now</span><br></a></p>
-<blockquote class="blockquote-center">引用居中效果</blockquote>
 
 <h4 id="链接文本样式修改"><a href="#链接文本样式修改" class="headerlink" title="链接文本样式修改"></a>链接文本样式修改</h4><p>将链接文本设置为蓝色，鼠标划过时文字颜色加深，并显示下划线。打开<code>themes\next\source\css\_custom\custom.styl</code> 文件 ，添加如下 <code>css</code> 样式</p>
 <figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Custom styles.</span></span><br><span class="line"><span class="selector-class">.post-body</span> <span class="selector-tag">p</span> <span class="selector-tag">a</span> &#123;</span><br><span class="line">  <span class="attribute">color</span>: <span class="number">#0593d3</span>;</span><br><span class="line">  <span class="attribute">border-bottom</span>: none;</span><br><span class="line">  &amp;:hover &#123;</span><br><span class="line">    <span class="attribute">color</span>: <span class="number">#0477ab</span>;</span><br><span class="line">    <span class="attribute">text-decoration</span>: underline;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h4 id="文字增加背景色块"><a href="#文字增加背景色块" class="headerlink" title="文字增加背景色块"></a>文字增加背景色块</h4><ul>
-<li>参考 <a href="http://blog.junyu.pro/posts/0010-hexo-learn-from-Never-yu.html#background" target="_blank" rel="noopener">Hexo博客设置进阶</a> 完成该部分的设置。</li>
-<li>使用 <code>inline-blue</code>, <code>inline-purple</code>, <code>inline-yellow</code>,<code>inline-green</code> 可以对文字背景色块进行修改。</li>
+<li><p>参考 <a href="http://blog.junyu.pro/posts/0010-hexo-learn-from-Never-yu.html#background" target="_blank" rel="noopener">Hexo博客设置进阶</a> 完成该部分的设置。</p>
+</li>
+<li><p>使用 <code>inline-blue</code>, <code>inline-purple</code>, <code>inline-yellow</code>,<code>inline-green</code> 可以对文字背景色块进行修改。</p>
+</li>
 </ul>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">"inline-blue"</span>&gt;</span>站点配置文件<span class="tag">&lt;/<span class="name">span</span>&gt;</span>， </span><br><span class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">"inline-purple"</span>&gt;</span>主题配置文件<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
@@ -931,7 +939,7 @@
 
 <h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><ul>
 <li>记录，成为更好的自己。</li>
-<li>本博客全部配置信息可在 <a href="https://github.com/lbs0912/HexoBlog" target="_blank" rel="noopener">HexoBlog | lbs0912-github</a> 查看。</li>
+<li>本博客全部配置信息可在 <a href="https://github.com/lbs0912/BlogSpace" target="_blank" rel="noopener">BlogSpace | lbs0912-github</a> 查看。</li>
 </ul>
 
       
@@ -1237,7 +1245,29 @@
                   
                     
                   
+                  <a href="https://juejin.im/user/59af7aa96fb9a0248f4aaeab" title="Juejin Blog &rarr; https://juejin.im/user/59af7aa96fb9a0248f4aaeab" rel="noopener" target="_blank"><i class="fa fa-fw fa-free-code-camp"></i>Juejin Blog</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
                   <a href="https://segmentfault.com/u/lbs0912" title="SF Blog &rarr; https://segmentfault.com/u/lbs0912" rel="noopener" target="_blank"><i class="fa fa-fw fa-facebook"></i>SF Blog</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://stackoverflow.com/users/6527507/lbs0912" title="StackOverflow &rarr; https://stackoverflow.com/users/6527507/lbs0912" rel="noopener" target="_blank"><i class="fa fa-fw fa-stack-overflow"></i>StackOverflow</a>
                 </span>
               
                 <span class="links-of-author-item">
