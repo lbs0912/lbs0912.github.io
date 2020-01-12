@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://lbs0912.github.io/"/>
-  <updated>2019-11-09T15:22:38.601Z</updated>
+  <updated>2020-01-12T09:02:22.647Z</updated>
   <id>https://lbs0912.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>LeetCode Notes-000-Overview</title>
+    <link href="https://lbs0912.github.io/2020/01/12/leetcode-otes-000-overview/"/>
+    <id>https://lbs0912.github.io/2020/01/12/leetcode-otes-000-overview/</id>
+    <published>2020-01-12T02:35:26.000Z</published>
+    <updated>2020-01-12T09:02:22.647Z</updated>
+    
+    <content type="html"><![CDATA[<ul><li>记录LeetCode题目笔记，汇总LeetCode解答记录</li></ul><a id="more"></a><h2 id="Changelog"><a href="#Changelog" class="headerlink" title="Changelog"></a>Changelog</h2><ul><li>2019/02/13，撰写</li><li>2019/06/16，添加 LeetCode Notes-1</li><li>2020/01/05，添加 LeetCode Notes-2</li></ul><h2 id="学习资料汇总"><a href="#学习资料汇总" class="headerlink" title="学习资料汇总"></a>学习资料汇总</h2><ul><li><a href="https://leetcode.com/" target="_blank" rel="noopener">leetcode</a></li><li><a href="https://leetcode-cn.com/" target="_blank" rel="noopener">leetcode-cn</a></li><li><a href="https://www.nowcoder.com/" target="_blank" rel="noopener">牛客网</a></li><li><a href="http://git.jd.com/algorithm-interest-group/AlgorithmShare" target="_blank" rel="noopener">AlgorithmShare @ JD</a></li><li><a href="https://github.com/MisterBooo/LeetCodeAnimation" target="_blank" rel="noopener">LeetCodeAnimation</a></li><li><a href="https://github.com/azl397985856/leetcode" target="_blank" rel="noopener">Leetcode Solution | github</a></li></ul><h2 id="题解记录模板"><a href="#题解记录模板" class="headerlink" title="题解记录模板"></a>题解记录模板</h2><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## XXX</span></span><br><span class="line"><span class="comment">### Description</span></span><br><span class="line">* [LeetCode-XX. XXX]()</span><br><span class="line"></span><br><span class="line"><span class="comment">### Approach 1-XX</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#### Analysis</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#### Solution</span></span><br><span class="line"></span><br><span class="line">* Java</span><br><span class="line">* C++</span><br><span class="line">* Python</span><br><span class="line">* JS</span><br></pre></td></tr></table></figure><h2 id="分类汇总"><a href="#分类汇总" class="headerlink" title="分类汇总"></a>分类汇总</h2><h3 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h3><ul><li><a href="https://leetcode.com/problems/linked-list-cycle/?tab=Description" target="_blank" rel="noopener">LeetCode- 141. Linked List Cycle</a> - 环形链表</li><li><a href="https://leetcode.com/problems/linked-list-cycle-ii/" target="_blank" rel="noopener">LeetCode- 142. Linked List Cycle II</a> - 环形链表</li></ul><h3 id="快慢指针"><a href="#快慢指针" class="headerlink" title="快慢指针"></a>快慢指针</h3><ul><li><a href="https://leetcode.com/problems/linked-list-cycle/?tab=Description" target="_blank" rel="noopener">LeetCode- 141. Linked List Cycle</a> - 环形链表</li><li><a href="https://leetcode.com/problems/linked-list-cycle-ii/" target="_blank" rel="noopener">LeetCode- 142. Linked List Cycle II</a> - 环形链表</li></ul><h3 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h3><ul><li><a href="https://leetcode.com/problems/island-perimeter/?tab=Description" target="_blank" rel="noopener">LeetCode - 463. Island Perimeter</a> - 常规计算</li></ul><h3 id="PopCount（汉明距离）"><a href="#PopCount（汉明距离）" class="headerlink" title="PopCount（汉明距离）"></a>PopCount（汉明距离）</h3><ul><li><a href="https://leetcode.com/problems/number-of-1-bits/" target="_blank" rel="noopener">LeetCode-191. Number of 1 Bits</a></li><li><a href="https://leetcode.com/problems/counting-bits/" target="_blank" rel="noopener">LeetCode-338. Counting Bits</a></li></ul><h3 id="回文串"><a href="#回文串" class="headerlink" title="回文串"></a>回文串</h3><ul><li><a href="https://leetcode.com/problems/longest-palindrome/" target="_blank" rel="noopener">LeetCode-409. Longest Palindrome</a></li></ul><h3 id="动态规划"><a href="#动态规划" class="headerlink" title="动态规划"></a>动态规划</h3><ul><li><a href="https://leetcode.com/problems/counting-bits/" target="_blank" rel="noopener">LeetCode-338. Counting Bits</a></li></ul><h2 id="文档目录"><a href="#文档目录" class="headerlink" title="文档目录"></a>文档目录</h2><h3 id="Notes-1"><a href="#Notes-1" class="headerlink" title="Notes-1"></a>Notes-1</h3><ul><li><a href="https://leetcode.com/problems/linked-list-cycle/?tab=Description" target="_blank" rel="noopener">LeetCode-141. Linked List Cycle</a> - 环形链表</li><li><a href="https://leetcode.com/problems/linked-list-cycle-ii/" target="_blank" rel="noopener">LeetCode-142. Linked List Cycle II</a> - 环形链表</li><li><a href="https://leetcode.com/problems/add-digits/?tab=Description" target="_blank" rel="noopener">LeetCode-258. Add Digits</a> - 数字推导（数字根）</li><li><a href="https://leetcode.com/problems/hamming-distance/" target="_blank" rel="noopener">LeetCode-461. Hamming Distance</a> - 位运算</li><li><a href="https://leetcode.com/problems/island-perimeter/?tab=Description" target="_blank" rel="noopener">LeetCode-463. Island Perimeter</a> - 常规计算</li></ul><h3 id="Notes-2"><a href="#Notes-2" class="headerlink" title="Notes-2"></a>Notes-2</h3><ul><li><a href="https://leetcode.com/problems/reverse-linked-list/" target="_blank" rel="noopener">LeetCode-206. Reverse Linked List</a> - 链表操作</li><li><a href="https://leetcode.com/problems/merge-two-binary-trees/" target="_blank" rel="noopener">LeetCode-617. Merge Two Binary Trees</a> - 二叉树</li><li><a href="https://leetcode.com/problems/maximum-depth-of-binary-tree/" target="_blank" rel="noopener">LeetCode-104. Maximum Depth of Binary Tree</a> - 遍历二叉树</li><li><a href="https://leetcode.com/problems/convert-binary-number-in-a-linked-list-to-integer/" target="_blank" rel="noopener">LeetCode-1290. Convert Binary Number in a Linked List to Integer</a></li><li><a href="https://leetcode.com/problems/to-lower-case/" target="_blank" rel="noopener">LeetCode-709. To Lower Case</a></li></ul>]]></content>
+    
+    <summary type="html">
+    
+      &lt;ul&gt;
+&lt;li&gt;记录LeetCode题目笔记，汇总LeetCode解答记录&lt;/li&gt;
+&lt;/ul&gt;
+    
+    </summary>
+    
+      <category term="LeetCode" scheme="https://lbs0912.github.io/categories/LeetCode/"/>
+    
+    
+      <category term="LeetCode" scheme="https://lbs0912.github.io/tags/LeetCode/"/>
+    
+      <category term="Algorithm" scheme="https://lbs0912.github.io/tags/Algorithm/"/>
+    
+  </entry>
   
   <entry>
     <title>React Native 实现下拉自动切换分类</title>
