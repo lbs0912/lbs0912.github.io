@@ -1,0 +1,2000 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222"/>
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+
+<script>
+    (function () {
+        if ('') {
+            if (prompt('请输入文章密码') !== '') {
+                alert('密码错误！');
+                if (history.length === 1) {
+                    location.replace("http://liubaoshuai.com"); // 这里替换成你的首页
+                } else {
+                    history.back();
+                }
+            }
+        }
+    })();
+</script>
+
+
+<style>
+    .pace .pace-progress {
+        background: #009a61; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #009a61, 0 0 5px     #009a61; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #009a61;    /*上边框颜色*/
+        border-left-color: #009a61;    /*左边框颜色*/
+    }
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2"/>
+
+<link rel="stylesheet" href="/css/main.css?v=7.0.1"/>
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/blog-logo-1.jpg?v=7.0.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/blog-logo-1.jpg?v=7.0.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/blog-logo-1.jpg?v=7.0.1">
+
+
+  <link rel="mask-icon" href="/images/blog-logo-1.jpg?v=7.0.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.0.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="总结日常开发中的 Git 进阶使用 记录多 SSH 配置，git reflog 解决 detached-head 代码丢失问题 总结团队协作下，如何保持 git 提交信息简洁">
+<meta name="keywords" content="Develop Tools,Git">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git 进阶使用">
+<meta property="og:url" content="https:&#x2F;&#x2F;lbs0912.github.io&#x2F;2020&#x2F;02&#x2F;01&#x2F;git-usage-improve&#x2F;index.html">
+<meta property="og:site_name" content="Liu Baoshuai&#39;s Blog">
+<meta property="og:description" content="总结日常开发中的 Git 进阶使用 记录多 SSH 配置，git reflog 解决 detached-head 代码丢失问题 总结团队协作下，如何保持 git 提交信息简洁">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-reflog-1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-reflog-2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-reflog-3.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-reflog-4.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-checkout-orphan-1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-delete-all-info-1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-merge--no--ff-1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-merge--no-ff-2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-vscode-usage-1.png?q-sign-algorithm=sha1&amp;q-ak=AKIDnYCjAUImfNuHSSn8nHaihXEkvukPOAGM&amp;q-sign-time=1570451528;1570453328&amp;q-key-time=1570451528;1570453328&amp;q-header-list=&amp;q-url-param-list=&amp;q-signature=b0ec61fae96fb0c37059f2afedbac8e2ad1b2753">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-vscode-usage-2.png?q-sign-algorithm=sha1&amp;q-ak=AKIDnYCjAUImfNuHSSn8nHaihXEkvukPOAGM&amp;q-sign-time=1570453094;1570454894&amp;q-key-time=1570453094;1570454894&amp;q-header-list=&amp;q-url-param-list=&amp;q-signature=63ea253d235cba5fc2d3d5c525e5242d11bba407">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-rollback-1.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-rollback-2.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-rollback-3.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-rollback-4.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-rollback-5.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-rollback-6.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-rollback-7.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-rollback-8.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-rollback-9.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-rollback-10.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-rollback-11.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-rollback-12.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-rollback-13.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-rollback-14.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-rollback-15.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-rollback-16.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-rollback-17.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-team-usage-3.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-team-usage-1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-team-usage-2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-pull-branches-1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-pull-branches-2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-pull-branches-3.png">
+<meta property="og:updated_time" content="2020-02-02T02:24:30.498Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;programming-2019&#x2F;git-reflog-1.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Liu Baoshuai's Blog" type="application/atom+xml"/>
+
+
+
+
+  <link rel="canonical" href="https://lbs0912.github.io/2020/02/01/git-usage-improve/"/>
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Git 进阶使用 | Liu Baoshuai's Blog</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?17082ee15df20dad9762c5512f336eb2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Liu Baoshuai's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">Do one thing at a time and do well</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br/>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br/>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br/>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br/>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br/>Archives</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" target="_blank" rel="noopener" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br/>Search</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="Searching..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+  
+  
+
+  
+
+  <a href="https://github.com/lbs0912" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" style="fill: #222; color: #fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://lbs0912.github.io/2020/02/01/git-usage-improve/"/>
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liu Baoshuai"/>
+      <meta itemprop="description" content="Record and become better myself"/>
+      <meta itemprop="image" content="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/Blog-20190315/blog-logo-1.jpg"/>
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Liu Baoshuai's Blog"/>
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Git 进阶使用
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2020-02-01 10:23:34" itemprop="dateCreated datePublished" datetime="2020-02-01T10:23:34+08:00">2020-02-01</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2020-02-02 10:24:30" itemprop="dateModified" datetime="2020-02-02T10:24:30+08:00">2020-02-02</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Develop-Tools/" itemprop="url" rel="index"><span itemprop="name">Develop Tools</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">Comments: </span>
+                <a href="/2020/02/01/git-usage-improve/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/02/01/git-usage-improve/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2020/02/01/git-usage-improve/" class="leancloud_visitors" data-flag-title="Git 进阶使用">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Views: </span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <ul>
+<li>总结日常开发中的 Git 进阶使用</li>
+<li>记录多 <code>SSH</code> 配置，<code>git reflog</code> 解决 <code>detached-head</code> 代码丢失问题</li>
+<li>总结团队协作下，如何保持 git 提交信息简洁</li>
+</ul>
+<a id="more"></a>
+
+<h2 id="Changelog"><a href="#Changelog" class="headerlink" title="Changelog"></a>Changelog</h2><ul>
+<li>2018/07/09，撰写</li>
+<li>2019/03/10，添加多SSH配置</li>
+<li>2019/04/26，添加 <code>git cherry-pick</code></li>
+<li>2019/10/07，添加如何删除git所有历史提交信息</li>
+<li>2019/10/14，添加 <code>git merge --no-ff</code></li>
+<li>2019/12/14，添加 <code>git reflog</code> 使用</li>
+<li>2020/02/01，添加 <em>删除所有历史提交记录</em></li>
+<li>2020/02/01，添加 <em>团队协作下，如何保持 git 提交信息简洁</em></li>
+</ul>
+<h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2><ul>
+<li><a href="http://gitup.co/" target="_blank" rel="noopener">GitUp</a></li>
+<li><a href="https://www.zhihu.com/question/20070065/answer/480261314" target="_blank" rel="noopener">如何高效使用github</a></li>
+</ul>
+<h2 id="git-reflog-解决提交代码丢失-detached-head"><a href="#git-reflog-解决提交代码丢失-detached-head" class="headerlink" title="git reflog 解决提交代码丢失 detached-head"></a>git reflog 解决提交代码丢失 <code>detached-head</code></h2><p><code>reflog</code> 是 Git 操作的一道安全保障，它能够记录几乎所有本地仓库的改变。包括所有分支 commit 提交，已经删除（其实并未被实际删除）commit 都会被记录。总结而言，只要 HEAD 发生变化，就可以通过 <code>reflog</code> 查看到。</p>
+<h3 id="detached-head-代码丢失找回"><a href="#detached-head-代码丢失找回" class="headerlink" title="detached-head 代码丢失找回"></a><code>detached-head</code> 代码丢失找回</h3><ul>
+<li><a href="https://www.jianshu.com/p/f247a27851fb" target="_blank" rel="noopener">git提交到HEAD detached导致代码丢失</a></li>
+<li><a href="https://stackoverflow.com/questions/4845505/gitx-how-do-i-get-my-detached-head-commits-back-into-master" target="_blank" rel="noopener">StackOverflow - gitx How do I get my ‘Detached HEAD’ commits back into master</a></li>
+</ul>
+<h4 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h4><p>日常开发中，切换分支误操作，造成本地代码修改丢失。</p>
+<p>此时，可以借助 <code>git reflog</code> 找回丢失的代码修改。</p>
+<h4 id="丢失产生原因和步骤"><a href="#丢失产生原因和步骤" class="headerlink" title="丢失产生原因和步骤"></a>丢失产生原因和步骤</h4><p>首先在 <code>master</code> 分支上开发，此时线上出现 bug 且回到旧版本的 tag。这时 <code>master</code> 分支上有一部分代码修改但未提交。</p>
+<p>在 <code>master</code> 分支上执行 <code>git status</code>，有未提交的代码，如下图所示</p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-reflog-1.png" alt=""></p>
+<p>在 <code>master</code> 分支上执行 <code>git tag</code>查看标签信息，如下图所示</p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-reflog-2.png" alt=""></p>
+<p>此时有未提交的代码，然后执行 <code>git checkout v1.0</code></p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-reflog-3.png" alt=""></p>
+<p>这个时候，<strong>提示当前分支为 <code>detached HEAD</code></strong></p>
+<p>然后再执行 <code>git add ./git commit</code> 和 <code>git checkout master</code>，切换回 <code>master</code> 分支。<strong>这个时候发现 <code>detached HEAD</code> 分支不见了，<code>master</code> 分支上未提交的代码也不见了。</strong></p>
+<h4 id="代码找回"><a href="#代码找回" class="headerlink" title="代码找回"></a>代码找回</h4><p>执行 <code>git reflog</code> 查看提交记录</p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-reflog-4.png" alt=""></p>
+<p>查找对应提交的 <code>commitId</code> 为 <code>247e11b</code>，然后执行下述命令行，找回丢失的代码</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git checkout <span class="number">247</span>e11b    <span class="comment">//检出对应的提交</span></span><br><span class="line">git checkout -<span class="selector-tag">b</span> diff    <span class="comment">//新建一个新的diff分支</span></span><br><span class="line">git checkout master     <span class="comment">//切换到master分支</span></span><br><span class="line">git merge diff          <span class="comment">//将新建的diff分支合并到master分支</span></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="删除所有历史提交记录"><a href="#删除所有历史提交记录" class="headerlink" title="删除所有历史提交记录"></a>删除所有历史提交记录</h2><ul>
+<li><a href="https://stackoverflow.com/questions/13716658/how-to-delete-all-commit-history-in-github" target="_blank" rel="noopener">How to delete all commit history in github | Stackoverflow</a></li>
+</ul>
+<p>此处介绍如何删除所有历史提交记录，形成一个全新的仓库。</p>
+<ul>
+<li>1 - Checkout</li>
+</ul>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout <span class="comment">--orphan new_branch</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>2 - Add all the files</li>
+</ul>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git <span class="keyword">add</span><span class="bash"> -A</span></span><br><span class="line"></span><br><span class="line">//等效于 git <span class="keyword">add</span><span class="bash"> --all 或 git add .</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p> <code>git add</code> 中使用参数 <code>-A</code> 或 <code>--all</code> 表示追踪所有操作，包含新增、修改和删除</p>
+<p> Git 2.0版开始，<code>-A</code> 参数为默认参数，即 <code>git add .</code> 等效于 <code>git add -A</code> 或 <code>git add --all</code></p>
+</blockquote>
+<ul>
+<li>3 - Commit the changes</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">git</span> commit -am <span class="string">"commit message"</span></span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>4 - Delete the branch</li>
+</ul>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch -D <span class="keyword">master</span>   <span class="title">//同时删除本地和远程分支</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>5 - Rename the current branch to master</li>
+</ul>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">git</span> <span class="keyword">branch </span>-m master</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>6 - force update your repository</li>
+</ul>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">push</span> -f <span class="built_in">origin</span> master</span><br></pre></td></tr></table></figure>
+
+
+<p>下面对上述步骤进行说明</p>
+<h3 id="git-checkout-–orphan"><a href="#git-checkout-–orphan" class="headerlink" title="git checkout –orphan"></a>git checkout –orphan</h3><p>如果你的某个分支上积累了无数次的无意义的提交，<code>git log</code> 信息满天飞，那么可以使用 <code>git checkout --orphan &lt;new_branch_name&gt;</code> </p>
+<ul>
+<li>基于当前分支创建一个新的“孤儿(<code>orphan</code>)”的分支，没有任何提交历史，但包含当前分支所有内容</li>
+<li>执行上述命令后，工作区（<code>Workspace</code>）中所有文件均被认为在该操作中新增(<code>git statue</code> 查看状态，所有文件状态均为 <code>new file</code>，如下图所示)，此时执行 <code>git add .</code> 会把所有文件添加到缓存区（<code>Index</code>）</li>
+</ul>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-checkout-orphan-1.png" alt=""></p>
+<ul>
+<li>严格意义上说，执行 <code>git checkout --orphan &lt;new_branch_name&gt;</code> 后，创建的并不是一个分支，因为此时 <code>HEAD</code> 指向的引用中没有 <code>commit</code> 值。只有在进行一次提交后，它才算得上真正的分支。</li>
+</ul>
+<blockquote>
+<p><code>orphan</code> 译为“孤儿”，该参数表示创建一个孤立的分支，没有任何提交历史，且与当前分支不存在任何关系（查看提交信息，可发现其为一个孤立的点，如下图所示）</p>
+<p>孤儿（<code>orphan</code>）无父辈信息，同理，创建的分支也不包含任何历史提交信息</p>
+</blockquote>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-delete-all-info-1.png" alt=""></p>
+<h3 id="git-commit-am"><a href="#git-commit-am" class="headerlink" title="git commit -am"></a>git commit -am</h3><ul>
+<li><a href="https://segmentfault.com/q/1010000005900988" target="_blank" rel="noopener">git commit -m 与 git commit -am 的区别</a></li>
+</ul>
+<h3 id="git-branch-m"><a href="#git-branch-m" class="headerlink" title="git branch -m"></a>git branch -m</h3><p>重命名</p>
+<h3 id="git-push-f-origin-master"><a href="#git-push-f-origin-master" class="headerlink" title="git push -f origin master"></a>git push -f origin master</h3><h2 id="git项目协作——保证git信息简洁"><a href="#git项目协作——保证git信息简洁" class="headerlink" title="git项目协作——保证git信息简洁"></a>git项目协作——保证git信息简洁</h2><h3 id="同一分支-git-pull-使用-rebase"><a href="#同一分支-git-pull-使用-rebase" class="headerlink" title="同一分支 git pull 使用 rebase"></a>同一分支 git pull 使用 rebase</h3><p>默认情况下，<code>git pull</code> 使用的是 <code>merge</code> 行为。多人协作开发时，会产生不必要的 <code>merge</code> 提交记录，造成提交链混乱不堪。</p>
+<p>推荐在同一个分支更新代码时，使用 <code>git pull --rebase</code>。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 为某个分支单独设置，这里是设置 dev 分支</span></span><br><span class="line">git<span class="built_in"> config </span>branch.dev.rebase <span class="literal">true</span></span><br><span class="line"><span class="comment"># 全局设置，所有的分支 git pull 均使用 --rebase</span></span><br><span class="line">git<span class="built_in"> config </span>--global pull.rebase <span class="literal">true</span></span><br><span class="line">git<span class="built_in"> config </span>--global branch.autoSetupRebase always</span><br></pre></td></tr></table></figure>
+<h3 id="分支合并使用-merge-–no-ff"><a href="#分支合并使用-merge-–no-ff" class="headerlink" title="分支合并使用 merge –no-ff"></a>分支合并使用 merge –no-ff</h3><h4 id="Usage"><a href="#Usage" class="headerlink" title="Usage"></a>Usage</h4><ul>
+<li><code>Fast-Forward</code>：当前分支合并到另一分支时，如果没有冲突要解决，就会直接移动文件指针，并且不会产生合并提交记录。该过程中，存在<code>git</code> 文件指针快速移动， 因此该过程称为 <code>Fast-Forward</code>。</li>
+<li><code>--no-ff</code>(<code>no fast foward</code>)：每一次的合并，都会创建一个新的 <code>commit</code> 记录。使用 <code>--no-ff</code>，可以保持原有分支提交链的完整性，并且当该分支被删除时，提交信息依旧存在。</li>
+</ul>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-merge--no--ff-1.png" alt="git-merge--no-ff-1"></p>
+<p>结合上图分析，在 <code>dev</code>（绿色） 分支上检出 <code>feature-1</code> 分支（蓝色），且 <code>dev</code> 分支不进行任何提交</p>
+<ul>
+<li>直接 <code>merge</code>，默认采用 <code>Fast-Forward</code>，两个分支的提交链会合并为一条直线，不利于后期代码审查和维护</li>
+<li>使用 <code>git merge --no-ff feature-1</code> 合并代码，会产生一个新的提交，且两个分支的提交链不会重叠，利于后期代码审查和维护</li>
+</ul>
+<h4 id="merge-默认设置"><a href="#merge-默认设置" class="headerlink" title="merge 默认设置"></a>merge 默认设置</h4><p><code>git merge</code> 默认使用 <code>fast-forward</code>，可以通过如下方式，修改为默认使用 <code>--no-ff</code>。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git<span class="built_in"> config </span>--global merge.commit <span class="literal">no</span></span><br><span class="line">git<span class="built_in"> config </span>--global merge.ff <span class="literal">no</span></span><br></pre></td></tr></table></figure>
+
+<p>此外，SourceTree 在设置中也可以设置 <code>--no-ff</code>。</p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-merge--no-ff-2.png" alt="git-merge--no-ff-2"></p>
+<h2 id="IDE中使用Git"><a href="#IDE中使用Git" class="headerlink" title="IDE中使用Git"></a>IDE中使用Git</h2><h3 id="VSCode中使用Git"><a href="#VSCode中使用Git" class="headerlink" title="VSCode中使用Git"></a>VSCode中使用Git</h3><ul>
+<li><a href="https://juejin.im/post/5b00474951882542ba08087a" target="_blank" rel="noopener">VSCode 中使用Git实践</a></li>
+<li>推荐安装 <code>Git Lens</code> 和 <code>Git History</code> 插件</li>
+<li>克隆代码<ul>
+<li><code>Ctrl + Shift + P</code> 打开命令面板，输入 <code>Git</code>，选择 <code>Git Clone</code> 进行克隆代码</li>
+</ul>
+</li>
+<li>查看修改（VSCode会使用不同颜色进行标识）<ul>
+<li>红色箭头 - 标识删除行</li>
+<li>蓝色竖线 - 该处有修改</li>
+<li>绿色箭头 - 该处为新增</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-vscode-usage-1.png?q-sign-algorithm=sha1&q-ak=AKIDnYCjAUImfNuHSSn8nHaihXEkvukPOAGM&q-sign-time=1570451528;1570453328&q-key-time=1570451528;1570453328&q-header-list=&q-url-param-list=&q-signature=b0ec61fae96fb0c37059f2afedbac8e2ad1b2753" alt=""></p>
+<ul>
+<li>提交代码<ul>
+<li><code>Ctrl + Shift + G</code> 打开代码管理器进行操作</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-vscode-usage-2.png?q-sign-algorithm=sha1&q-ak=AKIDnYCjAUImfNuHSSn8nHaihXEkvukPOAGM&q-sign-time=1570453094;1570454894&q-key-time=1570453094;1570454894&q-header-list=&q-url-param-list=&q-signature=63ea253d235cba5fc2d3d5c525e5242d11bba407" alt=""></p>
+<h2 id="git-clone-设置缓存区"><a href="#git-clone-设置缓存区" class="headerlink" title="git clone 设置缓存区"></a>git clone 设置缓存区</h2><p>当工程较大时，使用 <code>git clone</code> 拉取代码，可能会出现 <code>early EOF</code> 的报错或者拉取代码失败。</p>
+<p>这是因为 <code>git clone</code> 本质上是建立一个 HTTP 连接，工程较大时会超过默认设置的缓存大小。</p>
+<p>使用 <code>git config --list</code> 查看 <code>http.postbuffer</code> 的大小，确认是否小于下载的工程大小。</p>
+<p>使用 <code>git config --global http.postbuffer 524288000 //500x1024x1024 设置为500M</code> 可以对缓存区大小进行设置。 </p>
+<h2 id="git-clean"><a href="#git-clean" class="headerlink" title="git clean"></a>git clean</h2><ul>
+<li><code>git clean -n</code> -  查看哪些文件将被 <code>git clean</code> 清除，只是查看，并不会真正执行清除操作</li>
+<li><code>git clean -f</code>  - 删除未跟踪的文件 <code>untracked files</code> </li>
+<li><code>git clean -fd</code> - 连同未跟踪的目录也一起删除  </li>
+<li><code>git clean -fdx</code> - 删除未跟踪的文件和文件目录，并移除被忽略的文件。其中，<code>-x</code> 表示移除被忽略的文件并且 <code>.gitignore</code> 文件中指定的文件和文件夹也会清除或者清除更改</li>
+</ul>
+<h2 id="git-tag"><a href="#git-tag" class="headerlink" title="git tag"></a>git tag</h2><ul>
+<li><code>git tag</code>： 显示所有标签</li>
+<li><code>git tag -l &#39;v1.0.*&#39;</code>： 用通配符查看符合筛选条件的标签</li>
+<li><code>git show xxx</code>： 查看标签信息（提交者，邮箱等）</li>
+<li><code>git tag xxx</code>： 创建轻量标签</li>
+<li><code>git tag -a xxx</code>： 创建含有附注的标签</li>
+<li><code>git tag -a xxx -m &#39;xxxx&#39;</code>： 创建含有附注的标签，并附加提交信息（默认标签打到当前Head提交状态）</li>
+<li><code>git tag -a xxx -m &#39;xxxx&#39; \&lt;commitID&gt;</code>： 创建补丁标签，即对之前的提交添加标签</li>
+<li><code>git tag -d xxx</code>： 删除本地标签</li>
+<li><code>git push origin --delete tag &lt;tagname&gt;</code>： 删除远程标签</li>
+</ul>
+<p>需要注意的是，<br>Git 使用的标签有 2 种类型：轻量级的（<code>lightweight</code>）和含附注的（<code>annotated</code>）。 —— <a href="https://git-scm.com/book/zh/v1/Git-%E5%9F%BA%E7%A1%80-%E6%89%93%E6%A0%87%E7%AD%BE" target="_blank" rel="noopener">git tag | Doc</a></p>
+<ul>
+<li>轻量级标签就像是个不会变化的分支，实际上它就是个指向特定提交对象的引用。</li>
+<li>含附注标签，实际上是存储在仓库中的一个独立对象，它有自身的校验和信息，包含着标签的名字，电子邮件地址和日期，以及标签说明，标签本身也允许使用 <code>GNU Privacy Guard</code> (<code>GPG</code>) 来签署或验证。</li>
+</ul>
+<p><strong>一般我们都建议使用含附注型的标签，以便保留相关信息；当然，如果只是临时性加注标签，或者不需要旁注额外信息，用轻量级标签也没问题。</strong></p>
+<h2 id="cherry-pick"><a href="#cherry-pick" class="headerlink" title="cherry-pick"></a>cherry-pick</h2><ul>
+<li><a href="https://juejin.im/post/5925a2d9a22b9d0058b0fd9b" target="_blank" rel="noopener">Cherry-Pick | 掘金</a></li>
+</ul>
+<h3 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h3><p><code>cherry</code> 译为樱桃，<code>pick</code> 译挑选。<code>git cherry-pick</code> 即选择某一个分支中的一个或几个提交，合并到其他分支中（选择的提交即所需的樱桃），主要使用场景为</p>
+<ul>
+<li>情况1： 把弄错分支的提交移动到正确的分支上</li>
+<li>情况2： 将其他分支的提交添加到当前分支</li>
+</ul>
+<h3 id="Demo"><a href="#Demo" class="headerlink" title="Demo"></a>Demo</h3><p>假设工程有个稳定版分支 <code>v2.0</code>，还有个开发版分支 <code>v3.0</code>。开发分支还未彻底完成，不能直接把两个分支合并，这样会导致稳定版本混乱，但是又想增加一个 <code>v3.0</code> 中的功能到 <code>v2.0</code> 中，这里就可以使用 <code>cherry-pick</code> 了。</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 先在v3.0中查看要合并的commit的commit id</span></span><br><span class="line">git <span class="built_in">log</span></span><br><span class="line"><span class="comment">// 假设是 commit f79b0b1ffe445cab6e531260743fa4e08fb4048b</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 切到v2.0中</span></span><br><span class="line">git checkout v2.<span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 合并commit</span></span><br><span class="line">git cherry-pick f79b0b1ffe445cab6e531260743fa4e08fb4048b     </span><br><span class="line">git cherry-pick -x f79b0b1ffe445cab6e531260743fa4e08fb4048b   <span class="comment">//表示保留原提交的作者信息进行提交</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><ul>
+<li><code>git cherry_pick commitID</code>：将其他分支的 <code>commitID</code> 提交合并到当前分支</li>
+<li><code>git cherry_pick commitID</code>：将其他分支的 <code>commitID</code> 提交合并到当前分支，<code>-x</code> 表示保留原提交的作者信息进行提交</li>
+<li><code>git cherry_pick &lt;start-commit-id&gt;…&lt;end-commit-id&gt;</code>: 该功能在Git 1.7.2 版本后才支持，将一个连续区间范围的提交，合并到到当前分支。提交范围区间左开右闭，即<code>(start, end]</code></li>
+<li><code>git cherry_pick &lt;start-commit-id&gt;^ … &lt;end-commit-id&gt;</code>: 同上，使用 <code>^</code> 表示包含 <code>start-commit-id</code>，即<code>[start, end]</code></li>
+</ul>
+<blockquote>
+<p>JetBranins 系列IDE，内置了git cherry-pick 快捷键（樱桃图标）</p>
+</blockquote>
+<h2 id="git命令行代理设置"><a href="#git命令行代理设置" class="headerlink" title="git命令行代理设置"></a>git命令行代理设置</h2><h3 id="设置代理"><a href="#设置代理" class="headerlink" title="设置代理"></a>设置代理</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global http<span class="selector-class">.proxy</span> <span class="string">'socks5://127.0.0.1:1086'</span></span><br><span class="line">git config --global https<span class="selector-class">.proxy</span> <span class="string">'socks5://127.0.0.1:1086'</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="取消代理"><a href="#取消代理" class="headerlink" title="取消代理"></a>取消代理</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git<span class="built_in"> config </span>--global --unset http.proxy</span><br><span class="line">git<span class="built_in"> config </span>--global --unset https.proxy</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="GitUp"><a href="#GitUp" class="headerlink" title="GitUp"></a>GitUp</h2><blockquote>
+<p>Work quickly, safely, and without headaches.<br>The Git interface you’ve been missing<br>all your life has finally arrived.</p>
+</blockquote>
+<ul>
+<li><a href="http://gitup.co/" target="_blank" rel="noopener">GitUp</a></li>
+<li><a href="http://qinghua.github.io/gitup/" target="_blank" rel="noopener">Tutorial</a></li>
+</ul>
+<h2 id="GitG"><a href="#GitG" class="headerlink" title="GitG"></a>GitG</h2><ul>
+<li><code>gitg</code>是一个git图形化界面。</li>
+<li>安装</li>
+</ul>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install gitg   <span class="comment">//安装</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>使用</li>
+</ul>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gitg  <span class="comment">// 在目录终端下输入gitg即可</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Git-代码回滚"><a href="#Git-代码回滚" class="headerlink" title="Git 代码回滚"></a>Git 代码回滚</h2><ul>
+<li><a href="https://sunmengyuan.github.io/garden/2017/06/15/git-revert.html?page=2" target="_blank" rel="noopener">谈谈 Git 代码回滚</a></li>
+</ul>
+<h3 id="场景描述"><a href="#场景描述" class="headerlink" title="场景描述"></a>场景描述</h3><p>某项目，并行开发着n个需求。提测时，各需求的代码被合并到测试分支。不久之后，要求把部分需求代码从测试分支抽离出去。使用下图场景进行描述。并行开发3个需求，分别是<code>feature1</code>，<code>feature2</code>，<code>feature3</code>。测试分支为<code>master</code>。</p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-rollback-1.jpg" alt="git-rollback"></p>
+<p><code>feature2</code>与<code>feature3</code>对同一文件进行修改，故意制造一个冲突。 </p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-rollback-2.jpg" alt="git-rollback"></p>
+<p>提测时，各分支代码被合并到测试分支（<code>master</code>）。首先，<code>featuer1</code>分支被合并到测试分支。</p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-rollback-3.jpg" alt="git-rollback"></p>
+<p>之后，<code>featuer2</code>分支也被合并到测试分支。</p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-rollback-4.jpg" alt="git-rollback"></p>
+<p>最后，合并<code>feature3</code>至测试分支。合并时，产生了与<code>feature2</code>代码的冲突。</p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-rollback-5.jpg" alt="git-rollback"></p>
+<p>解决冲突之后，继续将<code>feature3</code>合并至测试分支。</p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-rollback-6.jpg" alt="git-rollback"></p>
+<p>在<code>feature3</code>提测后，在测试分支上继续修复几个bug。</p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-rollback-7.jpg" alt="git-rollback"></p>
+<p>注意，此时<code>feature2</code>虽已提测但并未进入测试，此时的bug修复均是针对 <code>feature1</code>与<code>feature3</code>。</p>
+<p>几天之后，收到通知，<code>feature2</code>的测试无法正常进行，需将代码从测试分支上抽出。</p>
+<h3 id="代码回滚操作"><a href="#代码回滚操作" class="headerlink" title="代码回滚操作"></a>代码回滚操作</h3><h4 id="Step-1-切换分支"><a href="#Step-1-切换分支" class="headerlink" title="Step 1 切换分支"></a>Step 1 切换分支</h4><p>首先，切换到<code>featuer2</code>分支。以防万一，创建<code>feature2-copy</code>分支，对该分支进行备份。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">git checkout feature2   <span class="comment">//切换到feature2分支</span></span><br><span class="line"></span><br><span class="line">git checkout -b feature2-<span class="built_in">copy</span>   <span class="comment">//创建并切换到feature2-copy</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//第2行代码等同于</span></span><br><span class="line">git branch feature2-<span class="built_in">copy</span>  <span class="comment">//创建feature2-copy分支</span></span><br><span class="line">git checkout feature2-<span class="built_in">copy</span> <span class="comment">//切换到feature2-copy分支</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-rollback-8.jpg" alt="git-rollback"></p>
+<h4 id="Step-2-确定要回滚的提交记录"><a href="#Step-2-确定要回滚的提交记录" class="headerlink" title="Step 2 确定要回滚的提交记录"></a>Step 2 确定要回滚的提交记录</h4><p>使用<code>git log</code>查看<code>feature2-copy</code>分支的提交记录（输入<code>q</code>退出<code>git log</code>环境）。</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">log</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-rollback-9.jpg" alt="git-rollback"></p>
+<p>如图所示，需要回滚最新的3个提交。实际情况中，针对某需求的提交绝不止3个。若是将提交逐一<code>revert</code>，工作量是非常大的。需要考虑将<code>n</code>个<code>commit</code>合并为一个<code>commit</code>，最后一同<code>revert</code>。</p>
+<h4 id="Step-3-git-rebase-合并提交"><a href="#Step-3-git-rebase-合并提交" class="headerlink" title="Step 3 git rebase 合并提交"></a>Step 3 git rebase 合并提交</h4><p>使用<code>git rebase -i</code>来合并<code>commit</code>，传入需要拼接回滚至的提交的<code>hashcode</code>。（此处，将所有回滚的提交合并到需要回滚的<code>commit</code>集合中第一个提交）</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//hashcode为需要回滚的commit集合中第一个提交</span></span><br><span class="line">git rebase -<span class="selector-tag">i</span> e08ddaf558b9ad84422db5e4b620dcab97623fde</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-rollback-10.jpg" alt="git-rollback"></p>
+<p>将最近2次提交的<code>command</code>从<code>pick</code>改为<code>s</code>。</p>
+<blockquote>
+<p>在Vim中，</p>
+<ol>
+<li>输入<code>i</code>，进入<code>INSERT</code>模式。</li>
+<li>输入<code>ESC</code>，进入命令行模式。</li>
+<li>输入<code>:wq</code>，保存并退出VIM编辑器。</li>
+</ol>
+</blockquote>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-rollback-11.jpg" alt="git-rollback"></p>
+<p>修改后，保存并退出，进入如下对话框。</p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-rollback-12.jpg" alt="git-rollback"></p>
+<p>此时，对最初一次的提交的<code>commit message</code>进行修改。</p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-rollback-13.jpg" alt="git-rollback"></p>
+<p>修改后保存并退出，使用<code>git log</code> 再次查看 <code>feature2-copy</code> 分支的信息。</p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-rollback-14.jpg" alt="git-rollback"></p>
+<p>如上图所示，3次提交被成功合并。</p>
+<h4 id="Step-4-git-revert-撤销提交"><a href="#Step-4-git-revert-撤销提交" class="headerlink" title="Step 4 git revert 撤销提交"></a>Step 4 git revert 撤销提交</h4><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">git</span> <span class="keyword">revert </span>e544464c3de69adef5ca7556001abebaf40b218b</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-rollback-15.jpg" alt="git-rollback"></p>
+<p>保存并退出，再次查看<code>feature2-copy</code>分支的提交记录。</p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-rollback-16.jpg" alt="git-rollback"></p>
+<h4 id="Step-5-git-cherry-pick"><a href="#Step-5-git-cherry-pick" class="headerlink" title="Step 5 git cherry-pick"></a>Step 5 git cherry-pick</h4><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git checkout <span class="keyword">master</span>   <span class="title">//切换到测试分支</span></span><br><span class="line"><span class="title">git</span> cherry-pick b309f7944d2422d8fe647dca61bda518b192628f</span><br></pre></td></tr></table></figure>
+
+<p>切换到测试分支，并执行 <code>git cherry-pick</code> 命令。至此，成功的将<code>feature2</code>分支从测试分支上抽离。</p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-rollback-17.jpg" alt="git-rollback"></p>
+<h2 id="Git代码管理与团队协作"><a href="#Git代码管理与团队协作" class="headerlink" title="Git代码管理与团队协作"></a>Git代码管理与团队协作</h2><ul>
+<li><a href="https://segmentfault.com/l/1500000015442316/play" target="_blank" rel="noopener">视频教程 | Segmentfault</a></li>
+</ul>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-team-usage-3.png" alt="git-team-usage"></p>
+<p>代码最终提交效果如上图所示。</p>
+<ul>
+<li>主分支为<code>master</code>，创建一个<code>develop</code>分支用于开发。</li>
+<li>开发者<code>leo</code>和<code>jack</code>创建自己的分支<code>leo</code>和<code>jack</code>进行开发。开发完成后，将其合并到<code>develop</code>分支上。</li>
+<li>项目进展到需要发布时，从<code>develop</code>分支创建<code>release</code>分支，用于测试。测试通过后，将<code>release</code>分支合并到<code>develop</code>分支和<code>master</code>分支上。</li>
+</ul>
+<h3 id="Demo目录和初始化"><a href="#Demo目录和初始化" class="headerlink" title="Demo目录和初始化"></a>Demo目录和初始化</h3><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">//</span>目录结构</span><br><span class="line">-- c4</span><br><span class="line"><span class="params">---</span>|<span class="params">---</span> origin   <span class="string">//</span>模拟远程仓库  git init <span class="params">--bare</span> 创建</span><br><span class="line"><span class="params">---</span>|<span class="params">---</span> leo    <span class="string">//</span>开发者1  设置user.name = 'leo'</span><br><span class="line"><span class="params">---</span>|<span class="params">---</span> jack    <span class="string">//</span>开发者2  设置user.name = 'jack'</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><code>git init --bare</code> 用于创建一个“裸仓库”——只含有 <code>.git</code> 目录，不含源文件。详情参考 <a href="https://segmentfault.com/q/1010000004683286" target="_blank" rel="noopener">Ref</a>。</p>
+</blockquote>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">mkdir</span> <span class="string">c4</span></span><br><span class="line"><span class="attr">cd</span> <span class="string">c4</span></span><br><span class="line"><span class="attr">mkdir</span> <span class="string">origin </span></span><br><span class="line"><span class="attr">cd</span> <span class="string">origin </span></span><br><span class="line"><span class="attr">git</span> <span class="string">init --bare   //创建一个裸仓库</span></span><br><span class="line"></span><br><span class="line"><span class="attr">cd</span> <span class="string">..</span></span><br><span class="line"></span><br><span class="line"><span class="meta">//克隆远程仓库至两个开发者目录——leo,</span> <span class="string">jack</span></span><br><span class="line"><span class="attr">git</span> <span class="string">clone origin leo</span></span><br><span class="line"><span class="attr">git</span> <span class="string">clone origin jack</span></span><br></pre></td></tr></table></figure>
+
+<p>为了模拟团队协作，对两个开发者目录，分别设置不同的 <code>user.name</code> 信息。</p>
+<blockquote>
+<p><code>git config --local</code>，使用 <code>--local</code> 参数，只对本地参数进行配置。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> leo</span><br><span class="line">git config --<span class="built_in">local</span> user.name <span class="string">'leo'</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> jack</span><br><span class="line">git config --<span class="built_in">local</span> user.name <span class="string">'jack'</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="开发流程"><a href="#开发流程" class="headerlink" title="开发流程"></a>开发流程</h3><h4 id="master-分支初始化"><a href="#master-分支初始化" class="headerlink" title="master 分支初始化"></a>master 分支初始化</h4><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cd leo </span><br><span class="line">echo <span class="selector-tag">a</span> = <span class="number">1</span> &gt; leo1<span class="selector-class">.py</span>  <span class="comment">// 将a=1写入leo1.py文件</span></span><br><span class="line">cat leo1<span class="selector-class">.py</span>           <span class="comment">//显示文件的内容</span></span><br><span class="line"></span><br><span class="line">git add . </span><br><span class="line">git commit -m <span class="string">"c4 项目初始化"</span></span><br><span class="line"></span><br><span class="line">git tag <span class="number">0.0</span>.<span class="number">1</span>  <span class="comment">//添加标签 方便管理</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="创建develop分支"><a href="#创建develop分支" class="headerlink" title="创建develop分支"></a>创建develop分支</h4><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">git checkout -<span class="selector-tag">b</span> develop</span><br><span class="line"></span><br><span class="line">echo <span class="selector-tag">b</span> = <span class="number">2</span> &gt; leo1.py</span><br><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">"建立开发分支并提交"</span></span><br><span class="line"></span><br><span class="line">git push origin develop  <span class="comment">//推送到远程分支</span></span><br><span class="line"></span><br><span class="line">gitg   <span class="comment">// 使用gitg图形化工具查看提交信息</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="leo进行开发"><a href="#leo进行开发" class="headerlink" title="leo进行开发"></a>leo进行开发</h4><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">git checkout -<span class="selector-tag">b</span> leo</span><br><span class="line">echo c=<span class="number">3</span> &gt; leo2.py</span><br><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">"创建leo分支并开发"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//合并当前开发到dev分支</span></span><br><span class="line">git checkout develop</span><br><span class="line">git merge --no-ff leo  <span class="comment">//合并分支 并保留leo分支信息</span></span><br><span class="line"></span><br><span class="line">gitg  <span class="comment">//查看提交历史树  gui</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><code>git merge --no-ff leo</code>，合并分支，并保留<code>leo</code>分支的信息。关于参数<code>--no-ff</code>的详情，参考 <a href="https://segmentfault.com/q/1010000002477106" target="_blank" rel="noopener">Ref</a>。</p>
+</blockquote>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-team-usage-1.png" alt="git-team-usage"></p>
+<p>最后，将开发分支推送到远程。</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">push</span> <span class="built_in">origin</span> develop</span><br><span class="line"></span><br><span class="line">gitg</span><br></pre></td></tr></table></figure>
+
+
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-team-usage-2.png" alt="git-team-usage"></p>
+<h4 id="jack进行开发"><a href="#jack进行开发" class="headerlink" title="jack进行开发"></a>jack进行开发</h4><p>首先，从远程拉取最新代码。</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">git pull origin</span></span><br></pre></td></tr></table></figure>
+
+<p>之后，jack进行日常开发，流程同leo开发，此处不再赘述。</p>
+<h4 id="release分支测试"><a href="#release分支测试" class="headerlink" title="release分支测试"></a>release分支测试</h4><p>项目进展到需发布时，从<code>develop</code>分支创建<code>release</code>分支，用于测试。测试通过后，将<code>release</code>分支合并到<code>develop</code>分支和<code>master</code>分支上。</p>
+<h2 id="远程多分支代码拉取"><a href="#远程多分支代码拉取" class="headerlink" title="远程多分支代码拉取"></a>远程多分支代码拉取</h2><p>此处记录如何拉取远程所有分支，并建立本地分支追踪远程分支。</p>
+<ul>
+<li>Step 1： <code>clone</code> 远程代码</li>
+<li>Step 2： 在sourcetree中可以看出，远程分支有<code>origin/master</code>，<code>origin/dev</code>和<code>origin/webtest</code>。此时本地分支为<code>dev</code>，并建立了追踪关系。</li>
+</ul>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-pull-branches-1.png" alt="git pull branches"></p>
+<ul>
+<li>Step 3： 在对应的远程分支（<code>origin/master</code>）上点击，检出分支，设定本地分支名，并追踪远程分支即可。</li>
+</ul>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-pull-branches-2.png" alt="git pull branches"></p>
+<ul>
+<li>Step 4： 最终效果如下图，检出本地分支并追踪远程。</li>
+</ul>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/programming-2019/git-pull-branches-3.png" alt="git pull branches"></p>
+<blockquote>
+<p>Tip</p>
+<p><code>git branch -r</code>： 查看远程分支</p>
+<p><code>git branch -a</code>： 查看所有分支</p>
+<p>Ref: <a href="https://gaohaoyang.github.io/2016/07/07/git-clone-not-master-branch/" target="_blank" rel="noopener">Blog</a></p>
+</blockquote>
+<h2 id="多SSH配置"><a href="#多SSH配置" class="headerlink" title="多SSH配置"></a>多SSH配置</h2><ol>
+<li>取消全局账户和邮箱设置</li>
+</ol>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git<span class="built_in"> config </span>--unset --global user.name</span><br><span class="line">git<span class="built_in"> config </span>--unset --global user.email</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>新建SSH key：</li>
+</ol>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd ~/.ssh</span><br><span class="line">ssh-keygen -t rsa -C <span class="string">"liubaoshuai1@jd.com"</span> </span><br><span class="line">Enter <span class="built_in">file</span> <span class="keyword">in</span> which <span class="built_in">to</span> save <span class="keyword">the</span> key (/User/lbs/.ssh/id_rsa): id_rsa_jd  <span class="comment"># 输入文件名</span></span><br></pre></td></tr></table></figure>
+
+
+
+<ol start="3">
+<li>新密钥添加到 SSH Agent</li>
+</ol>
+<p>默认只读取 <code>id_rsa</code>，为了让 SSH 识别新的私钥，需将其添加到 SSH Agent 中</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-<span class="keyword">add</span><span class="bash"> ~/.ssh/id_rsa_jd</span></span><br></pre></td></tr></table></figure>
+
+<p>若出现 <code>Could not open a connection to your authentication agent</code> 错误，执行以下命令</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">ssh</span>-agent <span class="keyword">bash</span></span><br><span class="line"><span class="keyword">ssh-add </span>~/.ssh/id_rsa_jd</span><br></pre></td></tr></table></figure>
+
+
+<ol start="4">
+<li>修改 <code>config</code> 文件</li>
+</ol>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim<span class="built_in"> config </span>     # 若没有，可创建  touch config</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># <span class="selector-tag">default</span> <span class="selector-tag">user</span> (lbs1203940926<span class="variable">@163</span>.com)</span><br><span class="line"><span class="selector-tag">Host</span> <span class="selector-tag">github</span><span class="selector-class">.com</span></span><br><span class="line">   <span class="selector-tag">HostName</span> <span class="selector-tag">github</span><span class="selector-class">.com</span></span><br><span class="line">   <span class="selector-tag">User</span> <span class="selector-tag">lbs1203940926</span>@<span class="selector-tag">163</span><span class="selector-class">.com</span></span><br><span class="line">   <span class="selector-tag">PreferredAuthentications</span> <span class="selector-tag">publickey</span></span><br><span class="line">   <span class="selector-tag">IdentityFile</span> /<span class="selector-tag">Users</span>/<span class="selector-tag">lbs</span>/<span class="selector-class">.ssh</span>/<span class="selector-tag">id_rsa</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># <span class="selector-tag">jd-gitlab</span>(liubaoshuai1<span class="variable">@jd</span>.com))</span><br><span class="line"><span class="selector-tag">Host</span> <span class="selector-tag">git</span><span class="selector-class">.jd</span><span class="selector-class">.com</span></span><br><span class="line">   <span class="selector-tag">HostName</span> <span class="selector-tag">git</span><span class="selector-class">.jd</span><span class="selector-class">.comm</span></span><br><span class="line">   <span class="selector-tag">User</span> <span class="selector-tag">liubaoshuai1</span>@<span class="selector-tag">jd</span><span class="selector-class">.com</span></span><br><span class="line">   <span class="selector-tag">PreferredAuthentications</span> <span class="selector-tag">publickey</span></span><br><span class="line">   <span class="selector-tag">IdentityFile</span> /<span class="selector-tag">Users</span>/<span class="selector-tag">lbs</span>/<span class="selector-class">.ssh</span>/<span class="selector-tag">id_rs_jd</span></span><br></pre></td></tr></table></figure>
+
+
+<ol start="5">
+<li>拉取JD代码</li>
+</ol>
+<figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># 测试暂不支持SourceTree中远程拉取，需要终端命令行拉取</span></span><br><span class="line"><span class="meta"># 且暂只支持https协议</span></span><br><span class="line"></span><br><span class="line">git clone http:<span class="comment">//git.jd.com/jdreact/jdreact-jsbundle-jdreactonehourarrive</span></span><br><span class="line"></span><br><span class="line"><span class="meta"># UserName: liubaoshuai</span></span><br><span class="line"><span class="meta"># PassWord: ERP's password</span></span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div></div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById(&quot;QR&quot;); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span style="line-height:33px;">赞</span>
+
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="Liu Baoshuai WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="Liu Baoshuai Alipay"/>
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Develop-Tools/" rel="tag"><i class="fa fa-tag"></i> Develop Tools</a>
+          
+            <a href="/tags/Git/" rel="tag"><i class="fa fa-tag"></i> Git</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              <div>
+                
+
+<script src="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ilyabirman-likely@2/release/likely.css">
+
+
+  
+
+
+<div class="likely likely-small">
+	
+ 	 	<div class="twitter">Tweet</div>
+	
+ 	 	<div class="facebook">Share</div>
+	
+ 	 	<div class="linkedin">Link</div>
+	
+ 	 	<div class="whatsapp">Send</div>
+	
+</div>
+
+              </div>
+            
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/01/31/redis-basic/" rel="next" title="Redis基础知识梳理">
+                <i class="fa fa-chevron-left"></i> Redis基础知识梳理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/Blog-20190315/blog-logo-1.jpg"
+                alt="Liu Baoshuai"/>
+            
+              <p class="site-author-name" itemprop="name">Liu Baoshuai</p>
+              <div class="site-description motion-element" itemprop="description">Record and become better myself</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/%20%7C%7C%20archive">
+                
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/%20%7C%7C%20th">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/%20%7C%7C%20tags">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/lbs0912" title="GitHub &rarr; https://github.com/lbs0912" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="/mailto:lbs1203940926@163.com" title="E-Mail &rarr; mailto:lbs1203940926@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://juejin.im/user/59af7aa96fb9a0248f4aaeab" title="Juejin Blog &rarr; https://juejin.im/user/59af7aa96fb9a0248f4aaeab" rel="noopener" target="_blank"><i class="fa fa-fw fa-free-code-camp"></i>Juejin Blog</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/2329754491" title="Weibo &rarr; https://weibo.com/2329754491" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Changelog"><span class="nav-number">1.</span> <span class="nav-text">Changelog</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ref"><span class="nav-number">2.</span> <span class="nav-text">Ref</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git-reflog-解决提交代码丢失-detached-head"><span class="nav-number">3.</span> <span class="nav-text">git reflog 解决提交代码丢失 detached-head</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#detached-head-代码丢失找回"><span class="nav-number">3.1.</span> <span class="nav-text">detached-head 代码丢失找回</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#背景"><span class="nav-number">3.1.1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#丢失产生原因和步骤"><span class="nav-number">3.1.2.</span> <span class="nav-text">丢失产生原因和步骤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#代码找回"><span class="nav-number">3.1.3.</span> <span class="nav-text">代码找回</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除所有历史提交记录"><span class="nav-number">4.</span> <span class="nav-text">删除所有历史提交记录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#git-checkout-–orphan"><span class="nav-number">4.1.</span> <span class="nav-text">git checkout –orphan</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#git-commit-am"><span class="nav-number">4.2.</span> <span class="nav-text">git commit -am</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#git-branch-m"><span class="nav-number">4.3.</span> <span class="nav-text">git branch -m</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#git-push-f-origin-master"><span class="nav-number">4.4.</span> <span class="nav-text">git push -f origin master</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git项目协作——保证git信息简洁"><span class="nav-number">5.</span> <span class="nav-text">git项目协作——保证git信息简洁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#同一分支-git-pull-使用-rebase"><span class="nav-number">5.1.</span> <span class="nav-text">同一分支 git pull 使用 rebase</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分支合并使用-merge-–no-ff"><span class="nav-number">5.2.</span> <span class="nav-text">分支合并使用 merge –no-ff</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Usage"><span class="nav-number">5.2.1.</span> <span class="nav-text">Usage</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#merge-默认设置"><span class="nav-number">5.2.2.</span> <span class="nav-text">merge 默认设置</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IDE中使用Git"><span class="nav-number">6.</span> <span class="nav-text">IDE中使用Git</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#VSCode中使用Git"><span class="nav-number">6.1.</span> <span class="nav-text">VSCode中使用Git</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git-clone-设置缓存区"><span class="nav-number">7.</span> <span class="nav-text">git clone 设置缓存区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git-clean"><span class="nav-number">8.</span> <span class="nav-text">git clean</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git-tag"><span class="nav-number">9.</span> <span class="nav-text">git tag</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cherry-pick"><span class="nav-number">10.</span> <span class="nav-text">cherry-pick</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用场景"><span class="nav-number">10.1.</span> <span class="nav-text">使用场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Demo"><span class="nav-number">10.2.</span> <span class="nav-text">Demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#语法"><span class="nav-number">10.3.</span> <span class="nav-text">语法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git命令行代理设置"><span class="nav-number">11.</span> <span class="nav-text">git命令行代理设置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#设置代理"><span class="nav-number">11.1.</span> <span class="nav-text">设置代理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#取消代理"><span class="nav-number">11.2.</span> <span class="nav-text">取消代理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GitUp"><span class="nav-number">12.</span> <span class="nav-text">GitUp</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GitG"><span class="nav-number">13.</span> <span class="nav-text">GitG</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Git-代码回滚"><span class="nav-number">14.</span> <span class="nav-text">Git 代码回滚</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#场景描述"><span class="nav-number">14.1.</span> <span class="nav-text">场景描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码回滚操作"><span class="nav-number">14.2.</span> <span class="nav-text">代码回滚操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Step-1-切换分支"><span class="nav-number">14.2.1.</span> <span class="nav-text">Step 1 切换分支</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Step-2-确定要回滚的提交记录"><span class="nav-number">14.2.2.</span> <span class="nav-text">Step 2 确定要回滚的提交记录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Step-3-git-rebase-合并提交"><span class="nav-number">14.2.3.</span> <span class="nav-text">Step 3 git rebase 合并提交</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Step-4-git-revert-撤销提交"><span class="nav-number">14.2.4.</span> <span class="nav-text">Step 4 git revert 撤销提交</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Step-5-git-cherry-pick"><span class="nav-number">14.2.5.</span> <span class="nav-text">Step 5 git cherry-pick</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Git代码管理与团队协作"><span class="nav-number">15.</span> <span class="nav-text">Git代码管理与团队协作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Demo目录和初始化"><span class="nav-number">15.1.</span> <span class="nav-text">Demo目录和初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开发流程"><span class="nav-number">15.2.</span> <span class="nav-text">开发流程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#master-分支初始化"><span class="nav-number">15.2.1.</span> <span class="nav-text">master 分支初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建develop分支"><span class="nav-number">15.2.2.</span> <span class="nav-text">创建develop分支</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#leo进行开发"><span class="nav-number">15.2.3.</span> <span class="nav-text">leo进行开发</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#jack进行开发"><span class="nav-number">15.2.4.</span> <span class="nav-text">jack进行开发</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#release分支测试"><span class="nav-number">15.2.5.</span> <span class="nav-text">release分支测试</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#远程多分支代码拉取"><span class="nav-number">16.</span> <span class="nav-text">远程多分支代码拉取</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多SSH配置"><span class="nav-number">17.</span> <span class="nav-text">多SSH配置</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2015 – <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Liu Baoshuai</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.0.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+  
+  
+
+
+
+  
+  
+
+
+
+  
+  
+
+
+
+  
+  
+  <script id="ribbon" size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/three/three.min.js"></script>
+
+  
+  <script src="/lib/three/three-waves.min.js"></script>
+
+  
+  <script src="/lib/three/canvas_lines.min.js"></script>
+
+  
+  <script src="/lib/three/canvas_sphere.min.js"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=7.0.1"></script>
+
+  <script src="/js/src/motion.js?v=7.0.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=7.0.1"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=7.0.1"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=7.0.1"></script>
+<script src="/js/src/post-details.js?v=7.0.1"></script>
+
+
+
+  
+
+
+  <script src="/js/src/next-boot.js?v=7.0.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+  
+  <script id="dsq-count-scr" src="https://liubaoshuaiBlog.disqus.com/count.js" async></script>
+
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://lbs0912.github.io/2020/02/01/git-usage-improve/";
+    this.page.identifier = "2020/02/01/git-usage-improve/";
+    this.page.title = 'Git 进阶使用';
+    };
+  function loadComments() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://liubaoshuaiBlog.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', '' + +new Date());
+    (d.head || d.body).appendChild(s);
+  }
+  
+    $(function() {
+      var offsetTop = $('#comments').offset().top - $(window).height();
+      if (offsetTop <= 0) {
+        // load directly when there's no a scrollbar
+        loadComments();
+      } else {
+        $(window).on('scroll.disqus_scroll', function() {
+          // offsetTop may changes because of manually resizing browser window or lazy loading images.
+          var offsetTop = $('#comments').offset().top - $(window).height();
+          var scrollTop = $(window).scrollTop();
+
+          // pre-load comments a bit? (margin or anything else)
+          if (offsetTop - scrollTop < 60) {
+            $(window).off('.disqus_scroll');
+            loadComments();
+          }
+        });
+      }
+    });
+  
+</script>
+
+
+
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+  
+  <script>
+    
+    function addCount(Counter) {
+      var $visitors = $('.leancloud_visitors');
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+        .done(function({ results }) {
+          if (results.length > 0) {
+            var counter = results[0];
+            
+            Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
+            
+              .done(function() {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.time + 1);
+              })
+            
+              .fail(function ({ responseJSON }) {
+                console.log('Failed to save Visitor num, with error message: ' + responseJSON.error);
+              })
+          } else {
+            
+              Counter('post', '/classes/Counter', JSON.stringify({ title: title, url: url, time: 1 }))
+                .done(function() {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(1);
+                })
+                .fail(function() {
+                  console.log('Failed to create');
+                });
+            
+          }
+        })
+        .fail(function ({ responseJSON }) {
+          console.log('LeanCloud Counter Error: ' + responseJSON.code + ' ' + responseJSON.error);
+        });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + 'gksxcfwJlMV3zkhz1pQc7pl2-gzGzoHsz')
+        .done(function({ api_server }) {
+          var Counter = function(method, url, data) {
+            return $.ajax({
+              method: method,
+              url: 'https://' + api_server + '/1.1' + url,
+              headers: {
+                'X-LC-Id': 'gksxcfwJlMV3zkhz1pQc7pl2-gzGzoHsz',
+                'X-LC-Key': 'kjOanp812G7TIGMSQpPCVIhj',
+                'Content-Type': 'application/json',
+              },
+              data: data
+            });
+          };
+          
+            addCount(Counter);
+          
+        });
+    });
+  </script>
+
+
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+
+  
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
