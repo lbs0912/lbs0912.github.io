@@ -1,6 +1,291 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Hadoop入门篇——伪分布模式安装 &amp; WordCount词频统计</title>
+    <url>/2020/04/21/hadoop-basic-1/</url>
+    <content><![CDATA[<ul>
+<li>本文主要记录Mac下如何进行Hadoop伪分布模式安装，并通过词频统计Demo程序(WordCount)理解MapReduce的原理。</li>
+</ul>
+<a id="more"></a>
+
+
+
+<h2 id="更新日志"><a href="#更新日志" class="headerlink" title="更新日志"></a>更新日志</h2><ul>
+<li>2020/03/23，撰写</li>
+<li>2020/03/28，添加《Hadoop 权威指南》阅读笔记</li>
+<li>2020/03/29，添加《Hadoop 应用开发技术详解》阅读笔记</li>
+<li>2020/04/21，添加 Hadoop 伪分布式配置</li>
+</ul>
+<h2 id="学习资料汇总"><a href="#学习资料汇总" class="headerlink" title="学习资料汇总"></a>学习资料汇总</h2><ul>
+<li><a href="https://hadoop.apache.org/" target="_blank" rel="noopener">Hadoop官网</a></li>
+</ul>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
+<li><a href="https://www.zhihu.com/question/19795366" target="_blank" rel="noopener">零基础学习 Hadoop 该如何下手？ | 知乎</a></li>
+<li><a href="http://blog.fens.me/hadoop-family-roadmap/" target="_blank" rel="noopener">Hadoop家族学习路线图 | Blog</a></li>
+<li><a href="https://fuhailin.github.io/Hadoop-on-MacOS/" target="_blank" rel="noopener">在Mac上配置Hadoop娱乐环境 | Blog</a></li>
+</ul>
+<h3 id="《Hadoop权威指南》随书资料"><a href="#《Hadoop权威指南》随书资料" class="headerlink" title="《Hadoop权威指南》随书资料"></a>《Hadoop权威指南》随书资料</h3><ul>
+<li>随书源码：<a href="http://www.hadoopbook.com/code.html" target="_blank" rel="noopener">Source Code</a></li>
+<li>随书数据集：<a href="http://www.hadoopbook.com/code.html" target="_blank" rel="noopener">Full Dataset</a></li>
+</ul>
+<h2 id="Hadoop基础"><a href="#Hadoop基础" class="headerlink" title="Hadoop基础"></a>Hadoop基础</h2><h3 id="Hadoop和Spark"><a href="#Hadoop和Spark" class="headerlink" title="Hadoop和Spark"></a>Hadoop和Spark</h3><p>Hadoop和Spark是两种不同的大数据处理框架，如下图所示。</p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/BigData2020/bigdata-basic-0.png" alt=""></p>
+<ul>
+<li>上图中的蓝色部分是Hadoop生态系统组件，黄色部分是Spark生态组件。</li>
+<li>虽然它们是两种不同的大数据处理框架，但它们不是互斥的。Spark与Hadoop 中的 MapReduce 是一种相互共生的关系。</li>
+<li>Hadoop 提供了 Spark 许多没有的功能，比如分布式文件系统，而 Spark 提供了实时内存计算，速度非常快。</li>
+</ul>
+<p>Hadoop 通常包括2个部分：存储和处理。存储部分就是Hadoop的分布式文件系统（HDFS），处理指的是MapReduce（MP）。</p>
+<h3 id="Hadoop-安装和配置"><a href="#Hadoop-安装和配置" class="headerlink" title="Hadoop 安装和配置"></a>Hadoop 安装和配置</h3><ul>
+<li>ref-1：<a href="https://fuhailin.github.io/Hadoop-on-MacOS/" target="_blank" rel="noopener">在Mac上配置Hadoop娱乐环境 | Blog</a></li>
+<li>ref-2：<a href="https://zhuanlan.zhihu.com/p/33117305" target="_blank" rel="noopener">Mac OS X 上搭建 Hadoop 开发环境指南 | 知乎</a></li>
+<li>ref-3: <a href="https://segmentfault.com/a/1190000009103629" target="_blank" rel="noopener">Mac环境下Hadoop的安装与配置 | Segmentfault</a></li>
+</ul>
+<h4 id="Hadoop-安装模式"><a href="#Hadoop-安装模式" class="headerlink" title="Hadoop 安装模式"></a>Hadoop 安装模式</h4><p>Hadoop 安装模式分为3种，分别是单机模式，伪分布模式和全分布模式。默认安装是单机模式。可以通过配置文件 <code>core-site.xml</code>，将默认的单机模式更改为伪分布模式。</p>
+<blockquote>
+<p>关于Hadoop 3种安装模式和如何使用虚拟机进行分布式安装，可以参考《Hadoop应用技术详解》书籍的第2章节——Hadoop安装。</p>
+</blockquote>
+<blockquote>
+<p>Hadoop 的运行方式是由配置文件决定的，因此如果需要从伪分布式模式切换回非分布式模式，需要删除 <code>core-site.xml</code> 中的配置项。</p>
+</blockquote>
+<p>下面简单记录，如何通过修改配置文件，在 Mac 上搭建伪分布模式 Hadoop 环境。</p>
+<h4 id="Hadoop-安装步骤"><a href="#Hadoop-安装步骤" class="headerlink" title="Hadoop 安装步骤"></a>Hadoop 安装步骤</h4><p>Hadoop的安装和配置步骤如下（具体细节参考上述参考链接）</p>
+<ol>
+<li>安装Java。</li>
+<li>Mac设置中，进入“共享”设置页面，允许远程登录，使用 <code>ssh localhost</code> 进行验证。</li>
+<li>下载Hadoop源码，在 <a href="https://hadoop.apache.org/" target="_blank" rel="noopener">Hadoop官网</a> 可下载，此处选择下载 <code>hadoop 2.10.0</code>。将下载的 <code>.tar.gz</code> 压缩包解压并放置到 <code>/Library/hadoop-2.10.0</code> 路径。</li>
+<li>设置Hadoop环境变量</li>
+</ol>
+<p>(1) 打开配置文件</p>
+<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line">vim ~<span class="string">/.bash_profile</span></span><br></pre></td></tr></table></figure>
+
+<p>(2) 设置环境变量</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line"><span class="attribute">HADOOP_HOME</span>=/Library/hadoop-2.10.0</span><br><span class="line"><span class="attribute">PATH</span>=<span class="variable">$PATH</span>:$&#123;HADOOP_HOME&#125;/bin</span><br><span class="line"></span><br><span class="line"><span class="attribute">HADOOP_CONF_DIR</span>=/Library/hadoop-2.10.0/etc/hadoop</span><br><span class="line"></span><br><span class="line"><span class="attribute">HADOOP_COMMON_LIB_NATIVE_DIR</span>=/Library/hadoop-2.10.0/lib/native</span><br><span class="line"></span><br><span class="line"><span class="builtin-name">export</span> HADOOP_HOME</span><br><span class="line"><span class="builtin-name">export</span> PATH</span><br><span class="line"></span><br><span class="line"><span class="builtin-name">export</span> HADOOP_CONF_DIR</span><br><span class="line"></span><br><span class="line"><span class="builtin-name">export</span> HADOOP_COMMON_LIB_NATIVE_DIR</span><br></pre></td></tr></table></figure>
+
+<p>(3) 使配置文件生效，并验证Hadoop版本号</p>
+<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line">source ~<span class="string">/.bash_profile</span></span><br><span class="line"></span><br><span class="line">hadoop <span class="keyword">version</span></span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>修改 Hadoop 的配置文件</li>
+</ol>
+<p>需要修改的 Hadoop 配置文件都在目录 <code>etc/hadoop</code> 下，包括</p>
+<ul>
+<li><code>hadoop-env.sh</code></li>
+<li><code>core-site.xml</code></li>
+<li><code>hdfs-site.xml</code></li>
+<li><code>mapred-site.xml</code></li>
+<li><code>yarn-site.xml</code></li>
+</ul>
+<p>下面逐步进行修改</p>
+<p>(1) 修改 <code>hadoop-env.sh</code> 文件</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line"><span class="builtin-name">export</span> <span class="attribute">JAVA_HOME</span>=/Library/Java/JavaVirtualMachines/jdk1.8.0_231.jdk/Contents/Home</span><br><span class="line"><span class="builtin-name">export</span> <span class="attribute">HADOOP_HOME</span>=/Library/hadoop-2.10.0</span><br><span class="line"><span class="builtin-name">export</span> <span class="attribute">HADOOP_CONF_DIR</span>=/Library/hadoop-2.10.0/etc/hadoop</span><br></pre></td></tr></table></figure>
+
+<p>(2) 修改 <code>core-site.xml</code> 文件</p>
+<p>设置 Hadoop 的临时目录和文件系统，<code>localhost:9000</code> 表示本地主机。如果使用远程主机，要用相应的 IP 地址来代替，填写远程主机的域名，则需要到 <code>/etc/hosts</code> 文件中做 DNS 映射。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!--localhost:9000 表示本地主机--&gt;</span>&gt;</span><br><span class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>fs.defaultFS<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>hdfs://localhost:9000<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">&lt;!--用来指定hadoop运行时产生文件的存放目录  自己创建--&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>hadoop.tmp.dir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>/Users/lbs/devfiles/hadoop/hadoop-2.10.0/tmp<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>Directories for software develop and save temporary files.<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>(3) 修改 <code>hdfs-site.xml</code> 文件</p>
+<p><code>hdfs-site.xml</code> 指定了 HDFS 的默认参数副本数，因为仅运行在一个节点上（伪分布模式），所以这里的副本数为1。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.replication<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>1<span class="tag">&lt;/<span class="name">value</span>&gt;</span>    </span><br><span class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">&lt;!--不是root用户也可以写文件到hdfs--&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.permissions<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">value</span>&gt;</span>false<span class="tag">&lt;/<span class="name">value</span>&gt;</span>    <span class="comment">&lt;!--关闭防火墙--&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">&lt;!--把路径换成本地的name位置--&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.namenode.name.dir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>/Users/lbs/devfiles/hadoop/hadoop-2.10.0/tmp/dfs/name<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">        </span><br><span class="line">  <span class="comment">&lt;!--在本地新建一个存放hadoop数据的文件夹，然后将路径在这里配置一下--&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.datanode.data.dir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>/Users/lbs/devfiles/hadoop/hadoop-2.10.0/tmp/dfs/data<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>(4) 修改 <code>mapred-site.xml</code> 文件</p>
+<p>复制 <code>mapred-site.xml.template</code> 模板文件，并修改为 <code>mapred-site.xml</code> 文件，然后将 <code>yarn</code> 设置成数据处理框架，并设置 JobTracker 的主机名与端口。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--指定mapreduce运行在yarn上--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>mapreduce.framework.name<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>yarn<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+<p>(5) 修改 <code>yarn-site.xml</code> 文件</p>
+<p>配置数据的处理框架 <code>yarn</code></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- Site specific YARN configuration properties --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.nodemanager.aux-services<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>mapreduce_shuffle<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.address<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>localhost:9000<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+<h4 id="启动Hadoop"><a href="#启动Hadoop" class="headerlink" title="启动Hadoop"></a>启动Hadoop</h4><p>(1) 第一次启动Hadoop，需要对 NameNode 进行格式化，后续启动不再需要执行此步骤。</p>
+<figure class="highlight dos"><table><tr><td class="code"><pre><span class="line">hadoop namenode -<span class="built_in">format</span></span><br></pre></td></tr></table></figure>
+
+<p>(2) 启动 HDFS：进入Hadoop 安装目录下的 <code>sbin</code> 目录，并启动HDFS（需要设置Mac允许远程登录，过程中共需要3次输入密码）</p>
+<blockquote>
+<p>Tip: 初次安装和启动时，可以执行 <code>./start-all.sh</code>，进行必要的初始化安装</p>
+</blockquote>
+<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line"><span class="keyword">cd</span> <span class="string">/Library/hadoop-2.10.0/sbin</span></span><br><span class="line"></span><br><span class="line"><span class="string">./start-dfs.sh</span></span><br></pre></td></tr></table></figure>
+
+<p>若出现下述信息，表示启动成功</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">lbsMacBook-Pro:sbin lbs$ ./start-dfs.sh</span><br><span class="line">Starting namenodes on [localhost]</span><br><span class="line">Password:</span><br><span class="line">localhost: namenode running as process 12993. Stop it first.</span><br><span class="line">Password:</span><br><span class="line">localhost: datanode running as process 32400. Stop it first.</span><br><span class="line">Starting secondary namenodes [0.0.0.0]</span><br><span class="line">Password:</span><br><span class="line">0.0.0.0:<span class="built_in"> Connection </span>closed by 127.0.0.1<span class="built_in"> port </span>22</span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是，在<code>log</code>中会显示警告</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">WARN util.NativeCodeLoader: Unable to <span class="keyword">load</span> <span class="keyword">native</span>-hadoop <span class="keyword">library</span> <span class="keyword">for</span> your platform... <span class="keyword">using</span> builtin-<span class="keyword">java</span> classes <span class="keyword">where</span> applicabled的</span><br></pre></td></tr></table></figure>
+
+<p>上述提醒是关于 Hadoop 本地库的——Hadoop本地库是为了提高效率或者某些不能用Java实现的功能组件库。可以参考 <a href="http://rockyfeng.me/hadoop_native_library_mac.html" target="_blank" rel="noopener">Mac OSX 下 Hadoop 使用本地库提高效率</a> 了解详情。</p>
+<p>停止 Hadoop 方法如下</p>
+<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line"><span class="keyword">cd</span> <span class="string">/Library/hadoop-2.10.0/sbin</span></span><br><span class="line"></span><br><span class="line"><span class="string">./sbin/stop-dfs.sh</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+<p>(3) 在终端执行 <code>jps</code>，若看到如下信息，证明 Hadoop 可以成功启动。<strong>看到 <code>DataNode</code>，<code>NameNode</code> 和 <code>SecondaryNameNode</code> 信息，表明启动的是一个伪分布模式Hadoop。</strong></p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">lbsMacBook-Pro:sbin lbs$ jps</span><br><span class="line"></span><br><span class="line"><span class="number">32400</span> DataNode</span><br><span class="line"><span class="number">12993</span> NameNode</span><br><span class="line"><span class="number">30065</span> BootLanguagServerBootApp</span><br><span class="line"><span class="number">13266</span> SecondaryNameNode</span><br><span class="line"><span class="number">30039</span> org.eclipse.equinox.launcher_1<span class="number">.5</span><span class="number">.700</span>.v20200207<span class="number">-2156.</span>jar</span><br><span class="line"><span class="number">35019</span> ResourceManager</span><br><span class="line"><span class="number">35117</span> NodeManager</span><br><span class="line"><span class="number">32926</span> RunJar</span><br><span class="line"><span class="number">35199</span> Jps</span><br></pre></td></tr></table></figure>
+
+<p>也可以访问 <code>http://localhost:50070/dfshealth.html#tab-overview</code> 来查看 Hadoop的启动情况。<strong>看到 <code>Live Node</code> 参数，证明伪分布模式 Hadoop 启动成功。</strong></p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/BigData2020/hadoop-jps-live-node-1.png" alt=""></p>
+<p>(4) 启动 yarn：进入Hadoop 安装目录下的 <code>sbin</code> 目录，并启动 yarn</p>
+<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line"><span class="keyword">cd</span> <span class="string">/Library/hadoop-2.10.0/sbin</span></span><br><span class="line"></span><br><span class="line"><span class="string">./start-yarn.sh</span></span><br></pre></td></tr></table></figure>
+
+
+<p>至此，Hadoop的安装，配置和启动就完成啦！接下来可以通过一些 shell 命令来操作 Hadoop 下的文件了，例如</p>
+<figure class="highlight dos"><table><tr><td class="code"><pre><span class="line">hadoop <span class="built_in">fs</span> -ls /　　　　　　　 查看根目录下的文件及文件夹</span><br><span class="line">hadoop <span class="built_in">fs</span> -<span class="built_in">mkdir</span> /test      在根目录下创建一个文件夹 testdata</span><br><span class="line">hadoop <span class="built_in">fs</span> -rm /.../...      移除某个文件</span><br><span class="line">hadoop <span class="built_in">fs</span> -rmr /...         移除某个空的文件夹</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h4><h5 id="Unable-to-load-native-hadoop-library-for-your-platform"><a href="#Unable-to-load-native-hadoop-library-for-your-platform" class="headerlink" title="Unable to load native-hadoop library for your platform"></a>Unable to load native-hadoop library for your platform</h5><p>在启动 HDFS时，若看到如下警告</p>
+<figure class="highlight crmsh"><table><tr><td class="code"><pre><span class="line">./<span class="literal">start</span>-dfs.sh</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">lbsMacBook-Pro:~ lbs$ cd /Library/hadoop-2.10.0/sbin</span><br><span class="line"></span><br><span class="line">lbsMacBook-Pro:sbin lbs$ ./<span class="keyword">start</span>-dfs.sh</span><br><span class="line"></span><br><span class="line"><span class="number">20</span>/<span class="number">03</span>/<span class="number">23</span> <span class="number">08</span>:<span class="number">46</span>:<span class="number">43</span> WARN util.NativeCodeLoader: Unable <span class="keyword">to</span> <span class="keyword">load</span> <span class="keyword">native</span>-hadoop <span class="keyword">library</span> <span class="keyword">for</span> your platform... <span class="keyword">using</span> builtin-<span class="keyword">java</span> classes <span class="keyword">where</span> applicable</span><br><span class="line"><span class="keyword">Starting</span> namenodes <span class="keyword">on</span> [localhost]</span><br><span class="line"><span class="keyword">Password</span>:</span><br><span class="line">localhost: namenode running <span class="keyword">as</span> process <span class="number">93155.</span> <span class="keyword">Stop</span> it first.</span><br><span class="line"><span class="keyword">Password</span>:</span><br><span class="line">localhost: datanode running <span class="keyword">as</span> process <span class="number">93262.</span> <span class="keyword">Stop</span> it first.</span><br><span class="line"><span class="keyword">Starting</span> secondary namenodes [<span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>]</span><br><span class="line"><span class="keyword">Password</span>:</span><br><span class="line"><span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>: secondarynamenode running <span class="keyword">as</span> process <span class="number">93404.</span> <span class="keyword">Stop</span> it first.</span><br></pre></td></tr></table></figure>
+
+<p>上述提醒是关于 Hadoop 本地库的——Hadoop本地库是为了提高效率或者某些不能用Java实现的功能组件库。可以参考 <a href="http://rockyfeng.me/hadoop_native_library_mac.html" target="_blank" rel="noopener">Mac OSX 下 Hadoop 使用本地库提高效率</a> 了解详情。</p>
+<h2 id="《Hadoop-应用开发技术详解》-学习笔记"><a href="#《Hadoop-应用开发技术详解》-学习笔记" class="headerlink" title="《Hadoop 应用开发技术详解》 学习笔记"></a>《Hadoop 应用开发技术详解》 学习笔记</h2><h3 id="MapReduce快速入门-WordCount"><a href="#MapReduce快速入门-WordCount" class="headerlink" title="MapReduce快速入门-WordCount"></a>MapReduce快速入门-WordCount</h3><ul>
+<li><a href="https://www.jianshu.com/p/35ef70dfb651" target="_blank" rel="noopener">Intellij 开发Hadoop环境搭建 - WordCount | 简书</a></li>
+<li><a href="https://www.cnblogs.com/airnew/p/9540982.html" target="_blank" rel="noopener">使用IDEA编写第一个MapReduce程序</a></li>
+<li><a href="https://www.polarxiong.com/archives/Hadoop-Intellij%E7%BB%93%E5%90%88Maven%E6%9C%AC%E5%9C%B0%E8%BF%90%E8%A1%8C%E5%92%8C%E8%B0%83%E8%AF%95MapReduce%E7%A8%8B%E5%BA%8F-%E6%97%A0%E9%9C%80%E6%90%AD%E8%BD%BDHadoop%E5%92%8CHDFS%E7%8E%AF%E5%A2%83.html" target="_blank" rel="noopener">Intellij结合Maven本地运行和调试MapReduce程序</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/43042078" target="_blank" rel="noopener">一起学Hadoop——第一个MapReduce程序</a></li>
+</ul>
+<h4 id="工程创建"><a href="#工程创建" class="headerlink" title="工程创建"></a>工程创建</h4><ol>
+<li>使用IDEA创建一个基于Maven的工程——WordCount</li>
+<li>在 <code>pom.xml</code> 中添加如下依赖</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">"http://maven.apache.org/POM/4.0.0"</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.lbs0912<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>wordcount<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--添加 apache 镜像源--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">repositories</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">repository</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>apache<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://maven.apache.org<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">repository</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">repositories</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--添加如下依赖--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.hadoop<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>hadoop-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.hadoop<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>hadoop-common<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.7.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>创建 <code>WordMapper</code> 类</li>
+</ol>
+<figure class="highlight pgsql"><table><tr><td class="code"><pre><span class="line">package wordcount;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.util.StringTokenizer;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.IntWritable;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.Text;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.Mapper;</span><br><span class="line"></span><br><span class="line"><span class="built_in">public</span> <span class="keyword">class</span> WordMapper extends Mapper&lt;<span class="keyword">Object</span>, <span class="type">Text</span>, <span class="type">Text</span>, IntWritable&gt; &#123;</span><br><span class="line">    IntWritable one = <span class="built_in">new</span> IntWritable(<span class="number">1</span>);</span><br><span class="line">    <span class="type">Text</span> word = <span class="built_in">new</span> Text();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="built_in">public</span> <span class="type">void</span> map(<span class="keyword">Object</span> key, <span class="type">Text</span> <span class="keyword">value</span>, Context context) throws IOException, InterruptedException &#123;</span><br><span class="line">        StringTokenizer itr = <span class="built_in">new</span> StringTokenizer(<span class="keyword">value</span>.toString());</span><br><span class="line">        <span class="keyword">while</span> (itr.hasMoreTokens()) &#123;</span><br><span class="line">            word.<span class="keyword">set</span>(itr.nextToken());</span><br><span class="line">            context.<span class="keyword">write</span>(word, one);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<ol start="4">
+<li>创建 <code>WordReducer</code> 类</li>
+</ol>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> wordcount;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.<span class="type">IOException</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.<span class="type">IntWritable</span>;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.<span class="type">Text</span>;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.<span class="type">Reducer</span>;</span><br><span class="line"></span><br><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">WordReducer</span> <span class="keyword">extends</span> <span class="title">Reducer&lt;Text</span>, <span class="title">IntWritable</span>, <span class="title">Text</span>, <span class="title">IntWritable&gt;</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">IntWritable</span> result = <span class="keyword">new</span> <span class="type">IntWritable</span>();</span><br><span class="line"></span><br><span class="line">    public void reduce(<span class="type">Text</span>	key, <span class="type">Iterable</span>&lt;<span class="type">IntWritable</span>&gt; values, <span class="type">Context</span> context) <span class="keyword">throws</span> <span class="type">IOException</span>,<span class="type">InterruptedException</span> &#123;</span><br><span class="line">        int sum = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">IntWritable</span> <span class="keyword">val</span>:values) &#123;</span><br><span class="line">            sum += <span class="keyword">val</span>.get();</span><br><span class="line">        &#125;</span><br><span class="line">        result.set(sum);</span><br><span class="line">        context.write(key,result);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<ol start="5">
+<li>创建 <code>WordMain</code> 驱动类</li>
+</ol>
+<figure class="highlight reasonml"><table><tr><td class="code"><pre><span class="line">package wordcount;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">import org.apache.hadoop.conf.Configuration;</span><br><span class="line">import org.apache.hadoop.fs.Path;</span><br><span class="line">import org.apache.hadoop.io.IntWritable;</span><br><span class="line">import org.apache.hadoop.io.Text;</span><br><span class="line">import org.apache.hadoop.mapreduce.Job;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;</span><br><span class="line">import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;</span><br><span class="line">import org.apache.hadoop.util.GenericOptionsParser;</span><br><span class="line"></span><br><span class="line">public <span class="keyword">class</span> WordMain &#123;</span><br><span class="line">    public static void main(String<span class="literal">[]</span> args) throws Exception &#123;</span><br><span class="line">        Configuration conf = <span class="keyword">new</span> <span class="constructor">Configuration()</span>;</span><br><span class="line">        String<span class="literal">[]</span> otherArgs = <span class="keyword">new</span> <span class="constructor">GenericOptionsParser(<span class="params">conf</span>, <span class="params">args</span>)</span>.get<span class="constructor">RemainingArgs()</span>;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 这里必须有输入/输出</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">if</span> (otherArgs.length != <span class="number">2</span>) &#123;</span><br><span class="line">            <span class="module-access"><span class="module"><span class="identifier">System</span>.</span></span>err.println(<span class="string">"Usage: WordCount &lt;in&gt; &lt;out&gt;"</span>);</span><br><span class="line">            <span class="module-access"><span class="module"><span class="identifier">System</span>.</span></span>exit(<span class="number">2</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Job job = <span class="keyword">new</span> <span class="constructor">Job(<span class="params">conf</span>, <span class="string">"wordcount"</span>)</span>;</span><br><span class="line">        job.set<span class="constructor">JarByClass(WordMain.<span class="params">class</span>)</span>;       <span class="comment">//主类</span></span><br><span class="line">        job.set<span class="constructor">MapperClass(WordMapper.<span class="params">class</span>)</span>;     <span class="comment">//Mapper</span></span><br><span class="line">        job.set<span class="constructor">CombinerClass(WordReducer.<span class="params">class</span>)</span>;  <span class="comment">//作业合成类</span></span><br><span class="line">        job.set<span class="constructor">ReducerClass(WordReducer.<span class="params">class</span>)</span>;    <span class="comment">//Reducer</span></span><br><span class="line">        job.set<span class="constructor">OutputKeyClass(Text.<span class="params">class</span>)</span>;       <span class="comment">//设置作业输出数据的关键类</span></span><br><span class="line">        job.set<span class="constructor">OutputValueClass(IntWritable.<span class="params">class</span>)</span>;  <span class="comment">//设置作业输出值类</span></span><br><span class="line">        <span class="module-access"><span class="module"><span class="identifier">FileInputFormat</span>.</span></span>add<span class="constructor">InputPath(<span class="params">job</span>, <span class="params">new</span> Path(<span class="params">otherArgs</span>[0])</span>);   <span class="comment">//文件输入</span></span><br><span class="line">        <span class="module-access"><span class="module"><span class="identifier">FileOutputFormat</span>.</span></span>set<span class="constructor">OutputPath(<span class="params">job</span>, <span class="params">new</span> Path(<span class="params">otherArgs</span>[1])</span>);  <span class="comment">//文件输出</span></span><br><span class="line">        <span class="module-access"><span class="module"><span class="identifier">System</span>.</span></span>exit(job.wait<span class="constructor">ForCompletion(<span class="params">true</span>)</span> ? <span class="number">0</span> : <span class="number">1</span>);   <span class="comment">//等待完成退出</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h4 id="IDEA中直接运行程序"><a href="#IDEA中直接运行程序" class="headerlink" title="IDEA中直接运行程序"></a>IDEA中直接运行程序</h4><ul>
+<li><a href="https://www.jianshu.com/p/35ef70dfb651" target="_blank" rel="noopener">Intellij 开发Hadoop环境搭建 - WordCount | 简书</a></li>
+</ul>
+<p>选择 <code>Run -&gt; Edit Configurations</code>, 在程序参数栏目中输入 <code>input/ output</code>，如下图所示</p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/BigData2020/hadoop-wordcount-2.png" alt=""></p>
+<p>在 <code>input</code> 目录中添加统计单词个数的测试的文件 <code>wordcount1.txt</code></p>
+<figure class="highlight erlang-repl"><table><tr><td class="code"><pre><span class="line">Hello，i love coding</span><br><span class="line">are you ok?</span><br><span class="line">Hello, i love hadoop</span><br><span class="line">are you ok?</span><br></pre></td></tr></table></figure>
+
+<p>再次运行程序，会看到如下的 <code>output</code> 目录结构</p>
+<figure class="highlight 1c"><table><tr><td class="code"><pre><span class="line">- input</span><br><span class="line">- output</span><br><span class="line">    <span class="string">| - ._SUCCESS.crc</span></span><br><span class="line">    <span class="string">| - .part-r-00000.crc</span></span><br><span class="line">    <span class="string">| - ._SUCCESS</span></span><br><span class="line">    <span class="string">| - part-r-00000</span></span><br></pre></td></tr></table></figure>
+
+<p>打开 <code>part-r-00000</code> 文件，即可看到单词出现次数的统计结果</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">Hello,	<span class="number">1</span></span><br><span class="line">Hello，i	<span class="number">1</span></span><br><span class="line">are	<span class="number">2</span></span><br><span class="line">coding	<span class="number">1</span></span><br><span class="line">hadoop	<span class="number">1</span></span><br><span class="line">i	<span class="number">1</span></span><br><span class="line">love	<span class="number">2</span></span><br><span class="line">ok?	<span class="number">2</span></span><br><span class="line">you	<span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是，由于Hadoop的设定，下次运行程序前，需要先删除output文件目录。</p>
+<h4 id="导出jar包运行程序"><a href="#导出jar包运行程序" class="headerlink" title="导出jar包运行程序"></a>导出jar包运行程序</h4><ol>
+<li>在 <code>File -&gt; Project Structure</code> 选项中，为工程添加 <code>Artifacts</code>，选择 <code>WordMain</code> 类</li>
+</ol>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/BigData2020/hadoop-wordcount-0.png" alt=""></p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/BigData2020/hadoop-wordcount-1.png" alt=""></p>
+<ol start="2">
+<li>选择 <code>Build -&gt; Build Artifacts...</code>，生成 <code>.jar</code> 文件</li>
+</ol>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/BigData2020/hadoop-wordcount-3.png" alt=""></p>
+<ol start="3">
+<li>进入HDFS系统目录(不是其余文件系统目录)，执行下述命令</li>
+</ol>
+<figure class="highlight pgsql"><table><tr><td class="code"><pre><span class="line">hadoop jar WordCount.jar <span class="keyword">input</span>/ <span class="keyword">out</span>/</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h3 id="HDFS分布式文件系统详解"><a href="#HDFS分布式文件系统详解" class="headerlink" title="HDFS分布式文件系统详解"></a>HDFS分布式文件系统详解</h3><h4 id="认识HDFS"><a href="#认识HDFS" class="headerlink" title="认识HDFS"></a>认识HDFS</h4><p>HDFS（<code>Hadoop Distributed File System</code>）是一个用在普通硬件设备上的分布式文件系统。 HDFS 具有高容错性（<code>fault-tolerant</code>）和高吞吐量（<code>high throughput</code>），适合有超大数据集的应用程序，可以实现通过流的形式访问文件系统中的数据。</p>
+<p>运行在HDFS之上的应用程序必须流式地访问它们的数据集，它不是典型的运行在常规的文件系统之上的常规程序。HDFS的设计适合批量处理，而不是用户交互式的，重点是数据吞吐量，而不是数据访问的反应时间。</p>
+<p>HDFS以块序列的形式存储每一个文件，文件中除了最后一个块的其他块都是相同的大小。</p>
+<h4 id="HDFS架构"><a href="#HDFS架构" class="headerlink" title="HDFS架构"></a>HDFS架构</h4><p>HDFS 为Hadoop 这个分布式计算框架一共高性能，高可靠，高可扩展的存储服务。HDFS是一个典型的主从架构，一个HDFS集群是由一个主节点（<code>Namenode</code>）和一定数目的从节点（<code>Datanodes</code>）组成。</p>
+<ul>
+<li>Namenode 是一个中心服务器，负责管理文件系统的名字空间（<code>namespace</code>）以及客户端对文件的访问。同时确定块和数据节点的映射。<ul>
+<li>提供名称查询服务，它是一个 Jetty 服务器</li>
+<li>保存 <code>metadata</code> 信息，包括文件 <code>owership</code> 和 <code>permissions</code>，文件包含有哪些块，<code>Block</code> 保存在哪个 <code>DataNode</code> 等</li>
+<li>NameNode 的 <code>metadata</code> 信息在启动后会加载到内存中</li>
+</ul>
+</li>
+<li>Datanode一般是一个节点一个，负责管理它所在节点上的存储。<strong>DataNode 通常以机架的形式组织，机架通过一个交换机将所有系统连接起来。</strong> DataNode的功能包括<ul>
+<li>保存Block，每个块对应一个元数据信息文件</li>
+<li>启动DataNode线程的时候会向NameNode汇报Block信息</li>
+<li>通过向NameNode发送心跳保持与其联系（3秒一次）</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/BigData2020/hadoop-hdfs-architecture-1.png" alt=""></p>
+<ul>
+<li>机架（<code>Rack</code>）：一个 Block 的三个副本通常会保存到两个或者两个以上的机架中，进行防灾容错</li>
+<li>数据块（<code>Block</code>）是 HDFS 文件系统基本的存储单位，Hadoop 1.X 默认大小是 64MB，Hadoop 2.X 默认大小是 128MB。HDFS上的文件系统被划分为块大小的多个分块（<code>Chunk</code>）作为独立的存储单元。和其他文件系统不同的是，HDFS上小于一个块大小的文件不会占据整个块的空间。使用块抽象而非整个文件作为存储单元，大大简化了存储子系统的设计。</li>
+<li>辅助元数据节点（<code>SecondaryNameNode</code>）负责镜像备份，日志和镜像的定期合并。</li>
+</ul>
+<blockquote>
+<p>使用 <code>hadoop fsk / -files -blocks</code> 可以显示块的信息。</p>
+</blockquote>
+<p>Block 数据块大小设置的考虑因素包括</p>
+<ol>
+<li>减少文件寻址时间</li>
+<li>减少管理快的数据开销，因每个快都需要在 NameNode 上有对应的记录</li>
+<li>对数据块进行读写，减少建立网络的连接成本</li>
+</ol>
+<h4 id="块备份原理"><a href="#块备份原理" class="headerlink" title="块备份原理"></a>块备份原理</h4><p>Block 是 HDFS 文件系统的最小组成单元，它通过一个 <code>Long</code> 整数被唯一标识。每个 Block 会有多个副本，默认有3个副本。为了数据的安全和高效，Hadoop 默认对3个副本的存放策略如下图所示</p>
+<ul>
+<li>第1块：在本地机器的HDFS目录下存储一个 Block</li>
+<li>第2块：不同 Rack 的某个 DataNode 上存储一个 Block</li>
+<li>第3块：在该机器的同一个 Rack 下的某台机器上存储一个Block</li>
+</ul>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/BigData2020/hadoop-hdfs-architecture-block-1.png" alt=""></p>
+<p>这样的策略可以保证对该 Block 所属文件的访问能够优先在本 Rack 下找到。如果整个 Rack 发生了异常，也可以在另外的 Rack 找到该 Block 的副本。这样足够高效，并且同时做到了数据的容错。</p>
+<h4 id="Hadoop的RPC机制"><a href="#Hadoop的RPC机制" class="headerlink" title="Hadoop的RPC机制"></a>Hadoop的RPC机制</h4><p>RPC（<code>Remote Procedure Call</code>）即远程过程调用机制会面临2个问题</p>
+<ol>
+<li>对象调用方式</li>
+<li>序列/反序列化机制</li>
+</ol>
+<p>RPC 架构如下图所示。Hadoop 自己实现了简单的 RPC 组件，依赖于 <code>Hadoop Writable</code> 类型的支持。</p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/BigData2020/hadoop-hdfs-architecture-rpc-1.png" alt=""></p>
+<p><code>Hadoop Writable</code> 接口要求每个实现类多要确保将本类的对象正确序列化（<code>writeObject</code>）和反序列化（<code>readObject</code>）。因此，Hadoop RPC 使用 Java 动态代理和反射实现对象调用方式，客户端到服务器数据的序列化和反序列化由 Hadoop框架或用户自己来实现，也就是数据组装定制的。</p>
+<blockquote>
+<p>Hadoop RPC = 动态代理 + 定制的二进制流</p>
+</blockquote>
+<h3 id="开源数据库HBase"><a href="#开源数据库HBase" class="headerlink" title="开源数据库HBase"></a>开源数据库HBase</h3><h4 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h4><ul>
+<li>HBase 是一个可伸缩的分布式的，面向列的开源数据库，是一个适合于非结构化数据存储的数据库。需要注意的是，HBase 是基于列的而不是基于行的模式。</li>
+<li>利用 HBase 技术可以在廉价 PC Server上搭建大规模结构化存储集群。</li>
+<li>HBase 是 Google Bigtable 的开源实现，与 Google Bigtable 利用GFS作为其文件存储系统类似， HBase 利用 Hadoop HDFS 作为其文件存储系统。Google 运行 MapReduce 来处理 Bigtable 中的海量数据，HBase 同样利用 Hadoop MapReduce 来处理海量数据。Google Bigtable 利用 Chubby 作为协同服务，HBase 利用 Zookeeper 作为对应。</li>
+</ul>
+<p>HBase 的特点如下</p>
+<ol>
+<li>大：一个表可以有上亿行，上百万列</li>
+<li>面向列：面向列（族）的存储和权限控制，列（族）独立检索</li>
+<li>稀疏：对于为空（NULL）的列，并不占用存储空间，因此，表可以设计的非常稀疏。</li>
+<li></li>
+</ol>
+<h2 id="Hadoop-实战Demo"><a href="#Hadoop-实战Demo" class="headerlink" title="Hadoop 实战Demo"></a>Hadoop 实战Demo</h2><blockquote>
+<p>有句话说得好，“大数据胜于算法”，意思是说对于某些应用（例如根据以往的偏好来推荐电影和音乐），不论算法有多牛，基于小数据的推荐效果往往都不如基于大量可用数据的一般算法的推荐效果。 —— 《Hadoop 权威指南》</p>
+</blockquote>
+<ul>
+<li><a href="http://blog.fens.me/hadoop-mapreduce-recommend/" target="_blank" rel="noopener">用Hadoop构建电影推荐系统 | 粉丝日志</a></li>
+<li><a href="http://blog.fens.me/hadoop-mahout-recommend-job/" target="_blank" rel="noopener">用Mahout构建职位推荐引擎 | 粉丝日志</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Hadoop</category>
+      </categories>
+      <tags>
+        <tag>BigData</tag>
+        <tag>Hadoop</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode题解-003</title>
     <url>/2020/02/23/leetcode-003/</url>
     <content><![CDATA[<ul>
