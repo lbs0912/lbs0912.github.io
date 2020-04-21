@@ -3,7 +3,9 @@
   <entry>
     <title>Hive入门篇——Hive安装配置，数据存储，表操作</title>
     <url>/2020/04/22/hive-basic-1/</url>
-    <content><![CDATA[<p>本文为Hive入门篇，主要记录Hive安装配置，数据存储和表操作。</p>
+    <content><![CDATA[<ul>
+<li>本文为Hive入门篇，主要记录Hive安装配置，数据存储和表操作。</li>
+</ul>
 <a id="more"></a>
 
 
