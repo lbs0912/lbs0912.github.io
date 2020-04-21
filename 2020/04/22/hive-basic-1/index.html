@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/green/pace-theme-flash.css" rel="stylesheet">
+
+
+
+<script>
+    (function () {
+        if ('') {
+            if (prompt('请输入文章密码') !== '') {
+                alert('密码错误！');
+                if (history.length === 1) {
+                    location.replace("http://liubaoshuai.com/"); // 这里替换成你的首页
+                } else {
+                    history.back();
+                }
+            }
+        }
+    })();
+</script>
+  <link rel="apple-touch-icon" sizes="180x180" href="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/Blog-20190315/blog-logo-1.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/Blog-20190315/blog-logo-1.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/Blog-20190315/blog-logo-1.jpg">
+  <link rel="mask-icon" href="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/Blog-20190315/blog-logo-1.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"lbs0912.github.io","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本文为Hive入门篇，主要记录Hive安装配置，数据存储和表操作。">
+<meta name="keywords" content="Hive,Hadoop">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hive入门篇——Hive安装配置，数据存储，表操作">
+<meta property="og:url" content="https:&#x2F;&#x2F;lbs0912.github.io&#x2F;2020&#x2F;04&#x2F;22&#x2F;hive-basic-1&#x2F;index.html">
+<meta property="og:site_name" content="Liu Baoshuai&#39;s Blog">
+<meta property="og:description" content="本文为Hive入门篇，主要记录Hive安装配置，数据存储和表操作。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;BigData2020&#x2F;hadoop-hive-roadmap.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;BigData2020&#x2F;hive-architect-2.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;BigData2020&#x2F;hadoop-hive-hdfs-1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;BigData2020&#x2F;hadoop-namenode-manage-web-1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;BigData2020&#x2F;hadoop-namenode-manage-web-2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;BigData2020&#x2F;hadoop-namenode-manage-web-3.png">
+<meta property="og:updated_time" content="2020-04-21T22:49:31.261Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;BigData2020&#x2F;hadoop-hive-roadmap.png">
+
+<link rel="canonical" href="https://lbs0912.github.io/2020/04/22/hive-basic-1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Hive入门篇——Hive安装配置，数据存储，表操作 | Liu Baoshuai's Blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?17082ee15df20dad9762c5512f336eb2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <a href="https://github.com/lbs0912" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub">
+      <svg width="80" height="80" viewBox="0 0 250 250" 
+            style="fill:#151513; color:#fff; position: fixed; top: 0; border: 0; right: 0;" aria-hidden="true">
+              <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+              <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+              <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
+      </svg>
+    </a>
+    <style>
+      .github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}
+    </style>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Liu Baoshuai's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Do one thing at a time and do well</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://lbs0912.github.io/2020/04/22/hive-basic-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/Blog-20190315/blog-logo-1.jpg">
+      <meta itemprop="name" content="Liu Baoshuai">
+      <meta itemprop="description" content="Record and become better myself">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Liu Baoshuai's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Hive入门篇——Hive安装配置，数据存储，表操作
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-04-22 08:35:26 / 修改时间：06:49:31" itemprop="dateCreated datePublished" datetime="2020-04-22T08:35:26+08:00">2020-04-22</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hadoop/" itemprop="url" rel="index"><span itemprop="name">Hadoop</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/04/22/hive-basic-1/" class="post-meta-item leancloud_visitors" data-flag-title="Hive入门篇——Hive安装配置，数据存储，表操作" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2020/04/22/hive-basic-1/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/04/22/hive-basic-1/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文为Hive入门篇，主要记录Hive安装配置，数据存储和表操作。</p>
+<a id="more"></a>
+
+
+
+<h2 id="学习资料汇总"><a href="#学习资料汇总" class="headerlink" title="学习资料汇总"></a>学习资料汇总</h2><ul>
+<li><a href="http://hive.apache.org/" target="_blank" rel="noopener">Hive官网</a></li>
+<li><a href="https://cwiki.apache.org/confluence/display/Hive#Home-UserDocumentation" target="_blank" rel="noopener">User Documentation - Apache Hive</a></li>
+<li><a href="http://blog.fens.me/hadoop-hive-roadmap/" target="_blank" rel="noopener">Hive学习路线图谱 | 粉丝日志</a></li>
+<li><a href="http://blog.fens.me/hadoop-hive-intro/" target="_blank" rel="noopener">Hive安装及使用攻略 | 粉丝日志</a></li>
+</ul>
+<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><blockquote>
+<p>Hive是建立在 Hadoop 上的数据仓库基础构架。</p>
+</blockquote>
+<p>Hive 是 Hadoop 家族中一款数据仓库产品，Hive 最大的特点就是提供了类 SQL 的语法，封装了底层的 MapReduce 过程，让有 SQL 基础的业务人员，也可以直接利用 Hadoop 进行大数据的操作。就是这一个点，解决了原数据分析人员对于大数据分析的瓶颈。</p>
+<p><strong>Hive 可以将结构化的数据文件映射为一张数据库表，并提供完整的 SQL 查询功能，可以将 SQL 语句转换为 MapReduce 任务运行。Hive 定义了简单的类 SQL 查询语言，称为 HQL</strong>。</p>
+<p>Hive 的知识图谱如下图所示。</p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/BigData2020/hadoop-hive-roadmap.png" alt=""></p>
+<p>Hive 已经用类 SQL 的语法封装了 MapReduce 过程，这个封装过程就是 MapReduce 的标准化的过程。</p>
+<p>我们在做业务或者工具时，会针对场景用逻辑封装，这里的第2层封装是在Hive之上的封装。在第2层封装时，我们要尽可能多的屏蔽 Hive 的细节，让接口单一化，低少灵活性，再次精简 HQL 的语法结构。只满足我们的系统要求，专用的接口。</p>
+<p>在使用二次封装的接口时，我们已经可以不用知道 Hive 是什么, 更不用知道 Hadoop 是什么。只需要知道，SQL查询(SQL92标准)，怎么写效率高，怎么写可以完成业务需要就可以了。</p>
+<p>当我们完成了 Hive 的二次封装后，我们可以构建标准化的 MapReduce 开发过程。</p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/BigData2020/hive-architect-2.jpg" alt=""></p>
+<p>Hive 不适合用于联机（<code>online</code>）事务处理，也不提供实时查询功能。它最适合用在基于大量不可变数据的批处理作业。Hive特点是可伸缩（在Hadoop的集群上动态地添加设备），可扩展，容错，输入格式的松散耦合。</p>
+<p>Hive 的最佳使用场合是大数据集的批处理作业，例如，网络日志分析。</p>
+<h3 id="Hive和关系型数据库的区别"><a href="#Hive和关系型数据库的区别" class="headerlink" title="Hive和关系型数据库的区别"></a>Hive和关系型数据库的区别</h3><p>Hive 在很多方面与传统关系数据库类似（例如支持 SQL 接口），但是其底层对 HDFS 和 MapReduce 的依赖意味着它的体系结构有别于传统关系数据库，而这些区别又影响着 Hive 所支持的特性，进而影响着 Hive 的使用。</p>
+<p>下面列举一些简单区别</p>
+<ul>
+<li>Hive 和关系数据库存储文件的系统不同，Hive 使用的是 Hadoop 的HDFS（Hadoop的分布式文件系统），关系数据库则是服务器本地的文件系统</li>
+<li>Hive 使用的计算模型是 MapReduce，而关系数据库则是自己设计的计算模型</li>
+<li>关系数据库都是为实时查询的业务进行设计的，而 Hive 则是为海量数据做数据挖掘设计的，实时性很差；实时性的区别导致 Hive 的应用场景和关系数据库有很大的不同</li>
+<li>Hive 很容易扩展自己的存储能力和计算能力，这个是继承 Hadoop 的，而关系数据库在这个方面要差很多</li>
+</ul>
+<h2 id="Hive-安装配置"><a href="#Hive-安装配置" class="headerlink" title="Hive 安装配置"></a>Hive 安装配置</h2><p>Hive 安装参考资料如下</p>
+<ul>
+<li><a href="https://www.cnblogs.com/micrari/p/7067968.html" target="_blank" rel="noopener">Mac 上 Hive 环境搭建 | blog</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/70601668" target="_blank" rel="noopener">MacOS 下hive的安装与配置 | 知乎</a></li>
+<li><a href="http://blog.fens.me/hadoop-hive-intro/" target="_blank" rel="noopener">Hive安装及使用攻略 | 粉丝日志</a></li>
+<li><a href="https://jyzhangchn.github.io/hive.html" target="_blank" rel="noopener">mac下Hive+MySql环境配置 | blog</a></li>
+<li><a href="https://www.jianshu.com/p/5c11073d19d3" target="_blank" rel="noopener">Mac Hive 配置和安装 | 简书</a></li>
+</ul>
+<p>此处，简单记录Hive的安装和配置步骤</p>
+<h3 id="安装mysql"><a href="#安装mysql" class="headerlink" title="安装mysql"></a>安装mysql</h3><ol>
+<li>通过 Homebrew 安装 mysql</li>
+</ol>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">brew </span><span class="keyword">install </span>mysql</span><br></pre></td></tr></table></figure>
+
+<p>安装结束后，会有如下提示</p>
+<figure class="highlight vbnet"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">We<span class="comment">'ve installed your MySQL database without a root password. To secure it run:</span></span><br><span class="line">    mysql_secure_installation</span><br><span class="line"></span><br><span class="line">MySQL <span class="keyword">is</span> configured <span class="keyword">to</span> only allow connections <span class="keyword">from</span> localhost <span class="keyword">by</span> <span class="keyword">default</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">To</span> connect run:</span><br><span class="line">    mysql -uroot</span><br><span class="line"></span><br><span class="line"><span class="keyword">To</span> have launchd start mysql now <span class="keyword">and</span> restart at login:</span><br><span class="line">  brew services start mysql</span><br><span class="line"><span class="keyword">Or</span>, <span class="keyword">if</span> you don<span class="comment">'t want/need a background service you can just run:</span></span><br><span class="line">  mysql.server start</span><br></pre></td></tr></table></figure>
+
+<p>上述信息提示，</p>
+<ul>
+<li>运行 <code>brew services start mysql</code>，可以在后台启动 mysql</li>
+<li>运行 <code>mysql.server start</code>，可以在前台启动 mysql（关闭控制台，服务停止）</li>
+<li>运行 <code>mysql_secure_installation</code>，可以进行密码设置</li>
+</ul>
+<ol start="2">
+<li>使用 <code>mysql --version</code> 校验 mysql 版本号</li>
+</ol>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mysql <span class="comment">--version</span></span><br><span class="line"></span><br><span class="line">// mysql  Ver <span class="number">8.0</span><span class="number">.19</span> <span class="keyword">for</span> osx10<span class="number">.15</span> <span class="keyword">on</span> x86_64 (Homebrew)</span><br></pre></td></tr></table></figure>
+
+
+
+<ol start="3">
+<li>设置mysql秘密，设定密码为 <code>mysql113459</code></li>
+</ol>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">brew services <span class="built_in">start</span> mysql  <span class="comment"> //设定密码前需要先启动mysql</span></span><br><span class="line"></span><br><span class="line">mysql_secure_installation</span><br><span class="line">//密码设定为 mysql113459</span><br></pre></td></tr></table></figure>
+
+
+
+<p>MySQL 新版本中引入了密码安全级别的概念，设置低强度的密码有时会被禁止。为此可以直接指定密码安全强度，执行下述命令。</p>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; set global validate_password_policy=0;  //设置密码强度级别为low</span><br><span class="line">mysql&gt; set global validate_password_length=1;   //设置密码最小长度为4</span><br><span class="line"></span><br><span class="line">mysql&gt; SHOW VARIABLES LIKE 'validate_password%';    //查看密码相关参数设置</span><br><span class="line"></span><br><span class="line">+--------------------------------------+--------+</span><br><span class="line">|<span class="string"> Variable_name                        </span>|<span class="string"> Value  </span>|</span><br><span class="line">+--------------------------------------+--------+</span><br><span class="line">|<span class="string"> validate_password.check_user_name    </span>|<span class="string"> ON     </span>|</span><br><span class="line">|<span class="string"> validate_password.dictionary_file    </span>|<span class="string">        </span>|</span><br><span class="line">|<span class="string"> validate_password.length             </span>|<span class="string"> 8      </span>|</span><br><span class="line">|<span class="string"> validate_password.mixed_case_count   </span>|<span class="string"> 1      </span>|</span><br><span class="line">|<span class="string"> validate_password.number_count       </span>|<span class="string"> 1      </span>|</span><br><span class="line">|<span class="string"> validate_password.policy             </span>|<span class="string"> MEDIUM </span>|</span><br><span class="line">|<span class="string"> validate_password.special_char_count </span>|<span class="string"> 1      </span>|</span><br><span class="line">|<span class="string"> validate_password_check_user_name    </span>|<span class="string"> ON     </span>|</span><br><span class="line">|<span class="string"> validate_password_dictionary_file    </span>|<span class="string">        </span>|</span><br><span class="line">|<span class="string"> validate_password_length             </span>|<span class="string"> 4      </span>|</span><br><span class="line">|<span class="string"> validate_password_mixed_case_count   </span>|<span class="string"> 1      </span>|</span><br><span class="line">|<span class="string"> validate_password_number_count       </span>|<span class="string"> 1      </span>|</span><br><span class="line">|<span class="string"> validate_password_policy             </span>|<span class="string"> LOW    </span>|</span><br><span class="line">|<span class="string"> validate_password_special_char_count </span>|<span class="string"> 1      </span>|</span><br><span class="line">+--------------------------------------+--------+</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+<p>若执行 <code>SHOW VARIABLES LIKE &#39;validate_password%&#39;;</code> 遇到 <code>Unknown system variable &#39;validate_password_policy&#39;</code> 报错信息，可以参考 <a href="https://stackoverflow.com/questions/55237257/mysql-validate-password-policy-unknown-system-variable" target="_blank" rel="noopener">MySQL validate_password_policy unknown system variable | StackOverflow</a> 进行处理。</p>
+<blockquote>
+<p>This problem has happened because validate_password plugin is by default NOT activated. </p>
+</blockquote>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; <span class="keyword">select</span> plugin_name, plugin_status <span class="keyword">from</span> information_schema.plugins <span class="keyword">where</span> plugin_name <span class="keyword">like</span> <span class="string">'validate%'</span>;</span><br><span class="line"></span><br><span class="line">mysql&gt; install plugin validate_password soname <span class="string">'validate_password.so'</span>;</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> plugin_name, plugin_status <span class="keyword">from</span> information_schema.plugins <span class="keyword">where</span> plugin_name <span class="keyword">like</span> <span class="string">'validate%'</span>;</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">'validate_password%'</span>;</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>mysql启动</li>
+</ol>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">brew services <span class="built_in">start</span> mysql  <span class="comment"> //后台启动</span></span><br><span class="line"></span><br><span class="line">sudo mysql.server <span class="built_in">start</span>    <span class="comment"> //前台启动</span></span><br><span class="line"></span><br><span class="line">//若遇到权限问题，可执行下述命令</span><br><span class="line">sudo chmod -R <span class="keyword">a</span>+rwx /usr/<span class="built_in">local</span>/var/mysql</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>mysql关闭</li>
+</ol>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mysql<span class="selector-class">.server</span> stop</span><br></pre></td></tr></table></figure>
+
+
+<ol start="6">
+<li>mysql重启</li>
+</ol>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mysql.<span class="keyword">server</span> <span class="keyword">restart</span></span><br></pre></td></tr></table></figure>
+
+
+<ol start="7">
+<li>查看默认数据库</li>
+</ol>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mysql -u root -p    <span class="regexp">//</span>密码  mysql113459</span><br><span class="line"></span><br><span class="line">show databases</span><br><span class="line"></span><br><span class="line"><span class="keyword">exit</span>  <span class="regexp">//</span>退出mysql交互CI</span><br></pre></td></tr></table></figure>
+
+<h3 id="Hive-安装"><a href="#Hive-安装" class="headerlink" title="Hive 安装"></a>Hive 安装</h3><ol>
+<li>通过 Homebrew 安装 Hive</li>
+</ol>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">brew </span><span class="keyword">install </span>hive</span><br></pre></td></tr></table></figure>
+
+<p>安装结束后，会有如下提示</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">==&gt; Caveats</span><br><span class="line">Hadoop must be <span class="keyword">in</span> your path <span class="keyword">for</span> hive executable <span class="keyword">to</span> work.</span><br><span class="line"></span><br><span class="line"><span class="keyword">If</span> you want <span class="keyword">to</span> use HCatalog with Pig, <span class="builtin-name">set</span> <span class="variable">$HCAT_HOME</span> <span class="keyword">in</span> your profile:</span><br><span class="line">  <span class="builtin-name">export</span> <span class="attribute">HCAT_HOME</span>=/usr/local/opt/hive/libexec/hcatalog</span><br><span class="line">==&gt; Summary</span><br><span class="line">🍺  /usr/local/Cellar/hive/3.1.2: 1,126 files, 231.8MB, built <span class="keyword">in</span> 7 seconds</span><br></pre></td></tr></table></figure>
+
+
+<ol start="2">
+<li>使用 <code>hive --version</code> 校验 hive 版本号</li>
+</ol>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">lbsMacBook-<span class="string">Pro:</span>~ lbs$ hive --version</span><br><span class="line"><span class="string">SLF4J:</span> Class path contains multiple SLF4J bindings.</span><br><span class="line"><span class="string">SLF4J:</span> Found binding <span class="keyword">in</span> [<span class="string">jar:</span><span class="string">file:</span><span class="regexp">/usr/</span>local<span class="regexp">/Cellar/</span>hive<span class="regexp">/3.1.2/</span>libexec<span class="regexp">/lib/</span>log4j-slf4j-impl<span class="number">-2.10</span><span class="number">.0</span>.jar!<span class="regexp">/org/</span>slf4j<span class="regexp">/impl/</span>StaticLoggerBinder.<span class="keyword">class</span>]</span><br><span class="line"><span class="string">SLF4J:</span> Found binding <span class="keyword">in</span> [<span class="string">jar:</span><span class="string">file:</span><span class="regexp">/Library/</span>hadoop<span class="number">-2.10</span><span class="number">.0</span><span class="regexp">/share/</span>hadoop<span class="regexp">/common/</span>lib<span class="regexp">/slf4j-log4j12-1.7.25.jar!/</span>org<span class="regexp">/slf4j/</span>impl/StaticLoggerBinder.<span class="keyword">class</span>]</span><br><span class="line"><span class="string">SLF4J:</span> See <span class="string">http:</span><span class="comment">//www.slf4j.org/codes.html#multiple_bindings for an explanation.</span></span><br><span class="line"><span class="string">SLF4J:</span> Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]</span><br><span class="line">Hive <span class="number">3.1</span><span class="number">.2</span></span><br><span class="line">Git <span class="string">git:</span><span class="comment">//HW13934/Users/gates/tmp/hive-branch-3.1/hive -r 8190d2be7b7165effa62bd21b7d60ef81fb0e4af</span></span><br><span class="line">Compiled by gates on Thu Aug <span class="number">22</span> <span class="number">15</span>:<span class="number">01</span>:<span class="number">18</span> PDT <span class="number">2019</span></span><br><span class="line">From source with checksum <span class="number">0492</span>c08f784b188c349f6afb1d8d9847</span><br></pre></td></tr></table></figure>
+
+
+<ol start="3">
+<li>hive 环境变量配置</li>
+</ol>
+<p>(1) 打开配置文件</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~<span class="string">/.bash_profile</span></span><br></pre></td></tr></table></figure>
+
+<p>(2) 更新配置文件</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">HIVE_HOME</span>=/usr/local/Cellar/hive/3.1.2 </span><br><span class="line"><span class="attribute">HCAT_HOME</span>=/usr/local/opt/hive/libexec/hcatalog</span><br><span class="line"><span class="attribute">PATH</span>=<span class="variable">$PATH</span>:$&#123;HIVE_HOME&#125;/bin</span><br><span class="line"></span><br><span class="line"><span class="builtin-name">export</span> HIVE_HOME</span><br><span class="line"><span class="builtin-name">export</span> HCAT_HOME</span><br></pre></td></tr></table></figure>
+
+<p>(3) 使配置文件生效</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> ~/.bash_profile</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="修改-Hive-默认元数据库"><a href="#修改-Hive-默认元数据库" class="headerlink" title="修改 Hive 默认元数据库"></a>修改 Hive 默认元数据库</h3><blockquote>
+<p>默认情况下，Hive 元数据保存在内嵌的 Derby 数据库中，只能允许一个会话连接，只适合简单的测试。实际生产环境中不使用，为了支持多用户会话，则需要一个独立的元数据库，可以使用 MySQL 作为元数据库，Hive 内部对 MySQL 提供了很好的支持。</p>
+</blockquote>
+<ol>
+<li>Hive 默认元数据库是 derby。为了方便，这里给出用 mysql 储存元数据的配置</li>
+</ol>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">//创建数据库metastore</span><br><span class="line">mysql&gt; <span class="keyword">create</span> <span class="keyword">database</span> metastore; </span><br><span class="line"></span><br><span class="line">//创建用户名为hive，登录密码为Hive113459...的账户</span><br><span class="line">mysql&gt; <span class="keyword">create</span> <span class="keyword">user</span> <span class="string">'hive'</span>@<span class="string">'localhost'</span> identified <span class="keyword">by</span> <span class="string">'Hive113459...'</span>; </span><br><span class="line"></span><br><span class="line">//给建好的数据库添加权限</span><br><span class="line">grant <span class="keyword">select</span>,<span class="keyword">insert</span>,<span class="keyword">update</span>,<span class="keyword">delete</span>,<span class="keyword">alter</span>,<span class="keyword">create</span>,<span class="keyword">index</span>,references <span class="keyword">on</span> metastore.* <span class="keyword">to</span> <span class="string">'hive'</span>@<span class="string">'localhost'</span>; </span><br><span class="line"></span><br><span class="line">// 刷新权限</span><br><span class="line">mysql&gt; flush privileges;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Hive-配置"><a href="#Hive-配置" class="headerlink" title="Hive 配置"></a>Hive 配置</h3><ol>
+<li>进入 Hive 的安装目录，创建 <code>hive-site.xml</code> 文件</li>
+</ol>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cd /usr/local/Cellar/hive/<span class="number">3.1</span>.<span class="number">2</span>/libexec/conf</span><br><span class="line">$ cp hive-default<span class="selector-class">.xml</span><span class="selector-class">.template</span> hive-site<span class="selector-class">.xml</span>    <span class="comment">//复制提供的模板文件</span></span><br></pre></td></tr></table></figure>
+
+<p>在配置文件中，对以下几个属性进行修改。</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="params">&lt;property&gt;</span></span><br><span class="line">  <span class="params">&lt;name&gt;</span>javax.jdo.option.ConnectionURL<span class="params">&lt;/name&gt;</span></span><br><span class="line">  <span class="params">&lt;value&gt;</span>jdbc:mysql:<span class="comment">//localhost/metastore&lt;/value&gt;</span></span><br><span class="line"><span class="params">&lt;/property&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="params">&lt;property&gt;</span></span><br><span class="line">  <span class="params">&lt;name&gt;</span>javax.jdo.option.ConnectionDriverName<span class="params">&lt;/name&gt;</span></span><br><span class="line">  <span class="params">&lt;value&gt;</span>com.mysql.jdbc.Driver<span class="params">&lt;/value&gt;</span></span><br><span class="line"><span class="params">&lt;/property&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="params">&lt;property&gt;</span></span><br><span class="line">  <span class="params">&lt;name&gt;</span>javax.jdo.option.ConnectionUserName<span class="params">&lt;/name&gt;</span></span><br><span class="line">  <span class="params">&lt;value&gt;</span>hive(上述mysql中创建的用户名)<span class="params">&lt;/value&gt;</span></span><br><span class="line"><span class="params">&lt;/property&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="params">&lt;property&gt;</span></span><br><span class="line">  <span class="params">&lt;name&gt;</span>javax.jdo.option.ConnectionPassword<span class="params">&lt;/name&gt;</span></span><br><span class="line">  <span class="params">&lt;value&gt;</span>Hive113459...(上述mysql中创建的用户密码)<span class="params">&lt;/value&gt;</span></span><br><span class="line"><span class="params">&lt;/property&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="params">&lt;property&gt;</span></span><br><span class="line">  <span class="params">&lt;name&gt;</span>hive.exec.local.scratchdir<span class="params">&lt;/name&gt;</span></span><br><span class="line">  <span class="params">&lt;value&gt;</span><span class="meta-keyword">/tmp/</span>hive<span class="params">&lt;/value&gt;</span></span><br><span class="line"><span class="params">&lt;/property&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="params">&lt;property&gt;</span></span><br><span class="line">  <span class="params">&lt;name&gt;</span>hive.querylog.location<span class="params">&lt;/name&gt;</span></span><br><span class="line">  <span class="params">&lt;value&gt;</span><span class="meta-keyword">/tmp/</span>hive<span class="params">&lt;/value&gt;</span></span><br><span class="line"><span class="params">&lt;/property&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="params">&lt;property&gt;</span></span><br><span class="line">  <span class="params">&lt;name&gt;</span>hive.downloaded.resources.dir<span class="params">&lt;/name&gt;</span></span><br><span class="line">  <span class="params">&lt;value&gt;</span><span class="meta-keyword">/tmp/</span>hive<span class="params">&lt;/value&gt;</span></span><br><span class="line"><span class="params">&lt;/property&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="params">&lt;property&gt;</span></span><br><span class="line">  <span class="params">&lt;name&gt;</span>hive.server2.logging.operation.log.location<span class="params">&lt;/name&gt;</span></span><br><span class="line">  <span class="params">&lt;value&gt;</span><span class="meta-keyword">/tmp/</span>hive/operation_logs<span class="params">&lt;/value&gt;</span></span><br><span class="line"><span class="params">&lt;/property&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>拷贝 <code>mysql-connector</code> 到 hive 的安装目录下</li>
+</ol>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ curl -L <span class="string">'http://www.mysql.com/get/Downloads/Connector-J/mysql-connector-java-8.0.15.tar.gz/from/http://mysql.he.net/'</span> | tar xz</span><br><span class="line"></span><br><span class="line">$ cp mysql-connector-java-<span class="number">8.0</span>.<span class="number">15</span>/mysql-connector-java-<span class="number">8.0</span>.<span class="number">15</span>-bin.jar /usr/local/Cellar/hive/<span class="number">3.1</span>.<span class="number">2</span>/libexec/<span class="class"><span class="keyword">lib</span>/</span></span><br></pre></td></tr></table></figure>
+
+
+<ol start="3">
+<li>初始化 metastore 数据库</li>
+</ol>
+<p>目前直接查看 <code>metastore</code> 数据库，可以发现数据库是空的。</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; <span class="keyword">show </span>databases<span class="comment">;</span></span><br><span class="line">mysql&gt; use metastore<span class="comment">;</span></span><br><span class="line">mysql&gt; <span class="keyword">show </span>tables<span class="comment">;   // empty</span></span><br></pre></td></tr></table></figure>
+
+<p>在命令行模式（非mysql CLI）下执行下述命令，初始化 metastore 数据库</p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">$</span> schematool -initSchema -dbType mysql</span><br><span class="line"></span><br><span class="line"><span class="comment">//Initialization script completed</span></span><br><span class="line"><span class="comment">//schemaTool completed</span></span><br></pre></td></tr></table></figure>
+
+<p>执行完毕后，再次查看数据库，会发现如下信息</p>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show tables;</span><br><span class="line">+-------------------------------+</span><br><span class="line">|<span class="string"> Tables_in_metastore           </span>|</span><br><span class="line">+-------------------------------+</span><br><span class="line">|<span class="string"> AUX_TABLE                     </span>|</span><br><span class="line">|<span class="string"> BUCKETING_COLS                </span>|</span><br><span class="line">|<span class="string"> CDS                           </span>|</span><br><span class="line">|<span class="string"> COLUMNS_V2                    </span>|</span><br><span class="line">|<span class="string"> COMPACTION_QUEUE              </span>|</span><br><span class="line">|<span class="string"> COMPLETED_COMPACTIONS         </span>|</span><br><span class="line">|<span class="string"> COMPLETED_TXN_COMPONENTS      </span>|</span><br><span class="line">|<span class="string"> CTLGS                         </span>|</span><br><span class="line">|<span class="string"> DATABASE_PARAMS               </span>|</span><br><span class="line">|<span class="string"> DB_PRIVS                      </span>|</span><br><span class="line">|<span class="string"> DBS                           </span>|</span><br><span class="line">|<span class="string"> DELEGATION_TOKENS             </span>|</span><br><span class="line">|<span class="string"> FUNC_RU                       </span>|</span><br><span class="line">|<span class="string"> FUNCS                         </span>|</span><br><span class="line">|<span class="string"> GLOBAL_PRIVS                  </span>|</span><br><span class="line">|<span class="string"> HIVE_LOCKS                    </span>|</span><br><span class="line">|<span class="string"> I_SCHEMA                      </span>|</span><br><span class="line">|<span class="string"> IDXS                          </span>|</span><br><span class="line">|<span class="string"> INDEX_PARAMS                  </span>|</span><br><span class="line">|<span class="string"> KEY_CONSTRAINTS               </span>|</span><br><span class="line">|<span class="string"> MASTER_KEYS                   </span>|</span><br><span class="line">|<span class="string"> MATERIALIZATION_REBUILD_LOCKS </span>|</span><br><span class="line">|<span class="string"> METASTORE_DB_PROPERTIES       </span>|</span><br><span class="line">|<span class="string"> MIN_HISTORY_LEVEL             </span>|</span><br><span class="line">|<span class="string"> MV_CREATION_METADATA          </span>|</span><br><span class="line">|<span class="string"> MV_TABLES_USED                </span>|</span><br><span class="line">|<span class="string"> NEXT_COMPACTION_QUEUE_ID      </span>|</span><br><span class="line">|<span class="string"> NEXT_LOCK_ID                  </span>|</span><br><span class="line">|<span class="string"> NEXT_TXN_ID                   </span>|</span><br><span class="line">|<span class="string"> NEXT_WRITE_ID                 </span>|</span><br><span class="line">|<span class="string"> NOTIFICATION_LOG              </span>|</span><br><span class="line">|<span class="string"> NOTIFICATION_SEQUENCE         </span>|</span><br><span class="line">|<span class="string"> NUCLEUS_TABLES                </span>|</span><br><span class="line">|<span class="string"> PART_COL_PRIVS                </span>|</span><br><span class="line">|<span class="string"> PART_COL_STATS                </span>|</span><br><span class="line">|<span class="string"> PART_PRIVS                    </span>|</span><br><span class="line">|<span class="string"> PARTITION_EVENTS              </span>|</span><br><span class="line">|<span class="string"> PARTITION_KEY_VALS            </span>|</span><br><span class="line">|<span class="string"> PARTITION_KEYS                </span>|</span><br><span class="line">|<span class="string"> PARTITION_PARAMS              </span>|</span><br><span class="line">|<span class="string"> PARTITIONS                    </span>|</span><br><span class="line">|<span class="string"> REPL_TXN_MAP                  </span>|</span><br><span class="line">|<span class="string"> ROLE_MAP                      </span>|</span><br><span class="line">|<span class="string"> ROLES                         </span>|</span><br><span class="line">|<span class="string"> RUNTIME_STATS                 </span>|</span><br><span class="line">|<span class="string"> SCHEMA_VERSION                </span>|</span><br><span class="line">|<span class="string"> SD_PARAMS                     </span>|</span><br><span class="line">|<span class="string"> SDS                           </span>|</span><br><span class="line">|<span class="string"> SEQUENCE_TABLE                </span>|</span><br><span class="line">|<span class="string"> SERDE_PARAMS                  </span>|</span><br><span class="line">|<span class="string"> SERDES                        </span>|</span><br><span class="line">|<span class="string"> SKEWED_COL_NAMES              </span>|</span><br><span class="line">|<span class="string"> SKEWED_COL_VALUE_LOC_MAP      </span>|</span><br><span class="line">|<span class="string"> SKEWED_STRING_LIST            </span>|</span><br><span class="line">|<span class="string"> SKEWED_STRING_LIST_VALUES     </span>|</span><br><span class="line">|<span class="string"> SKEWED_VALUES                 </span>|</span><br><span class="line">|<span class="string"> SORT_COLS                     </span>|</span><br><span class="line">|<span class="string"> TAB_COL_STATS                 </span>|</span><br><span class="line">|<span class="string"> TABLE_PARAMS                  </span>|</span><br><span class="line">|<span class="string"> TBL_COL_PRIVS                 </span>|</span><br><span class="line">|<span class="string"> TBL_PRIVS                     </span>|</span><br><span class="line">|<span class="string"> TBLS                          </span>|</span><br><span class="line">|<span class="string"> TXN_COMPONENTS                </span>|</span><br><span class="line">|<span class="string"> TXN_TO_WRITE_ID               </span>|</span><br><span class="line">|<span class="string"> TXNS                          </span>|</span><br><span class="line">|<span class="string"> TYPE_FIELDS                   </span>|</span><br><span class="line">|<span class="string"> TYPES                         </span>|</span><br><span class="line">|<span class="string"> VERSION                       </span>|</span><br><span class="line">|<span class="string"> WM_MAPPING                    </span>|</span><br><span class="line">|<span class="string"> WM_POOL                       </span>|</span><br><span class="line">|<span class="string"> WM_POOL_TO_TRIGGER            </span>|</span><br><span class="line">|<span class="string"> WM_RESOURCEPLAN               </span>|</span><br><span class="line">|<span class="string"> WM_TRIGGER                    </span>|</span><br><span class="line">|<span class="string"> WRITE_SET                     </span>|</span><br><span class="line">+-------------------------------+</span><br><span class="line">74 rows in set (0.01 sec)</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="启动-Hive"><a href="#启动-Hive" class="headerlink" title="启动 Hive"></a>启动 Hive</h3><p>启动Hive前，需要先运行Hadoop。之后运行 <code>hive</code> 或者 <code>hive shell</code> 可以进入Hive Shell</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">hive </span><br><span class="line"></span><br><span class="line">//or</span><br><span class="line"> hive <span class="keyword">shell</span><span class="bash"></span></span><br><span class="line"><span class="bash"> </span></span><br><span class="line"> </span><br><span class="line">hive&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="可视化工具-DbVisualizer"><a href="#可视化工具-DbVisualizer" class="headerlink" title="可视化工具 DbVisualizer"></a>可视化工具 DbVisualizer</h3><ul>
+<li><a href="https://www.dbvis.com/download/11.0" target="_blank" rel="noopener">DbVisualizer Software</a></li>
+<li><a href="http://confluence.dbvis.com/display/UG110/Installing" target="_blank" rel="noopener">DbVisualizer User Guide</a></li>
+<li><a href="http://confluence.dbvis.com/display/UG110/Installing+a+JDBC+Driver" target="_blank" rel="noopener">Installing a JDBC Driver</a></li>
+<li><a href="https://www.dbvis.com/features/database-drivers/" target="_blank" rel="noopener">Supported databases and JDBC drivers Download</a></li>
+<li><a href="https://juejin.im/post/5d04675051882518e845cb8f" target="_blank" rel="noopener">在mac上DbVisualizer图形化客户端配置连接Hive | Blog</a></li>
+<li><a href="https://github.com/timveil/hive-jdbc-uber-jar/releases" target="_blank" rel="noopener">hive-jdbc-uber-jar | github</a></li>
+</ul>
+<ol>
+<li><p>下载 <code>dbvis_macos_11_0_jre.dmg</code> 并执行安装</p>
+</li>
+<li><p>也可以下载 <code>.tar.gz</code> 包进行安装 </p>
+</li>
+</ol>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">gunzip</span> <span class="selector-tag">dbvis_unix_11_0</span><span class="selector-class">.tar</span><span class="selector-class">.gz</span></span><br><span class="line"><span class="selector-tag">tar</span> <span class="selector-tag">xf</span> <span class="selector-tag">dbvis_unix_11_0</span><span class="selector-class">.tar</span></span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>点击 Docker 中 DbVisualizer图标启动，或使用如下脚本启动</li>
+</ol>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DbVisualizer/dbvis.<span class="keyword">sh</span></span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>从 <a href="https://github.com/timveil/hive-jdbc-uber-jar/releases" target="_blank" rel="noopener">hive-jdbc-uber-jar | github</a> 下载 <code>hive-jdbc-uber-jar</code>，放置到 <code>/Users/lbs/.dbvis/jdbc</code> 路径下，并导入到 DbVisualizer 配置中</li>
+</ol>
+<ol start="5">
+<li>在 DbVisualizer 的偏好设置中的 <code>Specify overridden Java VM Prperties here</code> 中添加如下设置</li>
+</ol>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-Dsun<span class="selector-class">.security</span><span class="selector-class">.krb5</span><span class="selector-class">.debug</span>=true</span><br><span class="line">-Djavax<span class="selector-class">.security</span><span class="selector-class">.auth</span><span class="selector-class">.useSubjectCredsOnly</span>=false</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Hive交互式模式-CLI"><a href="#Hive交互式模式-CLI" class="headerlink" title="Hive交互式模式 CLI"></a>Hive交互式模式 CLI</h2><p>运行 <code>hive</code> 或者 <code>hive shell</code> 可以进入Hive Shell。Hive的交互模式遵循下述规则。</p>
+<ol>
+<li><code>quit</code>,<code>exit</code>:  退出交互式shell</li>
+<li><code>reset</code>: 重置配置为默认值</li>
+<li><code>set &lt;key&gt;=&lt;value&gt;</code> : 修改特定变量的值(如果变量名拼写错误，不会报错)</li>
+<li><code>set</code> :  输出用户覆盖的 hive配置变量</li>
+<li><code>set -v</code> : 输出所有Hadoop和Hive的配置变量</li>
+<li><code>add FILE[S] *</code>, <code>add JAR[S] *</code>, <code>add ARCHIVE[S] *</code> : 添加 一个或多个 file, jar, archives到分布式缓存</li>
+<li><code>list FILE[S]</code>, <code>list JAR[S]</code>, <code>list ARCHIVE[S]</code> : 输出已经添加到分布式缓存的资源</li>
+<li><code>list FILE[S] *</code>, <code>list JAR[S] *</code>,<code>list ARCHIVE[S] *</code> : 检查给定的资源是否添加到分布式缓存</li>
+<li><code>delete FILE[S] *</code>, <code>delete JAR[S] *</code>, <code>delete ARCHIVE[S] *</code> : 从分布式缓存删除指定的资源</li>
+<li><code>! &lt;command&gt;</code> :  从 Hive shell 执行一个 shell 命令</li>
+<li><code>dfs &lt;dfs command&gt;</code> :  从 Hive shell 执行一个 dfs 命令</li>
+<li><code>&lt;query string&gt;</code> : 执行一个 Hive 查询，然后输出结果到标准输出</li>
+<li><code>source FILE &lt;filepath&gt;</code>:  在 CLI 里执行一个 hive 脚本文件</li>
+<li><code>!clear;</code>: 清除命令行</li>
+<li><code>show tables;</code>： 展示数据表</li>
+<li><code>desc tableName</code>：展示一个数据表的结构</li>
+</ol>
+<p>和SQL类似，HiveQL一般是大小写不敏感的（除了字符串比较以外），因此 <code>show tables;</code> 等同于 <code>SHOW TABLES;</code>。制表符（Tab）会自动补全 Hive 的关键字和函数。</p>
+<p>下面给出一个简单的 Hive Shell 操作 Demo，详情参考 <a href="http://blog.fens.me/hadoop-hive-intro/" target="_blank" rel="noopener">Hive安装及使用攻略 | 粉丝日志</a>。</p>
+<ul>
+<li>创建本地数据文件(文本以tab分隔)</li>
+</ul>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">~ vi /home/cos/demo/t_hive.txt</span><br><span class="line"></span><br><span class="line"><span class="number">16</span>      <span class="number">2</span>       <span class="number">3</span></span><br><span class="line"><span class="number">61</span>      <span class="number">12</span>      <span class="number">13</span></span><br><span class="line"><span class="number">41</span>      <span class="number">2</span>       <span class="number">31</span></span><br><span class="line"><span class="number">17</span>      <span class="number">21</span>      <span class="number">3</span></span><br><span class="line"><span class="number">71</span>      <span class="number">2</span>       <span class="number">31</span></span><br><span class="line"><span class="number">1</span>       <span class="number">12</span>      <span class="number">34</span></span><br><span class="line"><span class="number">11</span>      <span class="number">2</span>       <span class="number">34</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>进入Hive Shell，创建新表</li>
+</ul>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#创建新表</span><br><span class="line">hive&gt; <span class="keyword">CREATE</span> <span class="keyword">TABLE</span> t_hive (a <span class="type">int</span>, b <span class="type">int</span>, c <span class="type">int</span>) <span class="keyword">ROW</span> <span class="keyword">FORMAT</span> DELIMITED FIELDS TERMINATED <span class="keyword">BY</span> <span class="string">'\t'</span>;</span><br><span class="line">OK</span><br><span class="line"><span class="type">Time</span> taken: <span class="number">0.489</span> seconds</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>查看表</li>
+</ul>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; <span class="keyword">show</span> <span class="keyword">tables</span>;</span><br><span class="line">OK</span><br><span class="line">t_hive</span><br><span class="line"><span class="type">Time</span> taken: <span class="number">0.099</span> seconds</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>正则匹配表名</li>
+</ul>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">hive&gt;<span class="keyword">show</span> <span class="keyword">tables</span> <span class="string">'*t*'</span>;</span><br><span class="line">OK</span><br><span class="line">t_hive</span><br><span class="line"><span class="type">Time</span> taken: <span class="number">0.065</span> seconds</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>查看表数据</li>
+</ul>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; select * <span class="keyword">from</span> t_hive;</span><br><span class="line">OK</span><br><span class="line"><span class="number">16</span>      <span class="number">2</span>       <span class="number">3</span></span><br><span class="line"><span class="number">61</span>      <span class="number">12</span>      <span class="number">13</span></span><br><span class="line"><span class="number">41</span>      <span class="number">2</span>       <span class="number">31</span></span><br><span class="line"><span class="number">17</span>      <span class="number">21</span>      <span class="number">3</span></span><br><span class="line"><span class="number">71</span>      <span class="number">2</span>       <span class="number">31</span></span><br><span class="line"><span class="number">1</span>       <span class="number">12</span>      <span class="number">34</span></span><br><span class="line"><span class="number">11</span>      <span class="number">2</span>       <span class="number">34</span></span><br><span class="line">Time taken: <span class="number">0.264</span> seconds</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查看表结构</li>
+</ul>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; <span class="keyword">desc</span> t_hive;</span><br><span class="line">OK</span><br><span class="line">a       <span class="type">int</span></span><br><span class="line">b       <span class="type">int</span></span><br><span class="line">c       <span class="type">int</span></span><br><span class="line"><span class="type">Time</span> taken: <span class="number">0.1</span> seconds</span><br></pre></td></tr></table></figure>
+<ul>
+<li>修改表，增加一个字段</li>
+</ul>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; <span class="keyword">ALTER</span> <span class="keyword">TABLE</span> t_hive <span class="keyword">ADD</span> <span class="keyword">COLUMNS</span> (new_col String);</span><br><span class="line">OK</span><br><span class="line"><span class="type">Time</span> taken: <span class="number">0.186</span> seconds</span><br><span class="line">hive&gt; <span class="keyword">desc</span> t_hive;</span><br><span class="line">OK</span><br><span class="line">a       <span class="type">int</span></span><br><span class="line">b       <span class="type">int</span></span><br><span class="line">c       <span class="type">int</span></span><br><span class="line">new_col string</span><br><span class="line"><span class="type">Time</span> taken: <span class="number">0.086</span> seconds</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>删除表</li>
+</ul>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; <span class="keyword">DROP</span> <span class="keyword">TABLE</span> t_hadoop;</span><br><span class="line">OK</span><br><span class="line"><span class="type">Time</span> taken: <span class="number">0.767</span> seconds</span><br><span class="line"></span><br><span class="line">hive&gt; <span class="keyword">show</span> <span class="keyword">tables</span>;</span><br><span class="line">OK</span><br><span class="line"><span class="type">Time</span> taken: <span class="number">0.064</span> seconds</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="Beeline"><a href="#Beeline" class="headerlink" title="Beeline"></a>Beeline</h2><h3 id="HiveServer2"><a href="#HiveServer2" class="headerlink" title="HiveServer2"></a>HiveServer2</h3><p>Hive 内置了 <code>HiveServer</code> 和 <code>HiveServer2</code> 服务，两者都允许客户端使用多种编程语言进行连接，但是 HiveServer 不能处理多个客户端的并发请求，所以产生了 <code>HiveServer2</code>。</p>
+<p><code>HiveServer2</code>（<code>HS2</code>）允许远程客户端可以使用各种编程语言向 Hive 提交请求并检索结果，支持多客户端并发访问和身份验证。HS2 是由多个服务组成的单个进程，其包括基于 Thrift 的 Hive 服务（TCP 或 HTTP）和用于 Web UI 的 Jetty Web 服务器。</p>
+<p>HiveServer2 拥有自己的 CLI(<code>Beeline</code>)，Beeline 是一个基于 SQLLine 的 JDBC 客户端。由于 HiveServer2 是 Hive 开发维护的重点 (Hive0.15 后就不再支持 hiveserver)，所以 Hive CLI 已经不推荐使用了，官方更加推荐使用 Beeline。</p>
+<ul>
+<li><a href="https://juejin.im/post/5d8593905188254009777049" target="_blank" rel="noopener">Hive CLI 和 Beeline 命令行的基本使用</a></li>
+</ul>
+<h3 id="Beeline-参数"><a href="#Beeline-参数" class="headerlink" title="Beeline 参数"></a>Beeline 参数</h3><p>Beeline 拥有更多可使用参数，可以使用 <code>beeline --help</code> 查看，完整参数如下</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"> // ...</span></span><br><span class="line"><span class="comment"> // ...</span></span><br><span class="line"> </span><br><span class="line">Example:</span><br><span class="line"> <span class="number">1.</span> Connect <span class="keyword">using</span> simple authentication <span class="built_in">to</span> HiveServer2 <span class="keyword">on</span> <span class="title">localhost</span>:<span class="title">10000</span></span><br><span class="line"> $ beeline -u jdbc:hive2://localhost:<span class="number">10000</span> username password</span><br><span class="line"></span><br><span class="line"> <span class="number">2.</span> Connect <span class="keyword">using</span> simple authentication <span class="built_in">to</span> HiveServer2 <span class="keyword">on</span> <span class="title">hs</span>.<span class="title">local</span>:<span class="title">10000</span> <span class="title">using</span> -<span class="title">n</span> <span class="title">for</span> <span class="title">username</span> <span class="title">and</span> -<span class="title">p</span> <span class="title">for</span> <span class="title">password</span></span><br><span class="line"> $ beeline -n username -p password -u jdbc:hive2://hs2.<span class="built_in">local</span>:<span class="number">10012</span></span><br><span class="line"></span><br><span class="line"> <span class="number">3.</span> Connect <span class="keyword">using</span> Kerberos authentication <span class="keyword">with</span> hive/localhost@mydomain.com <span class="keyword">as</span> HiveServer2 principal</span><br><span class="line"> $ beeline -u <span class="string">"jdbc:hive2://hs2.local:10013/default;principal=hive/localhost@mydomain.com"</span></span><br><span class="line"></span><br><span class="line"> <span class="number">4.</span> Connect <span class="keyword">using</span> SSL connection <span class="built_in">to</span> HiveServer2 <span class="keyword">on</span> <span class="title">localhost</span> <span class="title">at</span> <span class="title">10000</span></span><br><span class="line"> $ beeline <span class="string">"jdbc:hive2://localhost:10000/default;ssl=true;sslTrustStore=/usr/local/truststore;trustStorePassword=mytruststorepassword"</span></span><br><span class="line"></span><br><span class="line"> <span class="number">5.</span> Connect <span class="keyword">using</span> LDAP authentication</span><br><span class="line"> $ beeline -u jdbc:hive2://hs2.<span class="built_in">local</span>:<span class="number">10013</span>/default &lt;ldap-username&gt; &lt;ldap-password&gt;</span><br></pre></td></tr></table></figure>
+
+
+<p>在 Hive CLI 中支持的参数，Beeline 都支持，常用的参数如下。更多参数说明可以参见官方文档 <a href="https://cwiki.apache.org/confluence/display/Hive/HiveServer2+Clients#HiveServer2Clients-Beeline%E2%80%93NewCommandLineShell" target="_blank" rel="noopener">Beeline Command Options</a>。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-u <database URL></td>
+<td>数据库地址</td>
+</tr>
+<tr>
+<td>-n <username></td>
+<td>用户名</td>
+</tr>
+<tr>
+<td>-p <password></td>
+<td>密码</td>
+</tr>
+<tr>
+<td>-d <driver class></td>
+<td>驱动 (可选)</td>
+</tr>
+<tr>
+<td>-e <query></td>
+<td>执行 SQL 命令</td>
+</tr>
+<tr>
+<td>-f <file></td>
+<td>执行 SQL 脚本</td>
+</tr>
+</tbody></table>
+<p>例如，使用用户名和密码连接 Hive</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// $ beeline -u jdbc:hive2://localhost:10000  -n username -p password </span></span><br><span class="line">$ beeline -u <span class="string">jdbc:</span><span class="string">hive2:</span><span class="comment">//localhost:10000  -n hive -p Hive113459...</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Ambari"><a href="#Ambari" class="headerlink" title="Ambari"></a>Ambari</h2><ul>
+<li><a href="http://ambari.apache.org/1.2.2/installing-hadoop-using-ambari/content/index.html" target="_blank" rel="noopener">Ambari User Guide</a></li>
+<li><a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-bigdata-ambari/index.html" target="_blank" rel="noopener">Ambari——大数据平台的搭建利器</a></li>
+<li><a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-bigdata-ambari2/" target="_blank" rel="noopener">Ambari——大数据平台的搭建利器之进阶篇</a></li>
+</ul>
+<p>和Hive进行交互的方式主要有2种：命令行和Ambari视图。</p>
+<p>就 Ambari 的作用来说，就是创建、管理、监视 Hadoop 的集群，但是这里的 Hadoop 是广义，指的是 Hadoop 整个生态圈（例如 Hive，Hbase，Sqoop，Zookeeper 等），而并不仅是特指 Hadoop。用一句话来说，Ambari 就是为了让 Hadoop 以及相关的大数据软件更容易使用的一个工具。</p>
+<p>Ambari 自身也是一个分布式架构的软件，主要由两部分组成：<code>Ambari Server</code> 和 <code>Ambari Agent</code>。简单来说，</p>
+<ul>
+<li>用户通过 Ambari Server 通知 Ambari Agent 安装对应的软件</li>
+<li>Agent 会定时地发送各个机器每个软件模块的状态给 Ambari Server</li>
+<li>最终这些状态信息会呈现在 Ambari 的 GUI，方便用户了解到集群的各种状态，并进行相应的维护</li>
+</ul>
+<h2 id="Hive实战Demo"><a href="#Hive实战Demo" class="headerlink" title="Hive实战Demo"></a>Hive实战Demo</h2><ul>
+<li><a href="http://blog.fens.me/hadoop-hive-10g/" target="_blank" rel="noopener">Hive导入10G数据的测试 | 粉丝日志</a></li>
+<li><a href="http://blog.fens.me/finance-rhive-repurchase/" target="_blank" rel="noopener">用RHive从历史数据中提取逆回购信息 | 粉丝日志</a></li>
+</ul>
+<h2 id="Hive架构"><a href="#Hive架构" class="headerlink" title="Hive架构"></a>Hive架构</h2><p>尽管Hive使用起来类似SQL，但它仍然不是SQL，尤其体现在处理速度方面。底层的Hive查询仍然是以 MapReduce 作业的形式运行。MapReduce是批处理，而SQL则是一种交互式处理语音。</p>
+<h3 id="HCatalog"><a href="#HCatalog" class="headerlink" title="HCatalog"></a>HCatalog</h3><p>HCatalog 提供了一个统一的元数据服务，允许不同的工具如 Pig、MapReduce 等通过 HCatalog 直接访问存储在 HDFS 上的底层文件。</p>
+<p>HCatalog 本质上是数据访问工具（如Hive或Pig）和底层文件之间的抽象层。</p>
+<h2 id="Hive-数据类型"><a href="#Hive-数据类型" class="headerlink" title="Hive 数据类型"></a>Hive 数据类型</h2><ul>
+<li><a href="https://cwiki.apache.org/confluence/display/Hive#Home-UserDocumentation" target="_blank" rel="noopener">User Documentation - Apache Hive</a></li>
+</ul>
+<h3 id="基本数据类型"><a href="#基本数据类型" class="headerlink" title="基本数据类型"></a>基本数据类型</h3><ul>
+<li>tinyint/smallint/int/bigint：整数类型</li>
+<li>float/double：浮点数类型</li>
+<li>boolean：布尔类型</li>
+<li>string：字符串类型</li>
+</ul>
+<p><code>string</code> 类型下又包括 变长字符串 <code>VARCHAR</code> 和 定长字符串 <code>CHAR</code>。下面给出例子，说明两者区别</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">hive &gt; <span class="keyword">create</span> <span class="keyword">table</span> test1</span><br><span class="line">     &gt; (vname <span class="type">varchar</span>(<span class="number">20</span>), cname <span class="type">char</span>(<span class="number">20</span>));</span><br><span class="line">     &gt; <span class="keyword">desc</span> test1;</span><br><span class="line">     </span><br><span class="line">vname   <span class="type">varchar</span>(<span class="number">20</span>)</span><br><span class="line">cname   <span class="type">char</span>(<span class="number">20</span>)</span><br></pre></td></tr></table></figure>
+
+<p>上述例子中，<code>varchar(20)</code> 表示最大长度为20，实际长度可能不足20。<code>char(20)</code> 表示长度固定为20。</p>
+<h3 id="复杂数据类型"><a href="#复杂数据类型" class="headerlink" title="复杂数据类型"></a>复杂数据类型</h3><ul>
+<li>Array：数组，由一系列相同数据类型的元素组成</li>
+<li>Map：集合，包含 <code>key-&gt;value</code> 键值对，可以通过 <code>key</code> 来访问元素</li>
+<li>Struct：结构类型，可以包含不同数据类型的元素，这些元素可以通过 “点语法” 的方式访问</li>
+</ul>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; create table student</span><br><span class="line">    &gt; (sid <span class="built_in">int</span>,</span><br><span class="line">    &gt; sname <span class="built_in">string</span>,</span><br><span class="line">    &gt; grade1 <span class="built_in">array<span class="keyword">&lt;<span class="built_in">float</span>&gt;</span></span>,</span><br><span class="line">    &gt; grade2 map&lt;<span class="built_in">string</span>,<span class="built_in">float</span>&gt;</span><br><span class="line">    &gt; info struct&lt;name:<span class="built_in">string</span>, age:<span class="built_in">int</span>&gt;);</span><br><span class="line">OK</span><br><span class="line">Time taken: <span class="number">0.246</span> seconds</span><br><span class="line"></span><br><span class="line">hive&gt; desc student;</span><br><span class="line">OK</span><br><span class="line">sid                 	<span class="built_in">int</span></span><br><span class="line">sname               	<span class="built_in">string</span></span><br><span class="line">grade1               	<span class="built_in">array<span class="keyword">&lt;<span class="built_in">float</span>&gt;</span></span></span><br><span class="line">grade2                  map&lt;<span class="built_in">string</span>,<span class="built_in">float</span>&gt;</span><br><span class="line">info                    struct&lt;name:<span class="built_in">string</span>, age:<span class="built_in">int</span>&gt;</span><br><span class="line">Time taken: <span class="number">0.077</span> seconds, Fetched: <span class="number">5</span> row(s)</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="时间类型"><a href="#时间类型" class="headerlink" title="时间类型"></a>时间类型</h3><ul>
+<li>Date：从 Hive 0.12.0 开始支持</li>
+<li>Timestamp：从 Hive 0.8.0 开始支持</li>
+</ul>
+<h2 id="Hive-文件格式"><a href="#Hive-文件格式" class="headerlink" title="Hive 文件格式"></a>Hive 文件格式</h2><p>Hive 支持4种文件格式</p>
+<ol>
+<li><code>TextFile</code> （默认格式）：基于行列混合的思想</li>
+<li><code>SequenceFile</code> ：基于行存储</li>
+<li><code>RCFile</code> ：基于行存储</li>
+<li>自定义</li>
+</ol>
+<p>基于 HDFS 的行存储具备快速数据加载和动态负载的高适应能力，因为行存储保证了相同记录的所有域都在同一个集群节点。但是它不能满足快速的查询响应时间的要求，因为当查询仅仅针对所有列中的少数几列时，他就不能跳过不需要的列，直接定位到所需的列。此外，行存储也不易获得一个较高的压缩比。</p>
+<h3 id="TextFile"><a href="#TextFile" class="headerlink" title="TextFile"></a>TextFile</h3><p>TextFile 是默认格式，数据不做压缩，磁盘开销大，数据解析开销大。可结合 Gzip，Bzip2使用。但使用这方式，Hive 不会对数据进行切分，从而无法对数据进行并行操作。</p>
+<h3 id="SequenceFile"><a href="#SequenceFile" class="headerlink" title="SequenceFile"></a>SequenceFile</h3><p>SequenceFile 是Hadoop API 提供的一种二进制文件支持，其具有使用方便，可分割，可压缩的特点。 SequenceFile 支持三种压缩选择：<code>NONE</code>, <code>RECORD</code>, <code>BLOCK</code>。<code>RECORD</code> 压缩率较低，一般建议使用 <code>BLOCK</code> 压缩。</p>
+<h3 id="RCFile"><a href="#RCFile" class="headerlink" title="RCFile"></a>RCFile</h3><p>RCFile 是 Facebook 开发的一个集行存储和列存储的优点于一身，压缩比更高，读取列更快。</p>
+<p>RCFile 存储结构遵循“先水平划分，再垂直划分”的设计理念。RCFile保证同一行的数据位于同一节点，因此元组重构的开销很低。其次，像列存储一样，RCFile 能够利用列维度的数据压缩，并且能跳过不必要的列读取。</p>
+<blockquote>
+<p>在 RC File 的基础上，进一步改进，引入了 ORC （<code>Optimized Record Columnar</code>），ORC 主要在压缩编码、查询性能上进行了升级。</p>
+</blockquote>
+<h3 id="自定义文件格式"><a href="#自定义文件格式" class="headerlink" title="自定义文件格式"></a>自定义文件格式</h3><p>当用户的数据文件格式不能被当前Hive识别的时候，可以自定义文件格式，通过实现 <code>InputFormat</code> 和 <code>OutputFormat</code> 自定义输入/输出格式。</p>
+<h2 id="Hive的数据存储"><a href="#Hive的数据存储" class="headerlink" title="Hive的数据存储"></a>Hive的数据存储</h2><p>Hive 的存储是建立在 Hadoop 文件系统之上的。Hive 本身没有专门的数据存储格式，也不能为数据建立索引，因此用户可以非常自由地组织 Hive 中的表，只需要在创建表的时候告诉 Hive 数据中的列分隔符就可以解析数据了。</p>
+<p>例如，打开 <code>http://localhost:50070/</code>，选择顶部分类栏中的 <code>Utilities -&gt; Browse the file system</code>，可以查看到 Hive 中创建的数据库表对应的文件（存储在 <code>/user/hive/warehouse</code> 路径下）。</p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/BigData2020/hadoop-hive-hdfs-1.png" alt=""></p>
+<h3 id="Hive的数据模型"><a href="#Hive的数据模型" class="headerlink" title="Hive的数据模型"></a>Hive的数据模型</h3><p>Hive 中主要包括 4 种数据模型</p>
+<ol>
+<li>表（Table）</li>
+<li>外部表（External Table）</li>
+<li>分区（Partition）</li>
+<li>桶（Bucket）</li>
+</ol>
+<p>Hive 的表和数据库中的表在概念上没有什么本质区别，在 Hive 中每个表都有一个对应的存储目录。而外部表指向已经在 HDFS 中存在的数据，也可以创建分区。</p>
+<p>Hive 中的每个分区都对应数据库中相应分区列的一个索引，但是其对分区的组织方式和传统关系数据库不同。</p>
+<p>桶在指定列进行 Hash 计算时，会根据哈希值切分数据，使每个桶对应一个文件。</p>
+<h4 id="表"><a href="#表" class="headerlink" title="表"></a>表</h4><p>表可以细分为</p>
+<ol>
+<li>Table 内部表</li>
+<li>Partition 分区表</li>
+<li>External Table 外部表</li>
+<li>Bucket Table 桶表</li>
+</ol>
+<h4 id="视图-View"><a href="#视图-View" class="headerlink" title="视图 View"></a>视图 View</h4><ul>
+<li>视图是一种虚表，是一个逻辑概念，Hive 暂不支持物化视图</li>
+<li>视图可以跨越多张表</li>
+<li>视图建立在已有表的基础上，视图赖以建立的这些表称为基表</li>
+<li>视图可以简化复杂的查询</li>
+<li>视图 VIEW 是只读的，不支持 <code>LOAD/INSERT/ALTER</code>。可以使用 <code>ALTER VIEW</code> 改变 VIEW 定义</li>
+<li>Hive 支持迭代视图</li>
+</ul>
+<h2 id="Hive-数据操作"><a href="#Hive-数据操作" class="headerlink" title="Hive 数据操作"></a>Hive 数据操作</h2><blockquote>
+<p>在执行操作前，请确保 <code>localhost:50070</code> 页面访问到的 <code>Live Node</code> 个数大于0。</p>
+</blockquote>
+<h3 id="向表中装载数据"><a href="#向表中装载数据" class="headerlink" title="向表中装载数据"></a>向表中装载数据</h3><ul>
+<li><a href="https://blog.csdn.net/jclian91/article/details/78481673" target="_blank" rel="noopener">Hive之导入外部数据 | CSDN</a></li>
+<li><a href="http://www.tracefact.net/tech/067.html" target="_blank" rel="noopener">Hive 写入数据到Hive表(命令行)</a></li>
+</ul>
+<h4 id="Demo-Insert插入数据"><a href="#Demo-Insert插入数据" class="headerlink" title="Demo-Insert插入数据"></a>Demo-Insert插入数据</h4><ol>
+<li>创建 <code>hiveDemo</code> 数据库并使用该数据库</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> datbase <span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="keyword">EXISTS</span> hiveDemo;</span><br><span class="line"><span class="keyword">show</span> <span class="keyword">databases</span>;</span><br><span class="line"><span class="keyword">use</span> hiveDemo;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>建表/查看/删除 数据表</li>
+</ol>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; Create Table golds<span class="constructor">_log(<span class="params">user_id</span> <span class="params">bigint</span>, <span class="params">accounts</span> <span class="params">string</span>, <span class="params">change_type</span> <span class="params">string</span>, <span class="params">golds</span> <span class="params">bigint</span>, <span class="params">log_time</span> <span class="params">int</span>)</span>;</span><br><span class="line"></span><br><span class="line">hive&gt; show tables;</span><br><span class="line"></span><br><span class="line">hive&gt; drop table golds_log;</span><br><span class="line"></span><br><span class="line">hive&gt; desc golds_log;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>使用 <code>Insert...Values</code> 语句写入数据</li>
+</ol>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; Insert into table golds_log values</span><br><span class="line">(<span class="number">3645356</span>,'wds<span class="number">765432</span>1(<span class="number">417175</span>2)','新人注册奖励',<span class="number">1700</span>,<span class="number">1526027152</span>),</span><br><span class="line">(<span class="number">2016869</span>,'dqyx<span class="number">12345678</span>9(<span class="number">237669</span>9)','参加一场比赛',<span class="number">1140</span>,<span class="number">1526027152</span>),</span><br><span class="line">(<span class="number">3630468</span>,'dke<span class="number">377661</span>1(<span class="number">415606</span>4)','大转盘奖励',<span class="number">1200</span>,<span class="number">1526027152</span>),</span><br><span class="line">(<span class="number">995267</span>,'a<span class="number">25441318</span>9(<span class="number">122941</span>7)','妞妞拼十翻牌',<span class="number">200</span>,<span class="number">1526027152</span>),</span><br><span class="line">(<span class="number">795276</span>,'li<span class="number">876286</span>6(<span class="number">971402</span>)','妞妞拼十翻牌',<span class="number">1200</span>,<span class="number">1526027152</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<p>正常情况下可以看到下面的结果输出，说明在执行 <code>Insert...values</code> 语句时，底层是在执行 MapReduce 作业。</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">Query ID = lbs_20200422053833_55b98d5a-ba4c<span class="number">-470</span>d<span class="number">-909</span>a<span class="number">-098213</span>d1d937</span><br><span class="line">Total jobs = <span class="number">3</span></span><br><span class="line">Launching Job <span class="number">1</span> <span class="keyword">out</span> of <span class="number">3</span></span><br><span class="line">Number of reduce tasks determined at compile time: <span class="number">1</span></span><br><span class="line">In order to change the average load <span class="keyword">for</span> a reducer (<span class="keyword">in</span> bytes):</span><br><span class="line">  <span class="keyword">set</span> hive.exec.reducers.bytes.per.reducer=&lt;number&gt;</span><br><span class="line">In order to limit the maximum number of reducers:</span><br><span class="line">  <span class="keyword">set</span> hive.exec.reducers.max=&lt;number&gt;</span><br><span class="line">In order to <span class="keyword">set</span> a constant number of reducers:</span><br><span class="line">  <span class="keyword">set</span> mapreduce.job.reduces=&lt;number&gt;</span><br><span class="line">Starting Job = job_1587504428431_0001, Tracking URL = http:<span class="comment">//localhost:8088/proxy/application_1587504428431_0001/</span></span><br><span class="line">Kill Command = /Library/hadoop<span class="number">-2.10</span><span class="number">.0</span>/bin/mapred job  -kill job_1587504428431_0001</span><br><span class="line">Hadoop job information <span class="keyword">for</span> Stage<span class="number">-1</span>: number of mappers: <span class="number">1</span>; number of reducers: <span class="number">1</span></span><br><span class="line"><span class="number">2020</span><span class="number">-04</span><span class="number">-22</span> <span class="number">05</span>:<span class="number">39</span>:<span class="number">14</span>,<span class="number">966</span> Stage<span class="number">-1</span> map = <span class="number">0</span>%,  reduce = <span class="number">0</span>%</span><br><span class="line"><span class="number">2020</span><span class="number">-04</span><span class="number">-22</span> <span class="number">05</span>:<span class="number">39</span>:<span class="number">21</span>,<span class="number">154</span> Stage<span class="number">-1</span> map = <span class="number">100</span>%,  reduce = <span class="number">0</span>%</span><br><span class="line"><span class="number">2020</span><span class="number">-04</span><span class="number">-22</span> <span class="number">05</span>:<span class="number">39</span>:<span class="number">27</span>,<span class="number">296</span> Stage<span class="number">-1</span> map = <span class="number">100</span>%,  reduce = <span class="number">100</span>%</span><br><span class="line">Ended Job = job_1587504428431_0001</span><br><span class="line">Stage<span class="number">-4</span> <span class="keyword">is</span> selected by condition resolver.</span><br><span class="line">Stage<span class="number">-3</span> <span class="keyword">is</span> filtered <span class="keyword">out</span> by condition resolver.</span><br><span class="line">Stage<span class="number">-5</span> <span class="keyword">is</span> filtered <span class="keyword">out</span> by condition resolver.</span><br><span class="line">Moving data to directory hdfs:<span class="comment">//localhost:9000/user/hive/warehouse/hivedemo.db/golds_log/.hive-staging_hive_2020-04-22_05-38-33_916_330193107719508203-1/-ext-10000</span></span><br><span class="line">Loading data to table hivedemo.golds_log</span><br><span class="line">MapReduce Jobs Launched: </span><br><span class="line">Stage-Stage<span class="number">-1</span>: Map: <span class="number">1</span>  Reduce: <span class="number">1</span>   HDFS Read: <span class="number">20647</span> HDFS Write: <span class="number">764</span> SUCCESS</span><br><span class="line">Total MapReduce CPU Time Spent: <span class="number">0</span> msec</span><br><span class="line">OK</span><br><span class="line">Time taken: <span class="number">54.82</span> seconds</span><br></pre></td></tr></table></figure>
+
+
+
+
+<p>此时在 <code>http://localhost:50070/</code> 页面查看 <code>Utillities -&gt; Browser the file system</code>，在 <code>/user/hive/warehouse/hivedemo.db/golds_log</code> 路径下可以看到一个 <code>000000_0</code> 的文件，下载到本地，查看其内容为</p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/BigData2020/hadoop-namenode-manage-web-1.png" alt=""></p>
+<figure class="highlight basic"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">3645356 </span>wds7654321(<span class="number">4171752</span>) 新人注册奖励 <span class="number">1700</span> <span class="number">1526027152</span></span><br><span class="line"><span class="symbol">2016869 </span>dqyx123456789(<span class="number">2376699</span>) 参加一场比赛 <span class="number">1140</span> <span class="number">1526027152</span></span><br><span class="line"><span class="symbol">3630468 </span>dke3776611(<span class="number">4156064</span>) 大转盘奖励 <span class="number">1200</span> <span class="number">1526027152</span></span><br><span class="line"><span class="symbol">995267 </span>a254413189(<span class="number">1229417</span>) 妞妞拼十翻牌 <span class="number">200</span> <span class="number">1526027152</span></span><br><span class="line"><span class="symbol">795276 </span>li8762866(<span class="number">971402</span>) 妞妞拼十翻牌 <span class="number">1200</span> <span class="number">1526027152</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><code>000000_0</code> 文件是一个普通的文本文件（Hive中默认的文件存储格式），可以用 VSCode 打开。</p>
+</blockquote>
+<ol start="4">
+<li>继续执行2次 <code>Insert...values</code> 命令，再次访问 <code>http://localhost:50070/explorer.html#/user/hive/warehouse/hivedemo.db/golds_log</code> 页面，可以发现有3个文件，即<strong>每次任务都生成了单独的数据文件。</strong></li>
+</ol>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/BigData2020/hadoop-namenode-manage-web-2.png" alt=""></p>
+<p><strong>Hive中，每次执行 <code>Insert</code> 语句（底层执行 MapReduce 任务）都会生成独立的数据文件。对于 HDFS 来说，优势是存储少量大文件，不是存储大量小文件。</strong></p>
+<p>而对于我们的应用而言，每 10 分钟就会同步一次数据到 Hive 仓库，如此一来会生成无数的小文件，系统的运行速度会越来越慢。所以第一个问题就是：如何合并小文件？</p>
+<h4 id="Demo-合并数据库小文件"><a href="#Demo-合并数据库小文件" class="headerlink" title="Demo-合并数据库小文件"></a>Demo-合并数据库小文件</h4><p>在建表的时候，我们没有指定表存储的文件类型（<code>file format</code>），默认的文件类型是 <code>Textfile</code>，所以，当我们下载生成的 <code>000000_0</code> 文件后，使用编辑器可以直接查看其内容。</p>
+<p>Hive 提供了一个 <code>ALTER TABLE table_name CONCATENATE</code> 语句，用于合并小文件。但是只支持 <code>RCFILE</code> 和 <code>ORC</code>文件类型。</p>
+<p>因此，如果想合并小文件，可以删除表，然后再使用下面的命令重建</p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; drop <span class="keyword">table</span> golds_log;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; Create Table golds<span class="constructor">_log(<span class="params">user_id</span> <span class="params">bigint</span>, <span class="params">accounts</span> <span class="params">string</span>, <span class="params">change_type</span> <span class="params">string</span>, <span class="params">golds</span> <span class="params">bigint</span>, <span class="params">log_time</span> <span class="params">int</span>)</span></span><br><span class="line">STORED AS RCFile;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; Insert into table golds_log values</span><br><span class="line">(<span class="number">3645356</span>,'wds<span class="number">765432</span>1(<span class="number">417175</span>2)','新人注册奖励',<span class="number">1700</span>,<span class="number">1526027152</span>),</span><br><span class="line">(<span class="number">2016869</span>,'dqyx<span class="number">12345678</span>9(<span class="number">237669</span>9)','参加一场比赛',<span class="number">1140</span>,<span class="number">1526027152</span>),</span><br><span class="line">(<span class="number">3630468</span>,'dke<span class="number">377661</span>1(<span class="number">415606</span>4)','大转盘奖励',<span class="number">1200</span>,<span class="number">1526027152</span>),</span><br><span class="line">(<span class="number">995267</span>,'a<span class="number">25441318</span>9(<span class="number">122941</span>7)','妞妞拼十翻牌',<span class="number">200</span>,<span class="number">1526027152</span>),</span><br><span class="line">(<span class="number">795276</span>,'li<span class="number">876286</span>6(<span class="number">971402</span>)','妞妞拼十翻牌',<span class="number">1200</span>,<span class="number">1526027152</span>);</span><br></pre></td></tr></table></figure>
+
+<p>重复上面的过程，执行 3 次 <code>insert</code> 语句，每次插入 5 条数据。刷新 WebUI，会看到和前面一样产生 3 个文件。</p>
+<blockquote>
+<p>Tip: 如果此时再将 <code>000000_0</code> 文件下载下来，用文本编辑器或者 VSCode 打开查看，发现已经是乱码了。因为它已经不再是文本文件了。</p>
+</blockquote>
+<p>接下来，执行下面的语句，对文件进行合并</p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; alter <span class="keyword">table</span> golds_log <span class="comment">concatenate</span>;</span><br></pre></td></tr></table></figure>
+
+<p>输出结果如下</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Starting Job = job_1587504428431_0006, Tracking URL = http:<span class="comment">//localhost:8088/proxy/application_1587504428431_0006/</span></span><br><span class="line">Kill Command = /Library/hadoop<span class="number">-2.10</span><span class="number">.0</span>/bin/mapred job  -kill job_1587504428431_0006</span><br><span class="line">Hadoop job information <span class="keyword">for</span> <span class="literal">null</span>: number of mappers: <span class="number">1</span>; number of reducers: <span class="number">0</span></span><br><span class="line"><span class="number">2020</span><span class="number">-04</span><span class="number">-22</span> <span class="number">06</span>:<span class="number">10</span>:<span class="number">40</span>,<span class="number">875</span> <span class="literal">null</span> map = <span class="number">0</span>%,  reduce = <span class="number">0</span>%</span><br><span class="line"><span class="number">2020</span><span class="number">-04</span><span class="number">-22</span> <span class="number">06</span>:<span class="number">10</span>:<span class="number">47</span>,<span class="number">012</span> <span class="literal">null</span> map = <span class="number">100</span>%,  reduce = <span class="number">0</span>%</span><br><span class="line">Ended Job = job_1587504428431_0006</span><br><span class="line">Loading data to table hivedemo.golds_log</span><br><span class="line">MapReduce Jobs Launched: </span><br><span class="line">Stage-<span class="literal">null</span>: Map: <span class="number">1</span>   HDFS Read: <span class="number">3137</span> HDFS Write: <span class="number">632</span> SUCCESS</span><br><span class="line">Total MapReduce CPU Time Spent: <span class="number">0</span> msec</span><br><span class="line">OK</span><br><span class="line">Time taken: <span class="number">43.978</span> seconds</span><br></pre></td></tr></table></figure>
+
+
+
+<p>刷新WebUI，会发现文件已经合并了，只有一个文件存在。</p>
+<p>最后，使用 <code>SELECT</code> 语句查看数据表的内容。</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; select * <span class="keyword">from</span>  golds_log;</span><br><span class="line"></span><br><span class="line">OK</span><br><span class="line"><span class="number">3645356</span>	wds7654321(<span class="number">4171752</span>)	新人注册奖励	<span class="number">1700</span>	<span class="number">1526027152</span></span><br><span class="line"><span class="number">2016869</span>	dqyx123456789(<span class="number">2376699</span>)	参加一场比赛	<span class="number">1140</span>	<span class="number">1526027152</span></span><br><span class="line"><span class="number">3630468</span>	dke3776611(<span class="number">4156064</span>)	大转盘奖励	<span class="number">1200</span>	<span class="number">1526027152</span></span><br><span class="line"><span class="number">995267</span>	a254413189(<span class="number">1229417</span>)	妞妞拼十翻牌	<span class="number">200</span>	<span class="number">1526027152</span></span><br><span class="line"><span class="number">795276</span>	li8762866(<span class="number">971402</span>)	妞妞拼十翻牌	<span class="number">1200</span>	<span class="number">1526027152</span></span><br><span class="line"><span class="number">3645356</span>	wds7654321(<span class="number">4171752</span>)	新人注册奖励	<span class="number">1700</span>	<span class="number">1526027152</span></span><br><span class="line"><span class="number">2016869</span>	dqyx123456789(<span class="number">2376699</span>)	参加一场比赛	<span class="number">1140</span>	<span class="number">1526027152</span></span><br><span class="line"><span class="number">3630468</span>	dke3776611(<span class="number">4156064</span>)	大转盘奖励	<span class="number">1200</span>	<span class="number">1526027152</span></span><br><span class="line"><span class="number">995267</span>	a254413189(<span class="number">1229417</span>)	妞妞拼十翻牌	<span class="number">200</span>	<span class="number">1526027152</span></span><br><span class="line"><span class="number">795276</span>	li8762866(<span class="number">971402</span>)	妞妞拼十翻牌	<span class="number">1200</span>	<span class="number">1526027152</span></span><br><span class="line"><span class="number">3645356</span>	wds7654321(<span class="number">4171752</span>)	新人注册奖励	<span class="number">1700</span>	<span class="number">1526027152</span></span><br><span class="line"><span class="number">2016869</span>	dqyx123456789(<span class="number">2376699</span>)	参加一场比赛	<span class="number">1140</span>	<span class="number">1526027152</span></span><br><span class="line"><span class="number">3630468</span>	dke3776611(<span class="number">4156064</span>)	大转盘奖励	<span class="number">1200</span>	<span class="number">1526027152</span></span><br><span class="line"><span class="number">995267</span>	a254413189(<span class="number">1229417</span>)	妞妞拼十翻牌	<span class="number">200</span>	<span class="number">1526027152</span></span><br><span class="line"><span class="number">795276</span>	li8762866(<span class="number">971402</span>)	妞妞拼十翻牌	<span class="number">1200</span>	<span class="number">1526027152</span></span><br><span class="line">Time taken: <span class="number">0.133</span> seconds, Fetched: <span class="number">15</span> row(s)</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="Demo-Load-导入外部数据"><a href="#Demo-Load-导入外部数据" class="headerlink" title="Demo-Load 导入外部数据"></a>Demo-Load 导入外部数据</h4><p>下面给出一个实例，如何将本地数据文件 <code>test.txt</code> 导入到 Hive 数据表中。</p>
+<ol>
+<li>本地数据文件 <code>test.txt</code> 内容如下</li>
+</ol>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">3645356</span>|wds7654321(<span class="number">4171752</span>)|新人注册奖励|<span class="number">1700</span>|<span class="number">1526027152</span></span><br><span class="line"><span class="number">2016869</span>|dqyx123456789(<span class="number">2376699</span>)|参加一场比赛|<span class="number">1140</span>|<span class="number">1526027152</span></span><br><span class="line"><span class="number">3630468</span>|dke3776611(<span class="number">4156064</span>)|大转盘奖励|<span class="number">1200</span>|<span class="number">1526027152</span></span><br><span class="line"><span class="number">3642022</span>|黑娃<span class="number">123456</span>(<span class="number">4168266</span>)|新人注册奖励|<span class="number">500</span>|<span class="number">1526027152</span></span><br><span class="line"><span class="number">2016869</span>|dqyx123456789(<span class="number">2376699</span>)|大转盘奖励|<span class="number">1500</span>|<span class="number">1526027152</span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>创建数据表，与本地 <code>test.txt</code> 的数据类型一致</li>
+</ol>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; Create Table golds<span class="constructor">_log(<span class="params">user_id</span> <span class="params">bigint</span>, <span class="params">accounts</span> <span class="params">string</span>, <span class="params">change_type</span> <span class="params">string</span>, <span class="params">golds</span> <span class="params">bigint</span>, <span class="params">log_time</span> <span class="params">int</span>)</span></span><br><span class="line">ROW FORMAT DELIMITED FIELDS TERMINATED BY <span class="character">'|'</span>;</span><br></pre></td></tr></table></figure>
+<p>上面最重要的一句就是 <code>ROW FORMAT DELIMITED FIELDS TERMINATED BY &#39;|&#39;</code>，说明表的字段由符号 <code>&quot;|&quot;</code> 进行分隔。</p>
+<blockquote>
+<p>Tip: <code>test.txt</code> 中包含有中文，确保文件格式是 <code>utf-8</code>（<code>GB2312</code> 导入后会有乱码）</p>
+</blockquote>
+<ol start="3">
+<li>查看数据表的结构</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">describe</span> golds_log;</span><br><span class="line"></span><br><span class="line"><span class="keyword">describe</span> formatted student1;</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>查看数据表内容（此时为空）</li>
+</ol>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> student1;</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>导入本地数据</li>
+</ol>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; <span class="keyword">load</span> data <span class="keyword">local</span> inpath <span class="string">'/Users/lbs/Downloads/test.txt'</span> <span class="keyword">into</span> <span class="keyword">table</span> golds_log;</span><br><span class="line"></span><br><span class="line">Loading data <span class="keyword">to</span> <span class="keyword">table</span> hivedemo.golds_log</span><br><span class="line">OK</span><br><span class="line"><span class="type">Time</span> taken: <span class="number">0.139</span> seconds</span><br></pre></td></tr></table></figure>
+
+<p>你会发现使用 <code>load</code> 语句写入数据比 <code>insert</code> 语句要快许多倍，因为 HIVE 并不对 <code>scheme</code> 进行校验，仅仅是将数据文件挪到 HDFS 系统上，也没有执行 MapReduce 作业。所以从导入数据的角度而言，使用 load 要优于使用 insert…values。</p>
+<ol start="6">
+<li>再次数据表内容</li>
+</ol>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; select * <span class="keyword">from</span> golds_log;</span><br><span class="line">OK</span><br><span class="line"><span class="number">3645356</span>	wds7654321(<span class="number">4171752</span>)	新人注册奖励	<span class="number">1700</span>	<span class="number">1526027152</span></span><br><span class="line"><span class="number">2016869</span>	dqyx123456789(<span class="number">2376699</span>)	参加一场比赛	<span class="number">1140</span>	<span class="number">1526027152</span></span><br><span class="line"><span class="number">3630468</span>	dke3776611(<span class="number">4156064</span>)	大转盘奖励	<span class="number">1200</span>	<span class="number">1526027152</span></span><br><span class="line"><span class="number">3642022</span>	黑娃<span class="number">123456</span>(<span class="number">4168266</span>)	新人注册奖励	<span class="number">500</span>	<span class="number">1526027152</span></span><br><span class="line"><span class="number">2016869</span>	dqyx123456789(<span class="number">2376699</span>)	大转盘奖励	<span class="number">1500</span>	<span class="number">1526027152</span></span><br><span class="line">Time taken: <span class="number">0.087</span> seconds, Fetched: <span class="number">5</span> row(s)</span><br></pre></td></tr></table></figure>
+
+
+<ol start="7">
+<li>反复导入 3 次后，打开 Web UI，刷新后，发现和使用 Insert 语句时一样，每次 load 语句都会生成一个数据文件，同样存在小文件的问题。</li>
+</ol>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/BigData2020/hadoop-namenode-manage-web-3.png" alt=""></p>
+<p>和前面的方法一样，我们可以将表的存储类型改为 RCFile，然后再进行合并，但是因为使用 load 语句的时候，要导入的文件类型是 txt，和表的存储类型不一致，所以会报错。</p>
+<p>这时候，只能曲线救国了：将主表创建为 RCFile 类型，再创建一张临时表，类型是 Textfile，然后 load 时导入到临时表，然后再使用下一节要介绍的 <code>Insert...select</code> 语句，将数据从临时表导入到主表。</p>
+<h4 id="Demo-使用-Insert…Select-语句写入数据"><a href="#Demo-使用-Insert…Select-语句写入数据" class="headerlink" title="Demo-使用 Insert…Select 语句写入数据"></a>Demo-使用 Insert…Select 语句写入数据</h4><ol>
+<li>使用下面的语句创建一张临时表，临时表的名称为 <code>golds_log_tmp</code>。临时表在当前会话(<code>session</code>)结束后会被 HIVE 自动删除，临时表可以保存在SSD、内存或者是文件系统上。</li>
+</ol>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; Create TEMPORARY Table golds<span class="constructor">_log_tmp(<span class="params">user_id</span> <span class="params">bigint</span>, <span class="params">accounts</span> <span class="params">string</span>, <span class="params">change_type</span> <span class="params">string</span>, <span class="params">golds</span> <span class="params">bigint</span>, <span class="params">log_time</span> <span class="params">int</span>)</span></span><br><span class="line">ROW FORMAT DELIMITED  FIELDS TERMINATED BY <span class="character">'|'</span>;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>使用下面的语句创建主表</li>
+</ol>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; drop <span class="keyword">table</span> golds_log;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; Create Table golds<span class="constructor">_log(<span class="params">user_id</span> <span class="params">bigint</span>, <span class="params">accounts</span> <span class="params">string</span>, <span class="params">change_type</span> <span class="params">string</span>, <span class="params">golds</span> <span class="params">bigint</span>, <span class="params">log_time</span> <span class="params">int</span>)</span></span><br><span class="line">STORED AS RCFile;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>使用下面的语句将数据导入到临时表</li>
+</ol>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; <span class="keyword">load</span> data <span class="keyword">local</span> inpath <span class="string">'/Users/lbs/Downloads/test.txt'</span> <span class="keyword">into</span> <span class="keyword">table</span> golds_log_tmp;</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>使用insert…select语句将数据从临时表转移到主表</li>
+</ol>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; Insert <span class="built_in">int</span>o table golds_log select * <span class="keyword">from</span> golds_log_tmp;</span><br><span class="line"></span><br><span class="line">Query ID = lbs_20200422063734_475e168a<span class="number">-5016</span><span class="number">-4</span>ba7-a67f<span class="number">-9</span>c7f76373f98</span><br><span class="line">Total jobs = <span class="number">1</span></span><br><span class="line">Launching Job <span class="number">1</span> <span class="keyword">out</span> of <span class="number">1</span></span><br><span class="line">Number of reduce tasks determined at compile time: <span class="number">1</span></span><br><span class="line">In order to change the average load <span class="keyword">for</span> a reducer (<span class="keyword">in</span> bytes):</span><br><span class="line">  <span class="keyword">set</span> hive.exec.reducers.bytes.per.reducer=&lt;number&gt;</span><br><span class="line">In order to limit the maximum number of reducers:</span><br><span class="line">  <span class="keyword">set</span> hive.exec.reducers.max=&lt;number&gt;</span><br><span class="line">In order to <span class="keyword">set</span> a constant number of reducers:</span><br><span class="line">  <span class="keyword">set</span> mapreduce.job.reduces=&lt;number&gt;</span><br><span class="line">Starting Job = job_1587504428431_0007, Tracking URL = http:<span class="comment">//localhost:8088/proxy/application_1587504428431_0007/</span></span><br><span class="line">Kill Command = /Library/hadoop<span class="number">-2.10</span><span class="number">.0</span>/bin/mapred job  -kill job_1587504428431_0007</span><br><span class="line">Hadoop job information <span class="keyword">for</span> Stage<span class="number">-1</span>: number of mappers: <span class="number">1</span>; number of reducers: <span class="number">1</span></span><br><span class="line"><span class="number">2020</span><span class="number">-04</span><span class="number">-22</span> <span class="number">06</span>:<span class="number">38</span>:<span class="number">10</span>,<span class="number">330</span> Stage<span class="number">-1</span> map = <span class="number">0</span>%,  reduce = <span class="number">0</span>%</span><br><span class="line"><span class="number">2020</span><span class="number">-04</span><span class="number">-22</span> <span class="number">06</span>:<span class="number">38</span>:<span class="number">16</span>,<span class="number">479</span> Stage<span class="number">-1</span> map = <span class="number">100</span>%,  reduce = <span class="number">0</span>%</span><br><span class="line"><span class="number">2020</span><span class="number">-04</span><span class="number">-22</span> <span class="number">06</span>:<span class="number">38</span>:<span class="number">21</span>,<span class="number">572</span> Stage<span class="number">-1</span> map = <span class="number">100</span>%,  reduce = <span class="number">100</span>%</span><br><span class="line">Ended Job = job_1587504428431_0007</span><br><span class="line">Stage<span class="number">-4</span> <span class="keyword">is</span> selected by condition resolver.</span><br><span class="line">Stage<span class="number">-3</span> <span class="keyword">is</span> filtered <span class="keyword">out</span> by condition resolver.</span><br><span class="line">Stage<span class="number">-5</span> <span class="keyword">is</span> filtered <span class="keyword">out</span> by condition resolver.</span><br><span class="line">Moving data to directory hdfs:<span class="comment">//localhost:9000/user/hive/warehouse/hivedemo.db/golds_log/.hive-staging_hive_2020-04-22_06-37-34_112_939503175258871139-1/-ext-10000</span></span><br><span class="line">Loading data to table hivedemo.golds_log</span><br><span class="line">MapReduce Jobs Launched: </span><br><span class="line">Stage-Stage<span class="number">-1</span>: Map: <span class="number">1</span>  Reduce: <span class="number">1</span>   HDFS Read: <span class="number">18494</span> HDFS Write: <span class="number">794</span> SUCCESS</span><br><span class="line">Total MapReduce CPU Time Spent: <span class="number">0</span> msec</span><br><span class="line">OK</span><br><span class="line">Time taken: <span class="number">48.647</span> seconds</span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是，<code>insert...select</code> 语句底层也会执行一个 MapReduce 作业，速度会比较慢。</p>
+<ol start="5">
+<li>在多次执行 <code>insert...select</code> 后，<code>golds_log</code> 下仍然会生成多个小文件，此时，只要执行一下合并小文件的语句就可以了</li>
+</ol>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; alter <span class="keyword">table</span> golds_log <span class="comment">concatenate</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Hive-数据查询"><a href="#Hive-数据查询" class="headerlink" title="Hive 数据查询"></a>Hive 数据查询</h2><h3 id="表操作"><a href="#表操作" class="headerlink" title="表操作"></a>表操作</h3><p>Hive的数据表分为2种：内部表和外部表</p>
+<ol>
+<li>内部表：Hive创建并通过 LOAD DATA INPATH 进数据库的表，这种表可以理解为数据和表结构都保存在一起的数据表。当通过 <code>DROP TABLE table_name</code> 删除元数据中表结构的同时，表中的数据也同样会从 HDFS 中被删除。</li>
+<li>外部表：在表结构创建以前，数据已经保存在HDFS中，通过创建表结构，将数据格式化到表的结构里。当通过 <code>DROP TABLE table_name</code> 操作的时候，Hive 仅仅删除元数据的表结构，而不删除HDFS上的文件。所以，相比内部表，外部表可以更放心地大胆使用。</li>
+</ol>
+<ul>
+<li>创建表时，<code>LIKE</code> 允许用户复制现有的表结构，但不是复制数据</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">LIKE</span> existing_table_name</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>创建表时，使用 <code>EXTERNAL</code> 声明外部表</li>
+</ul>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">EXTERNAL</span> <span class="keyword">TABLE</span> tablename <span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="keyword">EXISTS</span> tablename</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>数据表在删除时候，内部表会连数据一起删除，而外部表只删除表结构，数据还是保留的。</li>
+</ul>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="built_in">table_name</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>在表查询时候，使用 <code>ALL</code> 和 <code>DISTINCT</code> 选项区分对重复记录的处理。默认是 <code>ALL</code>,表示查询所有记录，<code>DISTINCT</code> 表示去掉重复的记录。</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> age, grade <span class="keyword">FROM</span> <span class="keyword">table</span>;</span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">ALL</span> age, grade <span class="keyword">FROM</span> <span class="keyword">table</span>;</span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">DISTINCT</span> age, grade <span class="keyword">FROM</span> <span class="keyword">table</span>;</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>Hive 不支持 <code>HAVING</code> 子句，可以将 HAVING 子句转化为一个子查询。</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">//Hive 不支持 HAVING 子句</span><br><span class="line"><span class="keyword">SELECT</span>  col1 <span class="keyword">FROM</span> <span class="keyword">table</span> <span class="keyword">GROUP</span> <span class="keyword">BY</span> col1 <span class="keyword">HAVING</span> <span class="keyword">SUM</span>(col2) &gt; <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//可以改为下述子查询格式  Hive支持下述命名</span><br><span class="line"><span class="keyword">SELECT</span>  col1 <span class="keyword">FROM</span> (<span class="keyword">SELECT</span> col1, <span class="keyword">SUM</span>(col2) <span class="keyword">AS</span> col2 <span class="keyword">sum</span> <span class="keyword">FROM</span> <span class="keyword">table</span> <span class="keyword">GROUP</span> BU col1) table2 <span class="keyword">WHERE</span> table2.col2sum &gt; <span class="number">10</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="视图操作"><a href="#视图操作" class="headerlink" title="视图操作"></a>视图操作</h3><p>视图 VIEW 是只读的，不支持 <code>LOAD/INSERT/ALTER</code>。可以使用 <code>ALTER VIEW</code> 改变 VIEW 定义</p>
+<p>下面介绍下视图VIEW常见的操作语句</p>
+<ul>
+<li>创建 VIEW </li>
+</ul>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span>  <span class="keyword">VIEW</span> [<span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="keyword">EXISTS</span>] view_name</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>删除 VIEW </li>
+</ul>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">VIEW</span> [<span class="keyword">IF</span> <span class="keyword">EXISTS</span>] view_name</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="索引操作"><a href="#索引操作" class="headerlink" title="索引操作"></a>索引操作</h3><p>索引是标准的数据库技术。Hive 0.7 版本之后支持索引。</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="Liu Baoshuai 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="Liu Baoshuai 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/BigData/" rel="tag"> <i class="fa fa-tag"></i> BigData</a>
+              <a href="/tags/Hadoop/" rel="tag"> <i class="fa fa-tag"></i> Hadoop</a>
+              <a href="/tags/Hive/" rel="tag"> <i class="fa fa-tag"></i> Hive</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/21/hadoop-basic-1/" rel="prev" title="Hadoop入门篇——伪分布模式安装 & WordCount词频统计">
+      <i class="fa fa-chevron-left"></i> Hadoop入门篇——伪分布模式安装 & WordCount词频统计
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#学习资料汇总"><span class="nav-number">1.</span> <span class="nav-text">学习资料汇总</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Overview"><span class="nav-number">2.</span> <span class="nav-text">Overview</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Hive和关系型数据库的区别"><span class="nav-number">2.1.</span> <span class="nav-text">Hive和关系型数据库的区别</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hive-安装配置"><span class="nav-number">3.</span> <span class="nav-text">Hive 安装配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装mysql"><span class="nav-number">3.1.</span> <span class="nav-text">安装mysql</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hive-安装"><span class="nav-number">3.2.</span> <span class="nav-text">Hive 安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改-Hive-默认元数据库"><span class="nav-number">3.3.</span> <span class="nav-text">修改 Hive 默认元数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hive-配置"><span class="nav-number">3.4.</span> <span class="nav-text">Hive 配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动-Hive"><span class="nav-number">3.5.</span> <span class="nav-text">启动 Hive</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可视化工具-DbVisualizer"><span class="nav-number">3.6.</span> <span class="nav-text">可视化工具 DbVisualizer</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hive交互式模式-CLI"><span class="nav-number">4.</span> <span class="nav-text">Hive交互式模式 CLI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Beeline"><span class="nav-number">5.</span> <span class="nav-text">Beeline</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HiveServer2"><span class="nav-number">5.1.</span> <span class="nav-text">HiveServer2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Beeline-参数"><span class="nav-number">5.2.</span> <span class="nav-text">Beeline 参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ambari"><span class="nav-number">6.</span> <span class="nav-text">Ambari</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hive实战Demo"><span class="nav-number">7.</span> <span class="nav-text">Hive实战Demo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hive架构"><span class="nav-number">8.</span> <span class="nav-text">Hive架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HCatalog"><span class="nav-number">8.1.</span> <span class="nav-text">HCatalog</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hive-数据类型"><span class="nav-number">9.</span> <span class="nav-text">Hive 数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本数据类型"><span class="nav-number">9.1.</span> <span class="nav-text">基本数据类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复杂数据类型"><span class="nav-number">9.2.</span> <span class="nav-text">复杂数据类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#时间类型"><span class="nav-number">9.3.</span> <span class="nav-text">时间类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hive-文件格式"><span class="nav-number">10.</span> <span class="nav-text">Hive 文件格式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TextFile"><span class="nav-number">10.1.</span> <span class="nav-text">TextFile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SequenceFile"><span class="nav-number">10.2.</span> <span class="nav-text">SequenceFile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RCFile"><span class="nav-number">10.3.</span> <span class="nav-text">RCFile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义文件格式"><span class="nav-number">10.4.</span> <span class="nav-text">自定义文件格式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hive的数据存储"><span class="nav-number">11.</span> <span class="nav-text">Hive的数据存储</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Hive的数据模型"><span class="nav-number">11.1.</span> <span class="nav-text">Hive的数据模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#表"><span class="nav-number">11.1.1.</span> <span class="nav-text">表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#视图-View"><span class="nav-number">11.1.2.</span> <span class="nav-text">视图 View</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hive-数据操作"><span class="nav-number">12.</span> <span class="nav-text">Hive 数据操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#向表中装载数据"><span class="nav-number">12.1.</span> <span class="nav-text">向表中装载数据</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Demo-Insert插入数据"><span class="nav-number">12.1.1.</span> <span class="nav-text">Demo-Insert插入数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Demo-合并数据库小文件"><span class="nav-number">12.1.2.</span> <span class="nav-text">Demo-合并数据库小文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Demo-Load-导入外部数据"><span class="nav-number">12.1.3.</span> <span class="nav-text">Demo-Load 导入外部数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Demo-使用-Insert…Select-语句写入数据"><span class="nav-number">12.1.4.</span> <span class="nav-text">Demo-使用 Insert…Select 语句写入数据</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hive-数据查询"><span class="nav-number">13.</span> <span class="nav-text">Hive 数据查询</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#表操作"><span class="nav-number">13.1.</span> <span class="nav-text">表操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#视图操作"><span class="nav-number">13.2.</span> <span class="nav-text">视图操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#索引操作"><span class="nav-number">13.3.</span> <span class="nav-text">索引操作</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Liu Baoshuai"
+      src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/Blog-20190315/blog-logo-1.jpg">
+  <p class="site-author-name" itemprop="name">Liu Baoshuai</p>
+  <div class="site-description" itemprop="description">Record and become better myself</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/lbs0912" title="GitHub → https://github.com/lbs0912" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/mailto:lbs1203940926@163.com" title="E-Mail → mailto:lbs1203940926@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://juejin.im/user/59af7aa96fb9a0248f4aaeab" title="掘金博客 → https://juejin.im/user/59af7aa96fb9a0248f4aaeab" rel="noopener" target="_blank"><i class="fa fa-fw fa-free-code-camp"></i>掘金博客</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/2329754491" title="微博 → https://weibo.com/2329754491" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>微博</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Liu Baoshuai</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=gksxcfwJlMV3zkhz1pQc7pl2-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : 'gksxcfwJlMV3zkhz1pQc7pl2-gzGzoHsz',
+            'X-LC-Key'    : 'kjOanp812G7TIGMSQpPCVIhj',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://liubaoshuaiBlog.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://lbs0912.github.io/2020/04/22/hive-basic-1/";
+    this.page.identifier = "2020/04/22/hive-basic-1/";
+    this.page.title = "Hive入门篇——Hive安装配置，数据存储，表操作";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://liubaoshuaiBlog.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

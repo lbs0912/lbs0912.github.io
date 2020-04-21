@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://lbs0912.github.io/2020/04/22/hive-basic-1/</loc>
+    
+    <lastmod>2020-04-21T22:49:31.261Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://lbs0912.github.io/2020/04/21/hadoop-basic-1/</loc>
     
     <lastmod>2020-04-21T17:13:23.954Z</lastmod>
@@ -93,14 +100,14 @@
   </url>
   
   <url>
-    <loc>https://lbs0912.github.io/categories/index.html</loc>
+    <loc>https://lbs0912.github.io/about/index.html</loc>
     
     <lastmod>2019-11-09T15:22:38.601Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://lbs0912.github.io/about/index.html</loc>
+    <loc>https://lbs0912.github.io/categories/index.html</loc>
     
     <lastmod>2019-11-09T15:22:38.601Z</lastmod>
     
