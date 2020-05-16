@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/green/pace-theme-flash.css" rel="stylesheet">
+
+
+
+<script>
+    (function () {
+        if ('') {
+            if (prompt('请输入文章密码') !== '') {
+                alert('密码错误！');
+                if (history.length === 1) {
+                    location.replace("http://liubaoshuai.com/"); // 这里替换成你的首页
+                } else {
+                    history.back();
+                }
+            }
+        }
+    })();
+</script>
+  <link rel="apple-touch-icon" sizes="180x180" href="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/Blog-20190315/blog-logo-1.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/Blog-20190315/blog-logo-1.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/Blog-20190315/blog-logo-1.jpg">
+  <link rel="mask-icon" href="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/Blog-20190315/blog-logo-1.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"lbs0912.github.io","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="记录LeetCode题目笔记，汇总LeetCode解答记录">
+<meta name="keywords" content="LeetCode,Algorithm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LeetCode题解-006">
+<meta property="og:url" content="https:&#x2F;&#x2F;lbs0912.github.io&#x2F;2020&#x2F;05&#x2F;12&#x2F;leetcode-006&#x2F;index.html">
+<meta property="og:site_name" content="Liu Baoshuai&#39;s Blog">
+<meta property="og:description" content="记录LeetCode题目笔记，汇总LeetCode解答记录">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;leetcode&#x2F;Sieve_of_Eratosthenes_animation.gif">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;leetcode&#x2F;leetcode-61-rotate-list-1.png">
+<meta property="og:updated_time" content="2020-05-16T15:11:30.874Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;leetcode&#x2F;Sieve_of_Eratosthenes_animation.gif">
+
+<link rel="canonical" href="https://lbs0912.github.io/2020/05/12/leetcode-006/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>LeetCode题解-006 | Liu Baoshuai's Blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?17082ee15df20dad9762c5512f336eb2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <a href="https://github.com/lbs0912" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub">
+      <svg width="80" height="80" viewBox="0 0 250 250" 
+            style="fill:#151513; color:#fff; position: fixed; top: 0; border: 0; right: 0;" aria-hidden="true">
+              <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+              <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+              <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
+      </svg>
+    </a>
+    <style>
+      .github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}
+    </style>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Liu Baoshuai's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Do one thing at a time and do well</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://lbs0912.github.io/2020/05/12/leetcode-006/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/Blog-20190315/blog-logo-1.jpg">
+      <meta itemprop="name" content="Liu Baoshuai">
+      <meta itemprop="description" content="Record and become better myself">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Liu Baoshuai's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          LeetCode题解-006
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-12 14:35:26" itemprop="dateCreated datePublished" datetime="2020-05-12T14:35:26+08:00">2020-05-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-05-16 23:11:30" itemprop="dateModified" datetime="2020-05-16T23:11:30+08:00">2020-05-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/LeetCode/" itemprop="url" rel="index"><span itemprop="name">LeetCode</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/05/12/leetcode-006/" class="post-meta-item leancloud_visitors" data-flag-title="LeetCode题解-006" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2020/05/12/leetcode-006/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/05/12/leetcode-006/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <ul>
+<li>记录LeetCode题目笔记，汇总LeetCode解答记录</li>
+</ul>
+<a id="more"></a>
+
+
+
+
+
+<h2 id="Changelog"><a href="#Changelog" class="headerlink" title="Changelog"></a>Changelog</h2><ul>
+<li>2020/02/29，撰写</li>
+<li>2020/05/12，整理完成</li>
+</ul>
+<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><ul>
+<li><a href="https://leetcode-cn.com/problems/reverse-string/" target="_blank" rel="noopener">LeetCode-344. 反转字符串</a></li>
+<li><a href="https://leetcode-cn.com/problems/count-primes/" target="_blank" rel="noopener">LeetCode-204.Count Primes</a></li>
+<li><a href="https://leetcode-cn.com/problems/relative-ranks/" target="_blank" rel="noopener">LeetCode-506. 相对名次</a></li>
+<li><a href="https://leetcode-cn.com/problems/rotate-list/" target="_blank" rel="noopener">LeetCode-61. 旋转链表</a></li>
+<li><a href="https://leetcode-cn.com/problems/create-target-array-in-the-given-order/" target="_blank" rel="noopener">LeetCode-1389. 按既定顺序创建目标数组</a></li>
+</ul>
+<h2 id="344-反转字符串"><a href="#344-反转字符串" class="headerlink" title="344. 反转字符串"></a>344. 反转字符串</h2><h3 id="Description"><a href="#Description" class="headerlink" title="Description"></a>Description</h3><ul>
+<li><a href="https://leetcode-cn.com/problems/reverse-string/" target="_blank" rel="noopener">LeetCode-344. 反转字符串</a></li>
+</ul>
+<p>编写一个函数，其作用是将输入的字符串反转过来。输入字符串以字符数组 <code>char[]</code> 的形式给出。</p>
+<p>不要给另外的数组分配额外的空间，你必须原地修改输入数组、使用 <code>O(1)</code> 的额外空间解决这一问题。</p>
+<p>你可以假设数组中的所有字符都是 ASCII 码表中的可打印字符。</p>
+<p>示例 1</p>
+<pre><code>输入：[&quot;h&quot;,&quot;e&quot;,&quot;l&quot;,&quot;l&quot;,&quot;o&quot;]
+输出：[&quot;o&quot;,&quot;l&quot;,&quot;l&quot;,&quot;e&quot;,&quot;h&quot;]</code></pre><p>示例 2</p>
+<pre><code>输入：[&quot;H&quot;,&quot;a&quot;,&quot;n&quot;,&quot;n&quot;,&quot;a&quot;,&quot;h&quot;]
+输出：[&quot;h&quot;,&quot;a&quot;,&quot;n&quot;,&quot;n&quot;,&quot;a&quot;,&quot;H&quot;]</code></pre><h3 id="Approach-1"><a href="#Approach-1" class="headerlink" title="Approach 1"></a>Approach 1</h3><h4 id="Analysis"><a href="#Analysis" class="headerlink" title="Analysis"></a>Analysis</h4><h4 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h4><ul>
+<li>Java</li>
+</ul>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//国内版leetcode-cn</span></span><br><span class="line"><span class="keyword">class</span> <span class="symbol">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">void</span> reverseString(char[] s)&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="built_in">int</span> l=<span class="number">0</span>,r=s.length<span class="number">-1</span>;l&lt;r;l++,r--)&#123;</span><br><span class="line">            char temp = s[l];</span><br><span class="line">            s[l] = s[r];</span><br><span class="line">            s[r] = temp;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//国外版 leetcode</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">reverseString</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">    	StringBuffer s1 = <span class="keyword">new</span> StringBuffer();</span><br><span class="line">    	<span class="keyword">for</span>(<span class="keyword">int</span> i = s.length()-<span class="number">1</span>;i&gt;=<span class="number">0</span>;i--)</span><br><span class="line">    	&#123;</span><br><span class="line">    		s1.append(s.charAt(i));</span><br><span class="line">    	&#125;</span><br><span class="line">    	<span class="keyword">return</span> s1.toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>C++ 实现1：基本方法</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">reverseString</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&amp; s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> len = s.size();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> l=<span class="number">0</span>,r=len<span class="number">-1</span>;l&lt;r;l++,r--)&#123;</span><br><span class="line">            <span class="keyword">char</span> temp = s[r];</span><br><span class="line">            s[r] = s[l];</span><br><span class="line">            s[l] = temp;</span><br><span class="line">           </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>C++ 实现2：采用STL库中的 <code>reverse()</code> 函数</li>
+</ul>
+<blockquote>
+<p><code>template &lt; BidirectionalIterator&gt; void reverse (BidirectionalIterator first, BidirectionalIterator last);</code> </p>
+<p>Reverses the order of the elements in the range [first,last).<br>The function calls <code>iter_swap</code> to swap the elements to their new locations.</p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//国内版leetcode-cn</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">reverseString</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;&amp; s)</span> </span>&#123;</span><br><span class="line">        reverse(s.begin(), s.end());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//国外版 leetcode</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">string</span> <span class="title">reverseString</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</span><br><span class="line">        reverse(s.begin(),s.end());</span><br><span class="line">        <span class="keyword">return</span> s;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><code>string.begin()</code>和 <code>string.end()</code>使用了迭代器操作。</p>
+<ul>
+<li>JS： 使用 <code>myString.split(&quot;&quot;).reverse().join(&quot;&quot;)</code></li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> reverseString = <span class="function"><span class="keyword">function</span>(<span class="params">s</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> s.split(<span class="string">""</span>).reverse().join(<span class="string">""</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+<p>先使用 <code>split()</code> 将字符串转化为数组，再调用数组的 <code>reverse()</code> 方法反转数组，最后使用 <code>join()</code> 方法将数组转化为字符串，使用Demo如下所示。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> str = <span class="string">"LiuBaoshuai"</span>;</span><br><span class="line"><span class="keyword">var</span> newStr = str.split(<span class="string">""</span>).reverse().join(<span class="string">""</span>);</span><br><span class="line"><span class="built_in">console</span>.log(str);  <span class="comment">// LiuBaoshuai</span></span><br><span class="line"><span class="built_in">console</span>.log(newStr);  <span class="comment">// iauhsoaBuiL</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="204-计数质数"><a href="#204-计数质数" class="headerlink" title="204. 计数质数"></a>204. 计数质数</h2><h3 id="Description-1"><a href="#Description-1" class="headerlink" title="Description"></a>Description</h3><ul>
+<li><a href="https://leetcode-cn.com/problems/count-primes/" target="_blank" rel="noopener">LeetCode-204.Count Primes</a></li>
+</ul>
+<p>统计所有小于非负整数 n 的质数的数量。</p>
+<p>示例</p>
+<pre><code>输入: 10
+输出: 4
+解释: 小于 10 的质数一共有 4 个, 它们是 2, 3, 5, 7 。</code></pre><p>提示1</p>
+<ul>
+<li>Let’s start with a <code>isPrime</code> function. To determine if a number is prime, we need to check if it is not divisible by any number less than n. The runtime complexity of isPrime function would be O(n) and hence counting the total prime numbers up to n would be O(n^2). Could we do better?</li>
+<li>判断一个数是否是质数，我们需要判断它是否可以被任意一个比它小的数字整除。因此判断一个数是否是质数的时间复杂度将是 <code>O(n)</code>。因此，计数质数的时间复杂度将是 <code>O(n^2)</code></li>
+</ul>
+<p>提示2</p>
+<ul>
+<li>As we know the number must not be divisible by any number &gt; <code>n/2</code>, we can immediately cut the total iterations half by dividing only up to <code>n/2</code>. Could we still do better? </li>
+<li>考虑一个数 <code>number</code>的最大因数，因为 <code>num=1*num=2*p</code>，因此，如果 <code>num</code> 可以被2整除，则p的最大值为 <code>num/2</code>。因此，我们在判断质数的循环条件，可以从<code>[1,num)</code> 缩减至 <code>[1,num/2)</code>。  </li>
+</ul>
+<p>提示3</p>
+<ul>
+<li>Let’s write down all of 12’s factors（让我们写下数字12的所有因数分解表达式）</li>
+</ul>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2</span> × <span class="number">6</span> = <span class="number">12</span></span><br><span class="line"><span class="number">3</span> × <span class="number">4</span> = <span class="number">12</span></span><br><span class="line"><span class="number">4</span> × <span class="number">3</span> = <span class="number">12</span></span><br><span class="line"><span class="number">6</span> × <span class="number">2</span> = <span class="number">12</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>As you can see, calculations of <code>4 × 3</code> and <code>6 × 2</code> are not necessary. Therefore, we only need to consider factors up to <code>√n</code> because, if <code>n</code> is divisible by some number <code>p</code>, then n = p × q and since p ≤ q, we could derive that <code>p ≤ √n</code>.</li>
+<li>可以看到，计算 <code>4 × 3</code> 和 <code>6 × 2</code> 是没有必要的。我们只需要考虑因数小于等于 <code>√n</code> 的情况即可。因此，我们在判断质数的循环条件，可以从<code>[1,num/2)</code> 缩减至 <code>[1,√n]</code>。</li>
+<li>Our total runtime has now improved to <code>O(n^1.5)</code>, which is slightly better. Is there a faster approach?</li>
+<li>综上，我们的时间复杂度可以优化到 <code>O(n^1.5)</code>。那么还能继续提升优化吗？</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">countPrimes</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">   <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">   <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i++) &#123;</span><br><span class="line">      <span class="keyword">if</span> (isPrime(i)) count++;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">return</span> count;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">isPrime</span><span class="params">(<span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">   <span class="keyword">if</span> (num &lt;= <span class="number">1</span>) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">   <span class="comment">// Loop's ending condition is i * i &lt;= num instead of i &lt;= sqrt(num)</span></span><br><span class="line">   <span class="comment">// to avoid repeatedly calling an expensive function sqrt().</span></span><br><span class="line">   <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i * i &lt;= num; i++) &#123;</span><br><span class="line">      <span class="keyword">if</span> (num % i == <span class="number">0</span>) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>提示4</p>
+<ul>
+<li>The <a href="https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes" target="_blank" rel="noopener">Sieve of Eratosthenes</a> is one of the most efficient ways to find all prime numbers up to n. But don’t let that name scare you, I promise that the concept is surprisingly simple.</li>
+<li><a href="https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes" target="_blank" rel="noopener">Sieve of Eratosthenes</a> 是目前计算质数最高效的方法之一。不要担心，我保证这个概念和方法时十分简单的。</li>
+</ul>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/leetcode/Sieve_of_Eratosthenes_animation.gif" alt="Sieve_of_Eratosthenes_animation.gif"></p>
+<ul>
+<li>We start off with a table of n numbers. Let’s look at the first number, 2. We know all multiples of 2 must not be primes, so we mark them off as non-primes. Then we look at the next number, 3. Similarly, all multiples of 3 such as 3 × 2 = 6, 3 × 3 = 9, … must not be primes, so we mark them off as well. Now we look at the next number, 4, which was already marked off. What does this tell you? Should you mark off all multiples of 4 as well?</li>
+<li>4 is not a prime because it is divisible by 2, which means all multiples of 4 must also be divisible by 2 and were already marked off. So we can skip 4 immediately and go to the next number, 5. Now, all multiples of 5 such as 5 × 2 = 10, 5 × 3 = 15, 5 × 4 = 20, 5 × 5 = 25, … can be marked off. There is a slight optimization here, we do not need to start from 5 × 2 = 10. Where should we start marking off?</li>
+<li>让我们从一个包含 <code>n</code> 个数字的列表开始。首先看下第1个数字 <code>2</code>，我们知道 <code>2</code> 的倍数肯定不是质数，因此我们可以将它们标记为非质数。</li>
+<li>之后，再看第2个数字 <code>3</code>，同样 <code>3</code> 的倍数也可以被标记为非质数。</li>
+<li>之后，再看第3个数字 <code>4</code>，因为数字 <code>4</code> 是数字 <code>2</code> 的倍数，已经被标记为了非质数。因为 <code>4</code> 的倍数一定是 <code>2</code> 的倍数，即 <code>4</code> 的倍数已经被标记了，所以我们可以跳过数字 <code>4</code>，去看下一个数字 <code>5</code>。</li>
+</ul>
+<p>提示5</p>
+<ul>
+<li>In fact, we can mark off multiples of 5 starting at 5 × 5 = 25, because 5 × 2 = 10 was already marked off by multiple of 2, similarly 5 × 3 = 15 was already marked off by multiple of 3. Therefore, if the current number is p, we can always mark off multiples of p starting at <code>p^2</code>, then in increments of p: p^2 + p, p^2 + 2p, … Now what should be the terminating loop condition?</li>
+<li>对于数字 <code>5</code> 的判断，此处有一个小优化项。我们真的需要从 <code>5</code> 的倍数 <code>10</code>，<code>15</code>，<code>20</code> 开始标记吗？其实是没必要的，因为数字 <code>10=2*5</code>，<code>15=3*5</code>，<code>20=4*5</code>，它们已经被标记处理了。总结可以发现，我们从 <code>25=5*5</code> 开始判断即可。即我们开始判断的起点是 <code>p^2</code>，后续标记为 <code>p^2 + p</code>， <code>p^2 + 2p</code>， <code>...</code></li>
+</ul>
+<p>提示6</p>
+<ul>
+<li>It is easy to say that the terminating loop condition is <code>p &lt; n</code>, which is certainly correct but not efficient. </li>
+<li>Yes, the terminating loop condition can be <code>p &lt; √n</code>, as all <code>non-primes ≥ √n</code> must have already been marked off. When the loop terminates, all the numbers in the table that are non-marked are prime.</li>
+<li>很容易发现，循环终止条件是 <code>p &lt; n</code>，但这个终止条件仅仅是正确的，不是最高效的。</li>
+<li>实际上，循环终止条件应该是是 <code>p &lt;= √n</code>，因为所有大于 <code>√n</code> 的因数已经被标记处理了。</li>
+<li>当上述循环判断结束后，所有没有被标记的数字就是质数。</li>
+</ul>
+<p>提示7</p>
+<ul>
+<li>The Sieve of Eratosthenes uses an extra <code>O(n)</code> memory and its runtime complexity is <code>O(nlogn)</code>. For the more mathematically inclined readers, you can read more about its algorithm complexity on <a href="https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes#Algorithm_complexity" target="_blank" rel="noopener">Wikipedia</a>.</li>
+<li><code>Sieve of Eratosthenes</code> 方法的空间复杂度是<code>O(n)</code>，时间复杂度是 <code>O(nlogn)</code>，更多数学推导可参考<a href="https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes#Algorithm_complexity" target="_blank" rel="noopener">Wikipedia</a>。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">countPrimes</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">   <span class="keyword">boolean</span>[] isPrime = <span class="keyword">new</span> <span class="keyword">boolean</span>[n];</span><br><span class="line">   <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt; n; i++) &#123;</span><br><span class="line">      isPrime[i] = <span class="keyword">true</span>;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">// Loop's ending condition is i * i &lt; n instead of i &lt; sqrt(n)</span></span><br><span class="line">   <span class="comment">// to avoid repeatedly calling an expensive function sqrt().</span></span><br><span class="line">   <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i * i &lt; n; i++) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!isPrime[i]) <span class="keyword">continue</span>;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> j = i * i; j &lt; n; j += i) &#123;</span><br><span class="line">         isPrime[j] = <span class="keyword">false</span>;</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">   <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt; n; i++) &#123;</span><br><span class="line">      <span class="keyword">if</span> (isPrime[i]) count++;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">return</span> count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Approach-1-参考题目提示使用Sieve-of-Eratosthenes"><a href="#Approach-1-参考题目提示使用Sieve-of-Eratosthenes" class="headerlink" title="Approach 1-参考题目提示使用Sieve of Eratosthenes"></a>Approach 1-参考题目提示使用Sieve of Eratosthenes</h3><h4 id="Analysis-1"><a href="#Analysis-1" class="headerlink" title="Analysis"></a>Analysis</h4><p>参考题目提示，使用 <code>Sieve of Eratosthenes</code> 方法求解。</p>
+<h4 id="Solution-1"><a href="#Solution-1" class="headerlink" title="Solution"></a>Solution</h4><ul>
+<li>Java</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">countPrimes</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">boolean</span>[] isPrime = <span class="keyword">new</span> <span class="keyword">boolean</span>[n];</span><br><span class="line">       <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt; n; i++) &#123;</span><br><span class="line">          isPrime[i] = <span class="keyword">true</span>;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">// Loop's ending condition is i * i &lt; n instead of i &lt; sqrt(n)</span></span><br><span class="line">       <span class="comment">// to avoid repeatedly calling an expensive function sqrt().</span></span><br><span class="line">       <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i * i &lt; n; i++) &#123;</span><br><span class="line">          <span class="keyword">if</span> (!isPrime[i]) <span class="keyword">continue</span>;</span><br><span class="line">          <span class="keyword">for</span> (<span class="keyword">int</span> j = i * i; j &lt; n; j += i) &#123;</span><br><span class="line">             isPrime[j] = <span class="keyword">false</span>;</span><br><span class="line">          &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">       <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt; n; i++) &#123;</span><br><span class="line">          <span class="keyword">if</span> (isPrime[i]) count++;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> count;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="506-相对名次"><a href="#506-相对名次" class="headerlink" title="506. 相对名次"></a>506. 相对名次</h2><h3 id="Description-2"><a href="#Description-2" class="headerlink" title="Description"></a>Description</h3><ul>
+<li><a href="https://leetcode-cn.com/problems/relative-ranks/" target="_blank" rel="noopener">LeetCode-506. 相对名次</a></li>
+</ul>
+<h3 id="Approach-1-Map映射"><a href="#Approach-1-Map映射" class="headerlink" title="Approach 1-Map映射"></a>Approach 1-Map映射</h3><h4 id="Analysis-2"><a href="#Analysis-2" class="headerlink" title="Analysis"></a>Analysis</h4><p>很自然的会想到对数组进行排序。但直接排序的话，会丢失数组原有的顺序。因此，可以使用 <code>Map</code> 数据结构，维护一个分数和名次的映射关系。</p>
+<h4 id="Solution-2"><a href="#Solution-2" class="headerlink" title="Solution"></a>Solution</h4><ul>
+<li>Java</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> String[] findRelativeRanks(<span class="keyword">int</span>[] nums) &#123;</span><br><span class="line">        <span class="keyword">int</span>[] numArrCopy = Arrays.copyOf(nums,nums.length);</span><br><span class="line">        Arrays.sort(nums);</span><br><span class="line">        Map&lt;Integer,Integer&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>,j=nums.length;i&lt;nums.length;i++,j--)&#123;</span><br><span class="line">            map.put(nums[i],j);</span><br><span class="line">        &#125;</span><br><span class="line">        String [] res = <span class="keyword">new</span> String[map.size()];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;numArrCopy.length;i++)&#123;</span><br><span class="line">            Integer j = map.get(numArrCopy[i]);</span><br><span class="line">            <span class="keyword">switch</span>(j)&#123;</span><br><span class="line">                <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">                    res[i] = <span class="string">"Gold Medal"</span>;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">                    res[i] = <span class="string">"Silver Medal"</span>;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">                    res[i] = <span class="string">"Bronze Medal"</span>;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">default</span>:</span><br><span class="line">                    res[i] = j.toString();</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>C++</li>
+</ul>
+<p>C++中，借助 <code>pair&lt;int,int&gt;</code> 数据结构实现。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; findRelativeRanks(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums) &#123;</span><br><span class="line">        <span class="built_in">vector</span>&lt;pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt;&gt; vec;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; res(nums.size());</span><br><span class="line">        <span class="built_in">string</span> ranks[<span class="number">3</span>] = &#123;<span class="string">"Gold Medal"</span>, <span class="string">"Silver Medal"</span>, <span class="string">"Bronze Medal"</span>&#125;;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.size();i++)&#123;</span><br><span class="line">            vec.push_back(pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt;(i,nums[i]));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">auto</span> comp = [](<span class="keyword">const</span> pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt;&amp; p1,<span class="keyword">const</span> pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt;&amp; p2)&#123;</span><br><span class="line">        	<span class="keyword">return</span> p1.second &gt;p2.second;</span><br><span class="line">        &#125;;</span><br><span class="line">        sort(vec.begin(),vec.end(),comp);</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.size();i++)&#123;</span><br><span class="line">        	<span class="keyword">if</span>(i&lt;<span class="number">3</span>)&#123;</span><br><span class="line">        		res[vec[i].first] = ranks[i];</span><br><span class="line">        	&#125;</span><br><span class="line">        	<span class="keyword">else</span>&#123;</span><br><span class="line">        		res[vec[i].first] = to_string(i+<span class="number">1</span>);</span><br><span class="line">        	&#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>JS</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @param &#123;number[]&#125; nums</span></span><br><span class="line"><span class="comment"> * @return &#123;string[]&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> findRelativeRanks = <span class="function"><span class="keyword">function</span>(<span class="params">nums</span>) </span>&#123;</span><br><span class="line">    <span class="comment">//复制数组</span></span><br><span class="line">    <span class="keyword">var</span> sortedNums = nums.slice(<span class="number">0</span>);</span><br><span class="line">    sortedNums.sort(<span class="function"><span class="keyword">function</span>(<span class="params">a,b</span>)</span>&#123;  <span class="comment">//降序</span></span><br><span class="line">        <span class="keyword">return</span> b-a; </span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">var</span> sortedNumsMapping = &#123;&#125;;</span><br><span class="line">    sortedNums.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">el,index</span>)</span>&#123;</span><br><span class="line">        sortedNumsMapping[el] = (index+<span class="number">1</span>).toString();</span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">var</span> res = [];</span><br><span class="line">    res = nums.map(<span class="function"><span class="keyword">function</span>(<span class="params">el,index</span>)</span>&#123;</span><br><span class="line">       <span class="keyword">if</span>(sortedNumsMapping[el] === <span class="string">'1'</span>)        <span class="keyword">return</span> <span class="string">"Gold Medal"</span>;</span><br><span class="line">       <span class="keyword">else</span> <span class="keyword">if</span>(sortedNumsMapping[el] === <span class="string">'2'</span> ) <span class="keyword">return</span> <span class="string">"Silver Medal"</span>;</span><br><span class="line">       <span class="keyword">else</span> <span class="keyword">if</span>(sortedNumsMapping[el] === <span class="string">'3'</span> ) <span class="keyword">return</span> <span class="string">"Bronze Medal"</span>;</span><br><span class="line">       <span class="keyword">else</span> <span class="keyword">return</span> (sortedNumsMapping[el]);</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="61-旋转链表"><a href="#61-旋转链表" class="headerlink" title="61. 旋转链表"></a>61. 旋转链表</h2><h3 id="Description-3"><a href="#Description-3" class="headerlink" title="Description"></a>Description</h3><ul>
+<li><a href="https://leetcode-cn.com/problems/rotate-list/" target="_blank" rel="noopener">LeetCode-61. 旋转链表</a></li>
+</ul>
+<h3 id="Approach-1-构造环形链表"><a href="#Approach-1-构造环形链表" class="headerlink" title="Approach 1-构造环形链表"></a>Approach 1-构造环形链表</h3><h4 id="Analysis-3"><a href="#Analysis-3" class="headerlink" title="Analysis"></a>Analysis</h4><p>查看 <code>leetcode-cn</code> 官方题解，求解本题。</p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/leetcode/leetcode-61-rotate-list-1.png" alt=""></p>
+<p>结合上图分析</p>
+<ol>
+<li>先将链表闭合成环形链表</li>
+<li>将链表每个节点向右移动 k 个位置，意味着链表头节点的移动</li>
+<li>移动结束后，找到新的链表头节点和尾节点，并断开链表</li>
+</ol>
+<p>不难发现，若移动位置小于一圈时（<code>n&lt;k</code>），新的链表头节点在 <code>n-k</code>处，新的链表尾节点在 <code>n-k-1</code> 处。若移动位置大于一圈（<code>n&lt;k</code>），移动一整圈对结果并无影响。</p>
+<p>因此，可以总结如下</p>
+<ul>
+<li>新的链表头节点在 <code>n - k%n</code> 处</li>
+<li>新的链表尾节点在 <code>n - k%n - 1</code> 处</li>
+</ul>
+<p>算法实现思路如下</p>
+<ol>
+<li>找到旧的尾部，并将其与链表头相连 <code>old_tail.next = head</code>，整个链表闭合成环，同时计算出链表的长度 n</li>
+<li>找到新的尾部，第 (<code>n - k % n - 1</code>) 个节点 ，新的链表头是第 (<code>n - k % n</code>) 个节点</li>
+<li>断开环 <code>new_tail.next = null</code>，并返回新的链表头 <code>new_head</code>。</li>
+</ol>
+<p>复杂度分析</p>
+<ul>
+<li>时间复杂度：<code>O(N)</code>，其中 N 是链表中的元素个数</li>
+<li>空间复杂度：<code>O(1)</code>，因为只需要常数的空间</li>
+</ul>
+<h4 id="Solution-3"><a href="#Solution-3" class="headerlink" title="Solution"></a>Solution</h4><ul>
+<li>Java</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> ListNode <span class="title">rotateRight</span><span class="params">(ListNode head, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// base cases</span></span><br><span class="line">    <span class="keyword">if</span> (head == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (head.next == <span class="keyword">null</span>) <span class="keyword">return</span> head;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// close the linked list into the ring</span></span><br><span class="line">    ListNode old_tail = head;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="keyword">for</span>(n = <span class="number">1</span>; old_tail.next != <span class="keyword">null</span>; n++)</span><br><span class="line">      old_tail = old_tail.next;</span><br><span class="line">    old_tail.next = head;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// find new tail : (n - k % n - 1)th node</span></span><br><span class="line">    <span class="comment">// and new head : (n - k % n)th node</span></span><br><span class="line">    ListNode new_tail = head;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n - k % n - <span class="number">1</span>; i++)</span><br><span class="line">      new_tail = new_tail.next;</span><br><span class="line">    ListNode new_head = new_tail.next;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// break the ring</span></span><br><span class="line">    new_tail.next = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> new_head;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="1389-按既定顺序创建目标数组"><a href="#1389-按既定顺序创建目标数组" class="headerlink" title="1389. 按既定顺序创建目标数组"></a>1389. 按既定顺序创建目标数组</h2><h3 id="Description-4"><a href="#Description-4" class="headerlink" title="Description"></a>Description</h3><ul>
+<li><a href="https://leetcode-cn.com/problems/create-target-array-in-the-given-order/" target="_blank" rel="noopener">LeetCode-1389. 按既定顺序创建目标数组</a></li>
+</ul>
+<h3 id="Approach-1-链表实现"><a href="#Approach-1-链表实现" class="headerlink" title="Approach 1-链表实现"></a>Approach 1-链表实现</h3><h4 id="Analysis-4"><a href="#Analysis-4" class="headerlink" title="Analysis"></a>Analysis</h4><ol>
+<li>查看题目的限制条件 <code>0 &lt;= index[i] &lt;= i</code>，可知在插入第 <code>i</code> 个元素时，索引最多为最后一个元素。</li>
+<li>分析题目可知，要在当前的下标从 0 开始长度为 n 的顺序表的 <code>i</code> 位置插入元素，就要先把原来表中区间 <code>[i, n]</code> 中的元素从全部向后移动一位，然后在 <code>i</code> 位置插入带插入的元素。</li>
+<li>对于 Java 而言，可以使用 <code>ArrayList</code> 数据结构实现，其 <code>add(int index, E element)</code> 源码如下。</li>
+</ol>
+<p>可以发现，在调用 <code>add(int index, E element)</code>，会先检查是否需要扩容。若需要的话，会将 <code>index</code> 及其之后的元素都向后移动一位，并将新元素插入到 <code>idnex</code> 处。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Inserts the specified element at the specified position in this</span></span><br><span class="line"><span class="comment"> * list. Shifts the element currently at that position (if any) and</span></span><br><span class="line"><span class="comment"> * any subsequent elements to the right (adds one to their indices).</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> index index at which the specified element is to be inserted</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> element element to be inserted</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> IndexOutOfBoundsException &#123;<span class="doctag">@inheritDoc</span>&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> index, E element)</span> </span>&#123;</span><br><span class="line">    rangeCheckForAdd(index);</span><br><span class="line">    <span class="comment">// 1. 检测是否需要扩容</span></span><br><span class="line">    ensureCapacityInternal(size + <span class="number">1</span>);  <span class="comment">// Increments modCount!!</span></span><br><span class="line">    <span class="comment">// 2. 将 index 及其之后的所有元素都向后移一位</span></span><br><span class="line">    System.arraycopy(elementData, index, elementData, index + <span class="number">1</span>,</span><br><span class="line">                     size - index);</span><br><span class="line">    <span class="comment">// 3. 将新元素插入至 index 处</span></span><br><span class="line">    elementData[index] = element;</span><br><span class="line">    size++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Solution-4"><a href="#Solution-4" class="headerlink" title="Solution"></a>Solution</h4><ul>
+<li>Java</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span>[] createTargetArray(<span class="keyword">int</span>[] nums, <span class="keyword">int</span>[] index) &#123;</span><br><span class="line">        <span class="keyword">int</span> n = nums.length;</span><br><span class="line">        List&lt;Integer&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)&#123;</span><br><span class="line">            res.add(index[i],nums[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span>[] target = <span class="keyword">new</span> <span class="keyword">int</span>[n];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)&#123;</span><br><span class="line">            target[i] = res.get(i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> target;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="Liu Baoshuai 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="Liu Baoshuai 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Algorithm/" rel="tag"> <i class="fa fa-tag"></i> Algorithm</a>
+              <a href="/tags/LeetCode/" rel="tag"> <i class="fa fa-tag"></i> LeetCode</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/22/hive-basic-1/" rel="prev" title="Hive入门篇——Hive安装配置，数据存储，表操作">
+      <i class="fa fa-chevron-left"></i> Hive入门篇——Hive安装配置，数据存储，表操作
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Changelog"><span class="nav-number">1.</span> <span class="nav-text">Changelog</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Overview"><span class="nav-number">2.</span> <span class="nav-text">Overview</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#344-反转字符串"><span class="nav-number">3.</span> <span class="nav-text">344. 反转字符串</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Description"><span class="nav-number">3.1.</span> <span class="nav-text">Description</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Approach-1"><span class="nav-number">3.2.</span> <span class="nav-text">Approach 1</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Analysis"><span class="nav-number">3.2.1.</span> <span class="nav-text">Analysis</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Solution"><span class="nav-number">3.2.2.</span> <span class="nav-text">Solution</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#204-计数质数"><span class="nav-number">4.</span> <span class="nav-text">204. 计数质数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Description-1"><span class="nav-number">4.1.</span> <span class="nav-text">Description</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Approach-1-参考题目提示使用Sieve-of-Eratosthenes"><span class="nav-number">4.2.</span> <span class="nav-text">Approach 1-参考题目提示使用Sieve of Eratosthenes</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Analysis-1"><span class="nav-number">4.2.1.</span> <span class="nav-text">Analysis</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Solution-1"><span class="nav-number">4.2.2.</span> <span class="nav-text">Solution</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#506-相对名次"><span class="nav-number">5.</span> <span class="nav-text">506. 相对名次</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Description-2"><span class="nav-number">5.1.</span> <span class="nav-text">Description</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Approach-1-Map映射"><span class="nav-number">5.2.</span> <span class="nav-text">Approach 1-Map映射</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Analysis-2"><span class="nav-number">5.2.1.</span> <span class="nav-text">Analysis</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Solution-2"><span class="nav-number">5.2.2.</span> <span class="nav-text">Solution</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#61-旋转链表"><span class="nav-number">6.</span> <span class="nav-text">61. 旋转链表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Description-3"><span class="nav-number">6.1.</span> <span class="nav-text">Description</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Approach-1-构造环形链表"><span class="nav-number">6.2.</span> <span class="nav-text">Approach 1-构造环形链表</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Analysis-3"><span class="nav-number">6.2.1.</span> <span class="nav-text">Analysis</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Solution-3"><span class="nav-number">6.2.2.</span> <span class="nav-text">Solution</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1389-按既定顺序创建目标数组"><span class="nav-number">7.</span> <span class="nav-text">1389. 按既定顺序创建目标数组</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Description-4"><span class="nav-number">7.1.</span> <span class="nav-text">Description</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Approach-1-链表实现"><span class="nav-number">7.2.</span> <span class="nav-text">Approach 1-链表实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Analysis-4"><span class="nav-number">7.2.1.</span> <span class="nav-text">Analysis</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Solution-4"><span class="nav-number">7.2.2.</span> <span class="nav-text">Solution</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Liu Baoshuai"
+      src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/Blog-20190315/blog-logo-1.jpg">
+  <p class="site-author-name" itemprop="name">Liu Baoshuai</p>
+  <div class="site-description" itemprop="description">Record and become better myself</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/lbs0912" title="GitHub → https://github.com/lbs0912" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/mailto:lbs1203940926@163.com" title="E-Mail → mailto:lbs1203940926@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://juejin.im/user/59af7aa96fb9a0248f4aaeab" title="掘金博客 → https://juejin.im/user/59af7aa96fb9a0248f4aaeab" rel="noopener" target="_blank"><i class="fa fa-fw fa-free-code-camp"></i>掘金博客</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/2329754491" title="微博 → https://weibo.com/2329754491" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>微博</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Liu Baoshuai</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=gksxcfwJlMV3zkhz1pQc7pl2-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : 'gksxcfwJlMV3zkhz1pQc7pl2-gzGzoHsz',
+            'X-LC-Key'    : 'kjOanp812G7TIGMSQpPCVIhj',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://liubaoshuaiBlog.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://lbs0912.github.io/2020/05/12/leetcode-006/";
+    this.page.identifier = "2020/05/12/leetcode-006/";
+    this.page.title = "LeetCode题解-006";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://liubaoshuaiBlog.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>
