@@ -1358,226 +1358,6 @@
       </tags>
   </entry>
   <entry>
-    <title>LeetCode题解-004</title>
-    <url>/2020/02/23/leetcode-004/</url>
-    <content><![CDATA[<ul>
-<li>记录LeetCode题目笔记，汇总LeetCode解答记录</li>
-</ul>
-<a id="more"></a>
-
-
-
-<h2 id="Changelog"><a href="#Changelog" class="headerlink" title="Changelog"></a>Changelog</h2><ul>
-<li>2020/02/23，撰写</li>
-<li>2020/02/23，整理完成</li>
-</ul>
-<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><ul>
-<li><a href="https://leetcode.com/problems/number-of-steps-to-reduce-a-number-to-zero/" target="_blank" rel="noopener">LeetCode-1342. Number of Steps to Reduce a Number to Zero（将数字变成 0 的操作次数）</a></li>
-<li><a href="https://leetcode-cn.com/problems/subtract-the-product-and-sum-of-digits-of-an-integer/" target="_blank" rel="noopener">LeetCode-1281. 整数的各位积和之差</a></li>
-<li><a href="https://leetcode-cn.com/problems/power-of-three/" target="_blank" rel="noopener">LeetCode-326. 3的幂</a></li>
-<li><a href="https://leetcode-cn.com/problems/power-of-two/" target="_blank" rel="noopener">LeetCode-231. 2的幂</a></li>
-<li><a href="https://leetcode-cn.com/problems/power-of-four/" target="_blank" rel="noopener">LeetCode-342. 4的幂</a></li>
-</ul>
-<h2 id="1342-Number-of-Steps-to-Reduce-a-Number-to-Zero（将数字变成-0-的操作次数）"><a href="#1342-Number-of-Steps-to-Reduce-a-Number-to-Zero（将数字变成-0-的操作次数）" class="headerlink" title="1342. Number of Steps to Reduce a Number to Zero（将数字变成 0 的操作次数）"></a>1342. Number of Steps to Reduce a Number to Zero（将数字变成 0 的操作次数）</h2><h3 id="Description"><a href="#Description" class="headerlink" title="Description"></a>Description</h3><ul>
-<li><a href="https://leetcode.com/problems/number-of-steps-to-reduce-a-number-to-zero/" target="_blank" rel="noopener">LeetCode-1342. Number of Steps to Reduce a Number to Zero（将数字变成 0 的操作次数）</a></li>
-</ul>
-<h3 id="Approach-1"><a href="#Approach-1" class="headerlink" title="Approach 1"></a>Approach 1</h3><h4 id="Analysis"><a href="#Analysis" class="headerlink" title="Analysis"></a>Analysis</h4><p>题目较为简单，直接求解即可，不再赘述。</p>
-<h4 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h4><ul>
-<li>Java</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">numberOfSteps</span> <span class="params">(<span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span>(num&gt;<span class="number">0</span>)&#123;</span><br><span class="line">            sum++;</span><br><span class="line">            num = (num%<span class="number">2</span> == <span class="number">0</span>) ? num&gt;&gt;<span class="number">1</span>:num-<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sum;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-
-<h2 id="1281-整数的各位积和之差"><a href="#1281-整数的各位积和之差" class="headerlink" title="1281. 整数的各位积和之差"></a>1281. 整数的各位积和之差</h2><h3 id="Description-1"><a href="#Description-1" class="headerlink" title="Description"></a>Description</h3><ul>
-<li><a href="https://leetcode-cn.com/problems/subtract-the-product-and-sum-of-digits-of-an-integer/" target="_blank" rel="noopener">LeetCode-1281. 整数的各位积和之差</a></li>
-</ul>
-<h3 id="Approach-1-1"><a href="#Approach-1-1" class="headerlink" title="Approach 1"></a>Approach 1</h3><h4 id="Analysis-1"><a href="#Analysis-1" class="headerlink" title="Analysis"></a>Analysis</h4><p>题目较为简单，直接求解即可，不再赘述。</p>
-<p>通过取模运算得到数字 <code>n</code> 的最后一位，依次进行乘法和加法运算。</p>
-<ul>
-<li>时间复杂度：<code>O(log N)</code>。整数 N 的位数如下公式所示。根据换底公式，它和时间复杂度中常用的以 2 为底的 <code>log</code> 只相差一个常数，因此时间复杂度可以表示为 <code>O(log N)</code></li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">⌈log10(N+1)⌉</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>空间复杂度：<code>O(1)</code></li>
-</ul>
-<h4 id="Solution-1"><a href="#Solution-1" class="headerlink" title="Solution"></a>Solution</h4><ul>
-<li>Java</li>
-</ul>
-<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="symbol">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> subtractProductAndSum(<span class="built_in">int</span> n) &#123;</span><br><span class="line">        <span class="built_in">int</span> mul = <span class="number">1</span>;</span><br><span class="line">        <span class="built_in">int</span> add = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span>(n&gt;<span class="number">0</span>)&#123;</span><br><span class="line">            mul *= n%<span class="number">10</span>;</span><br><span class="line">            add += n%<span class="number">10</span>;</span><br><span class="line">            n = n/<span class="number">10</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> mul-add;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-
-<h2 id="326-3的幂"><a href="#326-3的幂" class="headerlink" title="326. 3的幂"></a>326. 3的幂</h2><h3 id="Description-2"><a href="#Description-2" class="headerlink" title="Description"></a>Description</h3><ul>
-<li><a href="https://leetcode-cn.com/problems/power-of-three/" target="_blank" rel="noopener">LeetCode-326. 3的幂</a></li>
-</ul>
-<h3 id="Approach-1-循环迭代"><a href="#Approach-1-循环迭代" class="headerlink" title="Approach 1-循环迭代"></a>Approach 1-循环迭代</h3><h4 id="Analysis-2"><a href="#Analysis-2" class="headerlink" title="Analysis"></a>Analysis</h4><p>常规基本方法，使用循环求解。</p>
-<p>如果数字 <code>num</code> 是3的幂，则对 <code>num</code> 不断除3，并对3取模都是0，直到 <code>num=1</code> 停止。</p>
-<p>需要注意，1是3的0次幂，在判断时候不要忘记对1的处理。</p>
-<ul>
-<li>时间复杂度：如下，<code>b</code> 表示进制基数，此处为3</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">O(log_&#123;b&#125;(N))</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>空间复杂度：<code>O(1)</code></li>
-</ul>
-<h4 id="Solution-2"><a href="#Solution-2" class="headerlink" title="Solution"></a>Solution</h4><ul>
-<li>Java</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isPowerOfThree</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (n &lt; <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (n % <span class="number">3</span> == <span class="number">0</span>) &#123;</span><br><span class="line">            n /= <span class="number">3</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> n == <span class="number">1</span>;  <span class="comment">//1是3的0次幂</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-<ul>
-<li>C++</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">isPowerOfThree</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(n&lt;<span class="number">3</span> &amp;&amp; n != <span class="number">1</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">bool</span> flag = <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">while</span>(n&gt;<span class="number">0</span>)&#123;</span><br><span class="line">            <span class="keyword">if</span>(n == <span class="number">1</span>)&#123;</span><br><span class="line">                <span class="comment">//1是3的0次幂</span></span><br><span class="line">                flag = <span class="literal">true</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(n%<span class="number">3</span> != <span class="number">0</span>)&#123;</span><br><span class="line">                flag = <span class="literal">false</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            n = n/<span class="number">3</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> flag;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-
-<h3 id="Approach-2-基准转换"><a href="#Approach-2-基准转换" class="headerlink" title="Approach 2-基准转换"></a>Approach 2-基准转换</h3><h4 id="Analysis-3"><a href="#Analysis-3" class="headerlink" title="Analysis"></a>Analysis</h4><p>对于10的次幂，其10进制格式为1，10，100，1000……</p>
-<p>对于2的次幂，其2进制格式为1，10，100，1000……</p>
-<p>类比可得，</p>
-<p>对于3的次幂，其3进制格式为1，10，100，1000……</p>
-<p>因此，对于给定的数字，如果其3进制格式可以表示为 <code>^10*$</code> （即以数字1开头，以0个或者多个0结尾），则该数字就是3的次幂。</p>
-<ul>
-<li>时间复杂度：如下，<code>b</code> 表示进制基数，此处为3</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">O(log_&#123;b&#125;(N))</span><br></pre></td></tr></table></figure>
-
-
-<ul>
-<li>空间复杂度：如下，<code>b</code> 表示进制基数，此处为3。此处，我们使用2个附加变量，一个是正则表达式的字符串（常量大小），一个是以3为基数表示数字的字符串，大小为 <code>O(log3(N))</code></li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">O(log_&#123;b&#125;(N))</span><br></pre></td></tr></table></figure>
-
-
-<h4 id="Solution-3"><a href="#Solution-3" class="headerlink" title="Solution"></a>Solution</h4><ul>
-<li>Java</li>
-</ul>
-<blockquote>
-<p>Java 内置的 <code>Integer.toString(number,base)</code>可以将数字转换为 <code>base</code> 进制的字符串</p>
-<p>Java 内置的 <code>matches</code> 方法可以用于正则匹配</p>
-</blockquote>
-<p>本方法中，使用Java内置的字符串转换和正则匹配实现，相比于方法1的迭代求解，内存消耗方面两种方法基本一样，但是该方法的执行用时（37ms）是大于迭代求解的（17ms）。</p>
-<figure class="highlight reasonml"><table><tr><td class="code"><pre><span class="line">public <span class="keyword">class</span> Solution &#123;</span><br><span class="line">    public boolean is<span class="constructor">PowerOfThree(<span class="params">int</span> <span class="params">n</span>)</span> &#123;</span><br><span class="line">        return <span class="module-access"><span class="module"><span class="identifier">Integer</span>.</span></span><span class="keyword">to</span><span class="constructor">String(<span class="params">n</span>, 3)</span>.matches(<span class="string">"^10*$"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="Approach-3-换底公式"><a href="#Approach-3-换底公式" class="headerlink" title="Approach 3-换底公式"></a>Approach 3-换底公式</h3><h4 id="Analysis-4"><a href="#Analysis-4" class="headerlink" title="Analysis"></a>Analysis</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">n=3^i</span><br><span class="line"></span><br><span class="line">i = log_&#123;3&#125;(n) = log_&#123;b&#125;(n)/log_&#123;b&#125;(3)</span><br></pre></td></tr></table></figure>
-
-<p>如果 n 是3的次幂，即可以表示为 <code>3^i</code>的形式。如上所示，可以根据换底公式求解出 <code>i</code>。</p>
-<p>因此若 <code>i</code> 是整数，则可以判断 n 是3的次幂。</p>
-<ul>
-<li>时间复杂度：<code>Unknown</code>。消耗时间的运算主要是 <code>Math.log</code>，它限制了我们算法的时间复杂性。实现依赖于我们使用的语言和编译器。</li>
-<li>空间复杂度： <code>O(1)</code>。没有使用任何额外的内存。<code>epsilon</code> 变量可以是内联的。</li>
-</ul>
-<p><strong>需要注意的是，这个解决方案是有问题的，因为如果数值类型为 <code>double</code>，这意味着我们会遇到精度错误，在比较双精度数时不应使用 <code>==</code>。</strong></p>
-<p>这是因为 <code>Math.log10(n)/Math.log10(3)</code> 的结果可能是 <code>5.0000001</code> 或 <code>4.9999999</code>。使用 <code>Math.log()</code> 函数而不是 <code>Math.log10()</code> 可以观察到这种效果。</p>
-<p>为了解决这个问题，我们需要将结果与 <code>epsilon</code> 进行比较。</p>
-<figure class="highlight fortran"><table><tr><td class="code"><pre><span class="line"><span class="keyword">return</span> (Math.<span class="built_in">log</span>(n) / Math.<span class="built_in">log</span>(<span class="number">3</span>) + <span class="built_in">epsilon</span>) % <span class="number">1</span> &lt;= <span class="number">2</span> * <span class="built_in">epsilon</span>;</span><br></pre></td></tr></table></figure>
-
-
-<h4 id="Solution-4"><a href="#Solution-4" class="headerlink" title="Solution"></a>Solution</h4><ul>
-<li>Java</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isPowerOfThree</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (Math.log10(n) / Math.log10(<span class="number">3</span>)) % <span class="number">1</span> == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="Approach-4-整数限制"><a href="#Approach-4-整数限制" class="headerlink" title="Approach 4-整数限制"></a>Approach 4-整数限制</h3><h4 id="Analysis-5"><a href="#Analysis-5" class="headerlink" title="Analysis"></a>Analysis</h4><p>题目限定了输入数值为 <code>int</code> 类型，最大为32位，因此输入数值的最大值为 <code>2^31</code>，在此范围内3的最大次幂为 <code>3^19=1162261467</code>。</p>
-<ul>
-<li>因此，本题中可能返回 <code>true</code> 的数值只能是 <code>3^0</code>，<code>3^1</code> …… <code>3^19</code></li>
-<li>如果使用 <code>3^19</code> 除以数值 <code>n</code>，若余数为0，则表示数值 <code>n</code>是3的次幂</li>
-<li>需要注意的是，这种方式只适合基数为质数的情况。此处，3为质数，<code>3^19</code> 的约数字只有 <code>3^0</code>，<code>3^1</code> …… <code>3^19</code>。如果对于基数为偶数的情况，如 <code>4</code>，<code>4^4</code>的约数除了 <code>4^0</code>，<code>4^1</code>，<code>4^2</code>，<code>4^3</code>，<code>4^4</code>外，还有数字 <code>2</code>。</li>
-</ul>
-<h4 id="Solution-5"><a href="#Solution-5" class="headerlink" title="Solution"></a>Solution</h4><ul>
-<li>Java</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isPowerOfThree</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    	<span class="keyword">return</span> ((n &gt; <span class="number">0</span>) &amp;&amp; ((<span class="number">1162261467</span> % n) == <span class="number">0</span>));</span><br><span class="line">    	<span class="comment">// or</span></span><br><span class="line">        <span class="comment">//return (n&gt;0) &amp;&amp; (Math.pow(3,19) % n ==0);</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-
-<h2 id="231-2的幂"><a href="#231-2的幂" class="headerlink" title="231. 2的幂"></a>231. 2的幂</h2><h3 id="Description-3"><a href="#Description-3" class="headerlink" title="Description"></a>Description</h3><ul>
-<li><a href="https://leetcode-cn.com/problems/power-of-two/" target="_blank" rel="noopener">LeetCode-231. 2的幂</a></li>
-</ul>
-<p>本题同 <a href="https://leetcode-cn.com/problems/power-of-three/" target="_blank" rel="noopener">LeetCode-326. 3的幂</a>，对于相同的原理，此处不再赘述。</p>
-<p>此处仅补充 <code>Approach 5-二进制位运算</code> 特解方法。</p>
-<h3 id="Approach-1-循环迭代-1"><a href="#Approach-1-循环迭代-1" class="headerlink" title="Approach 1-循环迭代"></a>Approach 1-循环迭代</h3><ul>
-<li>Java</li>
-</ul>
-<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="symbol">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">bool</span>ean isPowerOfTwo(<span class="built_in">int</span> n) &#123;</span><br><span class="line">        <span class="keyword">if</span> (n &lt; <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (n % <span class="number">2</span> == <span class="number">0</span>) &#123;</span><br><span class="line">            n /= <span class="number">2</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> n == <span class="number">1</span>;  <span class="comment">//1是2的0次幂</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Approach-2-基准转换-1"><a href="#Approach-2-基准转换-1" class="headerlink" title="Approach 2-基准转换"></a>Approach 2-基准转换</h3><ul>
-<li>Java</li>
-</ul>
-<figure class="highlight reasonml"><table><tr><td class="code"><pre><span class="line">public <span class="keyword">class</span> Solution &#123;</span><br><span class="line">    public boolean is<span class="constructor">PowerOfTwo(<span class="params">int</span> <span class="params">n</span>)</span> &#123;</span><br><span class="line">        return <span class="module-access"><span class="module"><span class="identifier">Integer</span>.</span></span><span class="keyword">to</span><span class="constructor">String(<span class="params">n</span>, 2)</span>.matches(<span class="string">"^10*$"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-<h3 id="Approach-3-换底公式-1"><a href="#Approach-3-换底公式-1" class="headerlink" title="Approach 3-换底公式"></a>Approach 3-换底公式</h3><ul>
-<li>Java</li>
-</ul>
-<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="symbol">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">bool</span>ean isPowerOfTwo(<span class="built_in">int</span> n) &#123;</span><br><span class="line">        <span class="keyword">return</span> (Math.log10(n) / Math.log10(<span class="number">2</span>)) % <span class="number">1</span> == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Approach-4-整数限制-1"><a href="#Approach-4-整数限制-1" class="headerlink" title="Approach 4-整数限制"></a>Approach 4-整数限制</h3><ul>
-<li>Java</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isPowerOfTwo</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (n&gt;<span class="number">0</span>) &amp;&amp; (Math.pow(<span class="number">2</span>,<span class="number">32</span>) % n ==<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-<h3 id="Approach-5-二进制位运算（特解）"><a href="#Approach-5-二进制位运算（特解）" class="headerlink" title="Approach 5-二进制位运算（特解）"></a>Approach 5-二进制位运算（特解）</h3><h4 id="Analysis-6"><a href="#Analysis-6" class="headerlink" title="Analysis"></a>Analysis</h4><p>若 <code>num</code> 是 2 的整数幂，则其二进制数值为 <code>100..00</code> 的形式，<code>num-1</code> 的二进制数值为 <code>011...1</code> 的形式。因此，<code>n &amp; (n-1)</code> 一定为0。利用该方法可以求解。</p>
-<p>需要注意的是，该方法使用了位运算，因此只适用于2的次幂求解，不具有通用性。</p>
-<h4 id="Solution-6"><a href="#Solution-6" class="headerlink" title="Solution"></a>Solution</h4><ul>
-<li>Java</li>
-</ul>
-<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="symbol">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">bool</span>ean isPowerOfTwo(<span class="built_in">int</span> n) &#123;</span><br><span class="line">        <span class="keyword">return</span> (n&gt;<span class="number">0</span>) &amp;&amp; ((n &amp; (n<span class="number">-1</span>)) == <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>C++</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">isPowerOfTwo</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (n&gt;<span class="number">0</span>) &amp;&amp; ((n &amp; (n<span class="number">-1</span>)) == <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<h2 id="342-4的幂"><a href="#342-4的幂" class="headerlink" title="342. 4的幂"></a>342. 4的幂</h2><h3 id="Description-4"><a href="#Description-4" class="headerlink" title="Description"></a>Description</h3><ul>
-<li><a href="https://leetcode-cn.com/problems/power-of-four/" target="_blank" rel="noopener">LeetCode-342. 4的幂</a></li>
-</ul>
-<p>本题同 <a href="https://leetcode-cn.com/problems/power-of-three/" target="_blank" rel="noopener">LeetCode-326. 3的幂</a>，对于相同的原理，此处不再赘述。</p>
-<p>该方法只适合基数为质数的情况。此处，3为质数，<code>3^19</code> 的约数字只有 <code>3^0</code>，<code>3^1</code> …… <code>3^19</code>。如果对于基数为偶数的情况，如 <code>4</code>，<code>4^4</code>的约数除了 <code>4^0</code>，<code>4^1</code>，<code>4^2</code>，<code>4^3</code>，<code>4^4</code>外，还有数字 <code>2</code> 和数字 <code>8</code> 等。</p>
-<h3 id="Approach-1-循环迭代-2"><a href="#Approach-1-循环迭代-2" class="headerlink" title="Approach 1-循环迭代"></a>Approach 1-循环迭代</h3><ul>
-<li>Java</li>
-</ul>
-<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="symbol">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">bool</span>ean isPowerOfFour(<span class="built_in">int</span> n) &#123;</span><br><span class="line">        <span class="keyword">if</span> (n &lt; <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (n % <span class="number">4</span> == <span class="number">0</span>) &#123;</span><br><span class="line">            n /= <span class="number">4</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> n == <span class="number">1</span>;  <span class="comment">//1是2的0次幂</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Approach-2-基准转换-2"><a href="#Approach-2-基准转换-2" class="headerlink" title="Approach 2-基准转换"></a>Approach 2-基准转换</h3><ul>
-<li>Java</li>
-</ul>
-<figure class="highlight reasonml"><table><tr><td class="code"><pre><span class="line">public <span class="keyword">class</span> Solution &#123;</span><br><span class="line">    public boolean is<span class="constructor">PowerOfFour(<span class="params">int</span> <span class="params">n</span>)</span> &#123;</span><br><span class="line">        return <span class="module-access"><span class="module"><span class="identifier">Integer</span>.</span></span><span class="keyword">to</span><span class="constructor">String(<span class="params">n</span>, 4)</span>.matches(<span class="string">"^10*$"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-<h3 id="Approach-3-换底公式-2"><a href="#Approach-3-换底公式-2" class="headerlink" title="Approach 3-换底公式"></a>Approach 3-换底公式</h3><ul>
-<li>Java</li>
-</ul>
-<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="symbol">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">bool</span>ean isPowerOfFour(<span class="built_in">int</span> n) &#123;</span><br><span class="line">        <span class="keyword">return</span> (Math.log10(n) / Math.log10(<span class="number">4</span>)) % <span class="number">1</span> == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-]]></content>
-      <categories>
-        <category>LeetCode</category>
-      </categories>
-      <tags>
-        <tag>Algorithm</tag>
-        <tag>LeetCode</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>LeetCode题解-003</title>
     <url>/2020/02/23/leetcode-003/</url>
     <content><![CDATA[<ul>
@@ -1857,6 +1637,226 @@
 <li>JS</li>
 </ul>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @param &#123;number&#125; num</span></span><br><span class="line"><span class="comment"> * @return &#123;number&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> findComplement = <span class="function"><span class="keyword">function</span>(<span class="params">num</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> str = num.toString(<span class="number">2</span>).replace(<span class="regexp">/0/g</span>,<span class="number">1</span>);  <span class="comment">//转换为11..11</span></span><br><span class="line">    <span class="keyword">return</span> (num) ^ <span class="built_in">parseInt</span>(str,<span class="number">2</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>Algorithm</tag>
+        <tag>LeetCode</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode题解-004</title>
+    <url>/2020/02/23/leetcode-004/</url>
+    <content><![CDATA[<ul>
+<li>记录LeetCode题目笔记，汇总LeetCode解答记录</li>
+</ul>
+<a id="more"></a>
+
+
+
+<h2 id="Changelog"><a href="#Changelog" class="headerlink" title="Changelog"></a>Changelog</h2><ul>
+<li>2020/02/23，撰写</li>
+<li>2020/02/23，整理完成</li>
+</ul>
+<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><ul>
+<li><a href="https://leetcode.com/problems/number-of-steps-to-reduce-a-number-to-zero/" target="_blank" rel="noopener">LeetCode-1342. Number of Steps to Reduce a Number to Zero（将数字变成 0 的操作次数）</a></li>
+<li><a href="https://leetcode-cn.com/problems/subtract-the-product-and-sum-of-digits-of-an-integer/" target="_blank" rel="noopener">LeetCode-1281. 整数的各位积和之差</a></li>
+<li><a href="https://leetcode-cn.com/problems/power-of-three/" target="_blank" rel="noopener">LeetCode-326. 3的幂</a></li>
+<li><a href="https://leetcode-cn.com/problems/power-of-two/" target="_blank" rel="noopener">LeetCode-231. 2的幂</a></li>
+<li><a href="https://leetcode-cn.com/problems/power-of-four/" target="_blank" rel="noopener">LeetCode-342. 4的幂</a></li>
+</ul>
+<h2 id="1342-Number-of-Steps-to-Reduce-a-Number-to-Zero（将数字变成-0-的操作次数）"><a href="#1342-Number-of-Steps-to-Reduce-a-Number-to-Zero（将数字变成-0-的操作次数）" class="headerlink" title="1342. Number of Steps to Reduce a Number to Zero（将数字变成 0 的操作次数）"></a>1342. Number of Steps to Reduce a Number to Zero（将数字变成 0 的操作次数）</h2><h3 id="Description"><a href="#Description" class="headerlink" title="Description"></a>Description</h3><ul>
+<li><a href="https://leetcode.com/problems/number-of-steps-to-reduce-a-number-to-zero/" target="_blank" rel="noopener">LeetCode-1342. Number of Steps to Reduce a Number to Zero（将数字变成 0 的操作次数）</a></li>
+</ul>
+<h3 id="Approach-1"><a href="#Approach-1" class="headerlink" title="Approach 1"></a>Approach 1</h3><h4 id="Analysis"><a href="#Analysis" class="headerlink" title="Analysis"></a>Analysis</h4><p>题目较为简单，直接求解即可，不再赘述。</p>
+<h4 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h4><ul>
+<li>Java</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">numberOfSteps</span> <span class="params">(<span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span>(num&gt;<span class="number">0</span>)&#123;</span><br><span class="line">            sum++;</span><br><span class="line">            num = (num%<span class="number">2</span> == <span class="number">0</span>) ? num&gt;&gt;<span class="number">1</span>:num-<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sum;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="1281-整数的各位积和之差"><a href="#1281-整数的各位积和之差" class="headerlink" title="1281. 整数的各位积和之差"></a>1281. 整数的各位积和之差</h2><h3 id="Description-1"><a href="#Description-1" class="headerlink" title="Description"></a>Description</h3><ul>
+<li><a href="https://leetcode-cn.com/problems/subtract-the-product-and-sum-of-digits-of-an-integer/" target="_blank" rel="noopener">LeetCode-1281. 整数的各位积和之差</a></li>
+</ul>
+<h3 id="Approach-1-1"><a href="#Approach-1-1" class="headerlink" title="Approach 1"></a>Approach 1</h3><h4 id="Analysis-1"><a href="#Analysis-1" class="headerlink" title="Analysis"></a>Analysis</h4><p>题目较为简单，直接求解即可，不再赘述。</p>
+<p>通过取模运算得到数字 <code>n</code> 的最后一位，依次进行乘法和加法运算。</p>
+<ul>
+<li>时间复杂度：<code>O(log N)</code>。整数 N 的位数如下公式所示。根据换底公式，它和时间复杂度中常用的以 2 为底的 <code>log</code> 只相差一个常数，因此时间复杂度可以表示为 <code>O(log N)</code></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">⌈log10(N+1)⌉</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>空间复杂度：<code>O(1)</code></li>
+</ul>
+<h4 id="Solution-1"><a href="#Solution-1" class="headerlink" title="Solution"></a>Solution</h4><ul>
+<li>Java</li>
+</ul>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="symbol">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> subtractProductAndSum(<span class="built_in">int</span> n) &#123;</span><br><span class="line">        <span class="built_in">int</span> mul = <span class="number">1</span>;</span><br><span class="line">        <span class="built_in">int</span> add = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span>(n&gt;<span class="number">0</span>)&#123;</span><br><span class="line">            mul *= n%<span class="number">10</span>;</span><br><span class="line">            add += n%<span class="number">10</span>;</span><br><span class="line">            n = n/<span class="number">10</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> mul-add;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="326-3的幂"><a href="#326-3的幂" class="headerlink" title="326. 3的幂"></a>326. 3的幂</h2><h3 id="Description-2"><a href="#Description-2" class="headerlink" title="Description"></a>Description</h3><ul>
+<li><a href="https://leetcode-cn.com/problems/power-of-three/" target="_blank" rel="noopener">LeetCode-326. 3的幂</a></li>
+</ul>
+<h3 id="Approach-1-循环迭代"><a href="#Approach-1-循环迭代" class="headerlink" title="Approach 1-循环迭代"></a>Approach 1-循环迭代</h3><h4 id="Analysis-2"><a href="#Analysis-2" class="headerlink" title="Analysis"></a>Analysis</h4><p>常规基本方法，使用循环求解。</p>
+<p>如果数字 <code>num</code> 是3的幂，则对 <code>num</code> 不断除3，并对3取模都是0，直到 <code>num=1</code> 停止。</p>
+<p>需要注意，1是3的0次幂，在判断时候不要忘记对1的处理。</p>
+<ul>
+<li>时间复杂度：如下，<code>b</code> 表示进制基数，此处为3</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">O(log_&#123;b&#125;(N))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>空间复杂度：<code>O(1)</code></li>
+</ul>
+<h4 id="Solution-2"><a href="#Solution-2" class="headerlink" title="Solution"></a>Solution</h4><ul>
+<li>Java</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isPowerOfThree</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (n &lt; <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (n % <span class="number">3</span> == <span class="number">0</span>) &#123;</span><br><span class="line">            n /= <span class="number">3</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> n == <span class="number">1</span>;  <span class="comment">//1是3的0次幂</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>C++</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">isPowerOfThree</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(n&lt;<span class="number">3</span> &amp;&amp; n != <span class="number">1</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">bool</span> flag = <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">while</span>(n&gt;<span class="number">0</span>)&#123;</span><br><span class="line">            <span class="keyword">if</span>(n == <span class="number">1</span>)&#123;</span><br><span class="line">                <span class="comment">//1是3的0次幂</span></span><br><span class="line">                flag = <span class="literal">true</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(n%<span class="number">3</span> != <span class="number">0</span>)&#123;</span><br><span class="line">                flag = <span class="literal">false</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            n = n/<span class="number">3</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> flag;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Approach-2-基准转换"><a href="#Approach-2-基准转换" class="headerlink" title="Approach 2-基准转换"></a>Approach 2-基准转换</h3><h4 id="Analysis-3"><a href="#Analysis-3" class="headerlink" title="Analysis"></a>Analysis</h4><p>对于10的次幂，其10进制格式为1，10，100，1000……</p>
+<p>对于2的次幂，其2进制格式为1，10，100，1000……</p>
+<p>类比可得，</p>
+<p>对于3的次幂，其3进制格式为1，10，100，1000……</p>
+<p>因此，对于给定的数字，如果其3进制格式可以表示为 <code>^10*$</code> （即以数字1开头，以0个或者多个0结尾），则该数字就是3的次幂。</p>
+<ul>
+<li>时间复杂度：如下，<code>b</code> 表示进制基数，此处为3</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">O(log_&#123;b&#125;(N))</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>空间复杂度：如下，<code>b</code> 表示进制基数，此处为3。此处，我们使用2个附加变量，一个是正则表达式的字符串（常量大小），一个是以3为基数表示数字的字符串，大小为 <code>O(log3(N))</code></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">O(log_&#123;b&#125;(N))</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="Solution-3"><a href="#Solution-3" class="headerlink" title="Solution"></a>Solution</h4><ul>
+<li>Java</li>
+</ul>
+<blockquote>
+<p>Java 内置的 <code>Integer.toString(number,base)</code>可以将数字转换为 <code>base</code> 进制的字符串</p>
+<p>Java 内置的 <code>matches</code> 方法可以用于正则匹配</p>
+</blockquote>
+<p>本方法中，使用Java内置的字符串转换和正则匹配实现，相比于方法1的迭代求解，内存消耗方面两种方法基本一样，但是该方法的执行用时（37ms）是大于迭代求解的（17ms）。</p>
+<figure class="highlight reasonml"><table><tr><td class="code"><pre><span class="line">public <span class="keyword">class</span> Solution &#123;</span><br><span class="line">    public boolean is<span class="constructor">PowerOfThree(<span class="params">int</span> <span class="params">n</span>)</span> &#123;</span><br><span class="line">        return <span class="module-access"><span class="module"><span class="identifier">Integer</span>.</span></span><span class="keyword">to</span><span class="constructor">String(<span class="params">n</span>, 3)</span>.matches(<span class="string">"^10*$"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Approach-3-换底公式"><a href="#Approach-3-换底公式" class="headerlink" title="Approach 3-换底公式"></a>Approach 3-换底公式</h3><h4 id="Analysis-4"><a href="#Analysis-4" class="headerlink" title="Analysis"></a>Analysis</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">n=3^i</span><br><span class="line"></span><br><span class="line">i = log_&#123;3&#125;(n) = log_&#123;b&#125;(n)/log_&#123;b&#125;(3)</span><br></pre></td></tr></table></figure>
+
+<p>如果 n 是3的次幂，即可以表示为 <code>3^i</code>的形式。如上所示，可以根据换底公式求解出 <code>i</code>。</p>
+<p>因此若 <code>i</code> 是整数，则可以判断 n 是3的次幂。</p>
+<ul>
+<li>时间复杂度：<code>Unknown</code>。消耗时间的运算主要是 <code>Math.log</code>，它限制了我们算法的时间复杂性。实现依赖于我们使用的语言和编译器。</li>
+<li>空间复杂度： <code>O(1)</code>。没有使用任何额外的内存。<code>epsilon</code> 变量可以是内联的。</li>
+</ul>
+<p><strong>需要注意的是，这个解决方案是有问题的，因为如果数值类型为 <code>double</code>，这意味着我们会遇到精度错误，在比较双精度数时不应使用 <code>==</code>。</strong></p>
+<p>这是因为 <code>Math.log10(n)/Math.log10(3)</code> 的结果可能是 <code>5.0000001</code> 或 <code>4.9999999</code>。使用 <code>Math.log()</code> 函数而不是 <code>Math.log10()</code> 可以观察到这种效果。</p>
+<p>为了解决这个问题，我们需要将结果与 <code>epsilon</code> 进行比较。</p>
+<figure class="highlight fortran"><table><tr><td class="code"><pre><span class="line"><span class="keyword">return</span> (Math.<span class="built_in">log</span>(n) / Math.<span class="built_in">log</span>(<span class="number">3</span>) + <span class="built_in">epsilon</span>) % <span class="number">1</span> &lt;= <span class="number">2</span> * <span class="built_in">epsilon</span>;</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="Solution-4"><a href="#Solution-4" class="headerlink" title="Solution"></a>Solution</h4><ul>
+<li>Java</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isPowerOfThree</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (Math.log10(n) / Math.log10(<span class="number">3</span>)) % <span class="number">1</span> == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Approach-4-整数限制"><a href="#Approach-4-整数限制" class="headerlink" title="Approach 4-整数限制"></a>Approach 4-整数限制</h3><h4 id="Analysis-5"><a href="#Analysis-5" class="headerlink" title="Analysis"></a>Analysis</h4><p>题目限定了输入数值为 <code>int</code> 类型，最大为32位，因此输入数值的最大值为 <code>2^31</code>，在此范围内3的最大次幂为 <code>3^19=1162261467</code>。</p>
+<ul>
+<li>因此，本题中可能返回 <code>true</code> 的数值只能是 <code>3^0</code>，<code>3^1</code> …… <code>3^19</code></li>
+<li>如果使用 <code>3^19</code> 除以数值 <code>n</code>，若余数为0，则表示数值 <code>n</code>是3的次幂</li>
+<li>需要注意的是，这种方式只适合基数为质数的情况。此处，3为质数，<code>3^19</code> 的约数字只有 <code>3^0</code>，<code>3^1</code> …… <code>3^19</code>。如果对于基数为偶数的情况，如 <code>4</code>，<code>4^4</code>的约数除了 <code>4^0</code>，<code>4^1</code>，<code>4^2</code>，<code>4^3</code>，<code>4^4</code>外，还有数字 <code>2</code>。</li>
+</ul>
+<h4 id="Solution-5"><a href="#Solution-5" class="headerlink" title="Solution"></a>Solution</h4><ul>
+<li>Java</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isPowerOfThree</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    	<span class="keyword">return</span> ((n &gt; <span class="number">0</span>) &amp;&amp; ((<span class="number">1162261467</span> % n) == <span class="number">0</span>));</span><br><span class="line">    	<span class="comment">// or</span></span><br><span class="line">        <span class="comment">//return (n&gt;0) &amp;&amp; (Math.pow(3,19) % n ==0);</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+<h2 id="231-2的幂"><a href="#231-2的幂" class="headerlink" title="231. 2的幂"></a>231. 2的幂</h2><h3 id="Description-3"><a href="#Description-3" class="headerlink" title="Description"></a>Description</h3><ul>
+<li><a href="https://leetcode-cn.com/problems/power-of-two/" target="_blank" rel="noopener">LeetCode-231. 2的幂</a></li>
+</ul>
+<p>本题同 <a href="https://leetcode-cn.com/problems/power-of-three/" target="_blank" rel="noopener">LeetCode-326. 3的幂</a>，对于相同的原理，此处不再赘述。</p>
+<p>此处仅补充 <code>Approach 5-二进制位运算</code> 特解方法。</p>
+<h3 id="Approach-1-循环迭代-1"><a href="#Approach-1-循环迭代-1" class="headerlink" title="Approach 1-循环迭代"></a>Approach 1-循环迭代</h3><ul>
+<li>Java</li>
+</ul>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="symbol">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">bool</span>ean isPowerOfTwo(<span class="built_in">int</span> n) &#123;</span><br><span class="line">        <span class="keyword">if</span> (n &lt; <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (n % <span class="number">2</span> == <span class="number">0</span>) &#123;</span><br><span class="line">            n /= <span class="number">2</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> n == <span class="number">1</span>;  <span class="comment">//1是2的0次幂</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Approach-2-基准转换-1"><a href="#Approach-2-基准转换-1" class="headerlink" title="Approach 2-基准转换"></a>Approach 2-基准转换</h3><ul>
+<li>Java</li>
+</ul>
+<figure class="highlight reasonml"><table><tr><td class="code"><pre><span class="line">public <span class="keyword">class</span> Solution &#123;</span><br><span class="line">    public boolean is<span class="constructor">PowerOfTwo(<span class="params">int</span> <span class="params">n</span>)</span> &#123;</span><br><span class="line">        return <span class="module-access"><span class="module"><span class="identifier">Integer</span>.</span></span><span class="keyword">to</span><span class="constructor">String(<span class="params">n</span>, 2)</span>.matches(<span class="string">"^10*$"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Approach-3-换底公式-1"><a href="#Approach-3-换底公式-1" class="headerlink" title="Approach 3-换底公式"></a>Approach 3-换底公式</h3><ul>
+<li>Java</li>
+</ul>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="symbol">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">bool</span>ean isPowerOfTwo(<span class="built_in">int</span> n) &#123;</span><br><span class="line">        <span class="keyword">return</span> (Math.log10(n) / Math.log10(<span class="number">2</span>)) % <span class="number">1</span> == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Approach-4-整数限制-1"><a href="#Approach-4-整数限制-1" class="headerlink" title="Approach 4-整数限制"></a>Approach 4-整数限制</h3><ul>
+<li>Java</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isPowerOfTwo</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (n&gt;<span class="number">0</span>) &amp;&amp; (Math.pow(<span class="number">2</span>,<span class="number">32</span>) % n ==<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Approach-5-二进制位运算（特解）"><a href="#Approach-5-二进制位运算（特解）" class="headerlink" title="Approach 5-二进制位运算（特解）"></a>Approach 5-二进制位运算（特解）</h3><h4 id="Analysis-6"><a href="#Analysis-6" class="headerlink" title="Analysis"></a>Analysis</h4><p>若 <code>num</code> 是 2 的整数幂，则其二进制数值为 <code>100..00</code> 的形式，<code>num-1</code> 的二进制数值为 <code>011...1</code> 的形式。因此，<code>n &amp; (n-1)</code> 一定为0。利用该方法可以求解。</p>
+<p>需要注意的是，该方法使用了位运算，因此只适用于2的次幂求解，不具有通用性。</p>
+<h4 id="Solution-6"><a href="#Solution-6" class="headerlink" title="Solution"></a>Solution</h4><ul>
+<li>Java</li>
+</ul>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="symbol">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">bool</span>ean isPowerOfTwo(<span class="built_in">int</span> n) &#123;</span><br><span class="line">        <span class="keyword">return</span> (n&gt;<span class="number">0</span>) &amp;&amp; ((n &amp; (n<span class="number">-1</span>)) == <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>C++</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">isPowerOfTwo</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (n&gt;<span class="number">0</span>) &amp;&amp; ((n &amp; (n<span class="number">-1</span>)) == <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="342-4的幂"><a href="#342-4的幂" class="headerlink" title="342. 4的幂"></a>342. 4的幂</h2><h3 id="Description-4"><a href="#Description-4" class="headerlink" title="Description"></a>Description</h3><ul>
+<li><a href="https://leetcode-cn.com/problems/power-of-four/" target="_blank" rel="noopener">LeetCode-342. 4的幂</a></li>
+</ul>
+<p>本题同 <a href="https://leetcode-cn.com/problems/power-of-three/" target="_blank" rel="noopener">LeetCode-326. 3的幂</a>，对于相同的原理，此处不再赘述。</p>
+<p>该方法只适合基数为质数的情况。此处，3为质数，<code>3^19</code> 的约数字只有 <code>3^0</code>，<code>3^1</code> …… <code>3^19</code>。如果对于基数为偶数的情况，如 <code>4</code>，<code>4^4</code>的约数除了 <code>4^0</code>，<code>4^1</code>，<code>4^2</code>，<code>4^3</code>，<code>4^4</code>外，还有数字 <code>2</code> 和数字 <code>8</code> 等。</p>
+<h3 id="Approach-1-循环迭代-2"><a href="#Approach-1-循环迭代-2" class="headerlink" title="Approach 1-循环迭代"></a>Approach 1-循环迭代</h3><ul>
+<li>Java</li>
+</ul>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="symbol">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">bool</span>ean isPowerOfFour(<span class="built_in">int</span> n) &#123;</span><br><span class="line">        <span class="keyword">if</span> (n &lt; <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (n % <span class="number">4</span> == <span class="number">0</span>) &#123;</span><br><span class="line">            n /= <span class="number">4</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> n == <span class="number">1</span>;  <span class="comment">//1是2的0次幂</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Approach-2-基准转换-2"><a href="#Approach-2-基准转换-2" class="headerlink" title="Approach 2-基准转换"></a>Approach 2-基准转换</h3><ul>
+<li>Java</li>
+</ul>
+<figure class="highlight reasonml"><table><tr><td class="code"><pre><span class="line">public <span class="keyword">class</span> Solution &#123;</span><br><span class="line">    public boolean is<span class="constructor">PowerOfFour(<span class="params">int</span> <span class="params">n</span>)</span> &#123;</span><br><span class="line">        return <span class="module-access"><span class="module"><span class="identifier">Integer</span>.</span></span><span class="keyword">to</span><span class="constructor">String(<span class="params">n</span>, 4)</span>.matches(<span class="string">"^10*$"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Approach-3-换底公式-2"><a href="#Approach-3-换底公式-2" class="headerlink" title="Approach 3-换底公式"></a>Approach 3-换底公式</h3><ul>
+<li>Java</li>
+</ul>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="symbol">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">bool</span>ean isPowerOfFour(<span class="built_in">int</span> n) &#123;</span><br><span class="line">        <span class="keyword">return</span> (Math.log10(n) / Math.log10(<span class="number">4</span>)) % <span class="number">1</span> == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
 ]]></content>
