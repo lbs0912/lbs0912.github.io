@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/green/pace-theme-flash.css" rel="stylesheet">
+
+
+
+<script>
+    (function () {
+        if ('') {
+            if (prompt('请输入文章密码') !== '') {
+                alert('密码错误！');
+                if (history.length === 1) {
+                    location.replace("http://liubaoshuai.com/"); // 这里替换成你的首页
+                } else {
+                    history.back();
+                }
+            }
+        }
+    })();
+</script>
+  <link rel="apple-touch-icon" sizes="180x180" href="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/Blog-20190315/blog-logo-1.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/Blog-20190315/blog-logo-1.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/Blog-20190315/blog-logo-1.jpg">
+  <link rel="mask-icon" href="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/Blog-20190315/blog-logo-1.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"lbs0912.github.io","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="对Java中随机数相关的包进行对比分析——Math.random，Random 和 concurrent.ThreadLocalRandom。 对多线程下 ThreadLocalRandom 的性能进行分析。">
+<meta name="keywords" content="Java,多线程,fork&#x2F;join">
+<meta property="og:type" content="article">
+<meta property="og:title" content="多线程下ThreadLocalRandom性能分析">
+<meta property="og:url" content="https:&#x2F;&#x2F;lbs0912.github.io&#x2F;2020&#x2F;11&#x2F;04&#x2F;thread-local-random-opt&#x2F;index.html">
+<meta property="og:site_name" content="Liu Baoshuai&#39;s Blog">
+<meta property="og:description" content="对Java中随机数相关的包进行对比分析——Math.random，Random 和 concurrent.ThreadLocalRandom。 对多线程下 ThreadLocalRandom 的性能进行分析。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;back-end-2020&#x2F;java-random-seed-1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;back-end-2020&#x2F;java-random-seed-2.png">
+<meta property="og:updated_time" content="2020-11-01T03:46:42.726Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;back-end-2020&#x2F;java-random-seed-1.png">
+
+<link rel="canonical" href="https://lbs0912.github.io/2020/11/04/thread-local-random-opt/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>多线程下ThreadLocalRandom性能分析 | Liu Baoshuai's Blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?17082ee15df20dad9762c5512f336eb2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <a href="https://github.com/lbs0912" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub">
+      <svg width="80" height="80" viewBox="0 0 250 250" 
+            style="fill:#151513; color:#fff; position: fixed; top: 0; border: 0; right: 0;" aria-hidden="true">
+              <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+              <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+              <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
+      </svg>
+    </a>
+    <style>
+      .github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}
+    </style>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Liu Baoshuai's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Do one thing at a time and do well</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://lbs0912.github.io/2020/11/04/thread-local-random-opt/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/Blog-20190315/blog-logo-1.jpg">
+      <meta itemprop="name" content="Liu Baoshuai">
+      <meta itemprop="description" content="Record and become better myself">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Liu Baoshuai's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          多线程下ThreadLocalRandom性能分析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-11-04 08:35:26" itemprop="dateCreated datePublished" datetime="2020-11-04T08:35:26+08:00">2020-11-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-01 11:46:42" itemprop="dateModified" datetime="2020-11-01T11:46:42+08:00">2020-11-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/11/04/thread-local-random-opt/" class="post-meta-item leancloud_visitors" data-flag-title="多线程下ThreadLocalRandom性能分析" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2020/11/04/thread-local-random-opt/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/11/04/thread-local-random-opt/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <ul>
+<li>对Java中随机数相关的包进行对比分析——<code>Math.random</code>，<code>Random</code> 和 <code>concurrent.ThreadLocalRandom</code>。</li>
+<li>对多线程下 <code>ThreadLocalRandom</code> 的性能进行分析。</li>
+</ul>
+<a id="more"></a>
+
+
+<h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2><ul>
+<li><a href="https://juejin.im/post/6863713733252743182" target="_blank" rel="noopener">多线程下的ThreadLocalRandom用法 | 掘金</a></li>
+<li><a href="https://juejin.im/post/6844904096785235982" target="_blank" rel="noopener">Random和ThreadLocalRandom区别 | 掘金</a></li>
+</ul>
+<h2 id="Java中使用随机数"><a href="#Java中使用随机数" class="headerlink" title="Java中使用随机数"></a>Java中使用随机数</h2><p>Java中和随机数相关的包，主要包括3个</p>
+<ol>
+<li><code>java.lang.Math.random</code></li>
+<li><code>java.util.Random</code></li>
+<li><code>java.util.concurrent.ThreadLocalRandom</code></li>
+</ol>
+<h2 id="java-lang-Math-random"><a href="#java-lang-Math-random" class="headerlink" title="java.lang.Math.random"></a>java.lang.Math.random</h2><p><code>Math.random()</code> 方法可以返回区间 <code>[0.0,1.0)</code> 内的 <code>double</code> 型随机数，区间左闭右开。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">double</span> val = Math.random();</span><br></pre></td></tr></table></figure>
+<p>需要注意的是，<code>Math.random()</code> 方法返回是 <code>double</code> 类型，注意取值的范围 <code>[0.0,1.0)</code>（能够取到零值，注意除零异常）。如果想获取整数类型的随机数，不建议将 <code>val</code> 放大 10 的若干倍然后取整。</p>
+<p>更好的解决方案是直接使用 <code>Random</code> 对象的 <code>nextInt</code> 或者 <code>nextLong</code> 方法。 </p>
+<h2 id="java-util-Random"><a href="#java-util-Random" class="headerlink" title="java.util.Random"></a>java.util.Random</h2><p><code>Random()</code> 有 2 种构造方法</p>
+<ol>
+<li><code>Random()</code>: 创建一个新的随机数生成器，默认当前系统时间的毫秒数作为种子数</li>
+<li><code>Random(long seed)</code>: 使用指定的种子创建一个新的随机数生成器</li>
+</ol>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @param seed the initial seed</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">public <span class="constructor">Random(<span class="params">long</span> <span class="params">seed</span>)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (get<span class="constructor">Class()</span><span class="operator"> == </span><span class="module-access"><span class="module"><span class="identifier">Random</span>.</span></span><span class="keyword">class</span>)</span><br><span class="line">        this.seed = <span class="keyword">new</span> <span class="constructor">AtomicLong(<span class="params">initialScramble</span>(<span class="params">seed</span>)</span>);</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// subclass might have overriden setSeed</span></span><br><span class="line">        this.seed = <span class="keyword">new</span> <span class="constructor">AtomicLong()</span>;</span><br><span class="line">        set<span class="constructor">Seed(<span class="params">seed</span>)</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p><code>Random</code> 类最常用的方法是 <code>nextInt()</code>，表示返回一个随机 <code>int</code> 值。该方法可以接受参数，如 <code>nextInt(100)</code>，表示返回一个区间为 <code>[0,100)</code> 的随机数，区间左开右闭。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//随机返回一个int型整数</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">nextInt</span><span class="params">()</span>          </span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="comment">//随机返回一个值在[0,num)的int类型的整数,包括0不包括num</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">nextInt</span><span class="params">(<span class="keyword">int</span> num)</span></span></span><br></pre></td></tr></table></figure>
+
+<p><code>nextInt(bound)</code> 方法的源码如下。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">nextInt</span><span class="params">(<span class="keyword">int</span> bound)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (bound &lt;= <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(BadBound);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> r = next(<span class="number">31</span>);</span><br><span class="line">    <span class="keyword">int</span> m = bound - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> ((bound &amp; m) == <span class="number">0</span>)  <span class="comment">// i.e., bound is a power of 2</span></span><br><span class="line">        r = (<span class="keyword">int</span>)((bound * (<span class="keyword">long</span>)r) &gt;&gt; <span class="number">31</span>);</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> u = r;</span><br><span class="line">             u - (r = u % bound) + m &lt; <span class="number">0</span>;</span><br><span class="line">             u = next(<span class="number">31</span>))</span><br><span class="line">            ;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> r;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="min-max-之间的随机数"><a href="#min-max-之间的随机数" class="headerlink" title="[min,max]之间的随机数"></a>[min,max]之间的随机数</h3><p><code>[min,max]</code> 之间的随机数，可以使用下面代码生成。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Random rand = <span class="keyword">new</span> Random();</span><br><span class="line"><span class="keyword">int</span> num = rand.nextInt(MAX - MIN + <span class="number">1</span>) + MIN;</span><br></pre></td></tr></table></figure>
+
+<h3 id="seed"><a href="#seed" class="headerlink" title="seed"></a>seed</h3><p>对于种子（<code>seed</code>）相同的 <code>Random</code> 对象，生成的随机数序列是一样的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">test7</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;<span class="number">5</span>;j++)&#123;</span><br><span class="line">        System.out.println(<span class="string">"====第"</span>+ j +<span class="string">"次===="</span>);</span><br><span class="line">        Random random = <span class="keyword">new</span> Random(<span class="number">100</span>);</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">4</span>;i++)&#123;</span><br><span class="line">            System.out.println(<span class="string">"index_"</span>+ i +<span class="string">"："</span> + random.nextInt(<span class="number">100</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行上述代码，程序输入如下。可以看到对于种子相同的<code>Random</code> 对象，生成的随机数序列是一样的，是一种伪随机数。</p>
+<blockquote>
+<p>伪随机即有规则的随机。</p>
+</blockquote>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">====第<span class="number">1</span>次====</span><br><span class="line">index_0：<span class="number">15</span></span><br><span class="line">index_1：<span class="number">50</span></span><br><span class="line">index_2：<span class="number">74</span></span><br><span class="line">index_3：<span class="number">88</span></span><br><span class="line">====第<span class="number">2</span>次====</span><br><span class="line">index_0：<span class="number">15</span></span><br><span class="line">index_1：<span class="number">50</span></span><br><span class="line">index_2：<span class="number">74</span></span><br><span class="line">index_3：<span class="number">88</span></span><br><span class="line">====第<span class="number">3</span>次====</span><br><span class="line">index_0：<span class="number">15</span></span><br><span class="line">index_1：<span class="number">50</span></span><br><span class="line">index_2：<span class="number">74</span></span><br><span class="line">index_3：<span class="number">88</span></span><br><span class="line">====第<span class="number">4</span>次====</span><br><span class="line">index_0：<span class="number">15</span></span><br><span class="line">index_1：<span class="number">50</span></span><br><span class="line">index_2：<span class="number">74</span></span><br><span class="line">index_3：<span class="number">88</span></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="java-util-concurrent-ThreadLocalRandom"><a href="#java-util-concurrent-ThreadLocalRandom" class="headerlink" title="java.util.concurrent.ThreadLocalRandom"></a>java.util.concurrent.ThreadLocalRandom</h2><p>在多线程下，使用 <code>java.util.Random</code> 获取随机数，它是线程安全的，对于使用指定种子的情况，多个线程会竞争同一 <code>seed</code>，这会造成性能下降。</p>
+<p>这是因为，<code>Random</code> 生成新的随机数需要 2步</p>
+<ol>
+<li>根据老的 <code>seed</code> 生成新的 <code>seed</code></li>
+<li>由新的 <code>seed</code> 计算出新的随机数</li>
+</ol>
+<p>第 2 步的算法是固定的，<strong>如果每个线程并发地获取同样的 <code>seed</code>，那么得到的随机数也是一样的。为了避免这种情况，<code>Random</code> 使用 <code>CAS</code> 操作保证每次只有一个线程可以获取并更新 <code>seed</code>，失败的线程则需要自旋重试。</strong></p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/back-end-2020/java-random-seed-1.png" alt=""></p>
+<p>因此，在多线程下用 <code>Random</code> 不太合适，为了解决这个问题，出现了 <code>ThreadLocalRandom</code>，在多线程下，它为每个线程维护一个 <code>seed</code> 变量，这样就不用竞争了。</p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/back-end-2020/java-random-seed-2.png" alt=""></p>
+<h3 id="JMH性能对比测试-ThreadLocalRandom-Random"><a href="#JMH性能对比测试-ThreadLocalRandom-Random" class="headerlink" title="JMH性能对比测试-ThreadLocalRandom-Random"></a>JMH性能对比测试-ThreadLocalRandom-Random</h3><p>下面使用 JMH 测试并发情况下，<code>ThreadLocalRandom</code> 和 <code>Random</code> 的性能差异。</p>
+<p>首先，导入如下依赖（JDK9之后自带JMH，不需导入依赖）</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--JMH--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.openjdk.jmh<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jmh-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.23<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.openjdk.jmh<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jmh-generator-annprocess<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.23<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+<p>编写测试代码如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@BenchmarkMode</span>(Mode.Throughput) <span class="comment">// 测试类型：吞吐量</span></span><br><span class="line"><span class="meta">@Warmup</span>(iterations = <span class="number">3</span>, time = <span class="number">1</span>)</span><br><span class="line"><span class="meta">@Threads</span>(<span class="number">100</span>)</span><br><span class="line"><span class="meta">@OutputTimeUnit</span>(TimeUnit.MILLISECONDS)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpbAppApplication</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> RunnerException </span>&#123;</span><br><span class="line"><span class="comment">//        SpringApplication.run(SpbAppApplication.class, args);</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 启动基准测试</span></span><br><span class="line">        Options opt = <span class="keyword">new</span> OptionsBuilder()</span><br><span class="line">                .include(SpbAppApplication.class.getSimpleName()) <span class="comment">// 要导入的测试类</span></span><br><span class="line">                .warmupIterations(<span class="number">5</span>) <span class="comment">// 预热 5 轮</span></span><br><span class="line">                .measurementIterations(<span class="number">10</span>) <span class="comment">// 度量10轮</span></span><br><span class="line">                .forks(<span class="number">1</span>)</span><br><span class="line">                .build();</span><br><span class="line">        <span class="keyword">new</span> Runner(opt).run(); <span class="comment">// 执行测试</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Random 性能测试</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Benchmark</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">randomTest</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Random random = <span class="keyword">new</span> Random();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">            <span class="comment">// 生成 0-9 的随机数</span></span><br><span class="line">            random.nextInt(<span class="number">10</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * ThreadLocalRandom 性能测试</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Benchmark</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">threadLocalRandomTest</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        ThreadLocalRandom threadLocalRandom = ThreadLocalRandom.current();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">            threadLocalRandom.nextInt(<span class="number">10</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>设定 <code>forks(1)</code>，设定 <code>@Threads()</code> 分别为 16 和 100，即在一个进程中，分别测试16个线程情况下和100个线程情况下的吞吐量对比数据。</p>
+<p>测试结果如下，其中 <code>Cnt</code> 表示运行了多少次，<code>Score</code> 表示执行的成绩，<code>Units</code> 表示每秒的吞吐量。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># Threads: 16 threads, will synchronize iterations</span><br><span class="line">Benchmark                                 Mode  Cnt      Score      Error   Units</span><br><span class="line">SpbAppApplication.randomTest             thrpt   <span class="number">10</span>   <span class="number">4996.466</span> ± <span class="number">3629.543</span>  ops/ms</span><br><span class="line">SpbAppApplication.threadLocalRandomTest  thrpt   <span class="number">10</span>  <span class="number">37720.715</span> ± <span class="number">6566.971</span>  ops/ms</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># Threads: 100 threads, will synchronize iterations</span><br><span class="line">Benchmark                                 Mode  Cnt      Score       Error   Units</span><br><span class="line">SpbAppApplication.randomTest             thrpt   <span class="number">10</span>   <span class="number">3259.461</span> ±  <span class="number">1819.021</span>  ops/ms</span><br><span class="line">SpbAppApplication.threadLocalRandomTest  thrpt   <span class="number">10</span>  <span class="number">29948.252</span> ± <span class="number">10276.214</span>  ops/ms</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>从 JMH 测试的结果可以看出，在16个线程并发下，<code>ThreadLocalRandom</code> 在并发情况下的吞吐量约是 <code>Random</code> 的 5 倍。在 100个线程并发下，差距扩大到了将近10倍。</strong></p>
+<p>因此在高并发下，尽量使用 <code>ThreadLocalRandom</code>。</p>
+<h3 id="多线程下使用"><a href="#多线程下使用" class="headerlink" title="多线程下使用"></a>多线程下使用</h3><p>在每个线程下调用 <code>ThreadLocalRandom.current()</code> 获取对象实例，再调用 <code>nextInt()</code> 方法获取随机数。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.concurrent.ThreadLocalRandom;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadLocalRandomDemo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">            <span class="keyword">new</span> Player().start();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Player</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            System.out.println(getName() + <span class="string">": "</span> +</span><br><span class="line">            ThreadLocalRandom threadLocalRandom = ThreadLocalRandom.current();</span><br><span class="line">            threadLocalRandom.nextInt(<span class="number">100</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>需要注意的是，多线程下不能把 <code>ThreadLocalRandom.current()</code> 设置为 <code>final</code>，即下述代码。否则多线程下，产生的随机数是相同的。详情可以参考 <a href="https://juejin.im/post/6863713733252743182" target="_blank" rel="noopener">多线程下的ThreadLocalRandom用法 | 掘金</a>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.concurrent.ThreadLocalRandom;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadLocalRandomDemo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> ThreadLocalRandom RANDOM =</span><br><span class="line">            ThreadLocalRandom.current();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">            <span class="keyword">new</span> Player().start();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Player</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            System.out.println(getName() + <span class="string">": "</span> + RANDOM.nextInt(<span class="number">100</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述程序的输出如下。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Thread-<span class="number">0</span>: <span class="number">4</span></span><br><span class="line">Thread-<span class="number">1</span>: <span class="number">4</span></span><br><span class="line">Thread-<span class="number">2</span>: <span class="number">4</span></span><br><span class="line">Thread-<span class="number">3</span>: <span class="number">4</span></span><br><span class="line">Thread-<span class="number">4</span>: <span class="number">4</span></span><br><span class="line">Thread-<span class="number">5</span>: <span class="number">4</span></span><br><span class="line">Thread-<span class="number">6</span>: <span class="number">4</span></span><br><span class="line">Thread-<span class="number">7</span>: <span class="number">4</span></span><br><span class="line">Thread-<span class="number">8</span>: <span class="number">4</span></span><br><span class="line">Thread-<span class="number">9</span>: <span class="number">4</span></span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="Liu Baoshuai 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="Liu Baoshuai 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"> <i class="fa fa-tag"></i> Java</a>
+              <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" rel="tag"> <i class="fa fa-tag"></i> 多线程</a>
+              <a href="/tags/fork-join/" rel="tag"> <i class="fa fa-tag"></i> fork/join</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/11/02/java-fork-join/" rel="prev" title="Java fork/join 框架入门篇">
+      <i class="fa fa-chevron-left"></i> Java fork/join 框架入门篇
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Ref"><span class="nav-number">1.</span> <span class="nav-text">Ref</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java中使用随机数"><span class="nav-number">2.</span> <span class="nav-text">Java中使用随机数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#java-lang-Math-random"><span class="nav-number">3.</span> <span class="nav-text">java.lang.Math.random</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#java-util-Random"><span class="nav-number">4.</span> <span class="nav-text">java.util.Random</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#min-max-之间的随机数"><span class="nav-number">4.1.</span> <span class="nav-text">[min,max]之间的随机数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#seed"><span class="nav-number">4.2.</span> <span class="nav-text">seed</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#java-util-concurrent-ThreadLocalRandom"><span class="nav-number">5.</span> <span class="nav-text">java.util.concurrent.ThreadLocalRandom</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JMH性能对比测试-ThreadLocalRandom-Random"><span class="nav-number">5.1.</span> <span class="nav-text">JMH性能对比测试-ThreadLocalRandom-Random</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多线程下使用"><span class="nav-number">5.2.</span> <span class="nav-text">多线程下使用</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Liu Baoshuai"
+      src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/Blog-20190315/blog-logo-1.jpg">
+  <p class="site-author-name" itemprop="name">Liu Baoshuai</p>
+  <div class="site-description" itemprop="description">Record and become better myself</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/lbs0912" title="GitHub → https://github.com/lbs0912" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/mailto:lbs1203940926@163.com" title="E-Mail → mailto:lbs1203940926@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://juejin.im/user/59af7aa96fb9a0248f4aaeab" title="掘金博客 → https://juejin.im/user/59af7aa96fb9a0248f4aaeab" rel="noopener" target="_blank"><i class="fa fa-fw fa-free-code-camp"></i>掘金博客</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/2329754491" title="微博 → https://weibo.com/2329754491" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>微博</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://liubaoshuai.com/docsify-brain/#/" title="第2大脑 → http://liubaoshuai.com/docsify-brain/#/" rel="noopener" target="_blank"><i class="fa fa-fw fa-heartbeat"></i>第2大脑</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Liu Baoshuai</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=gksxcfwJlMV3zkhz1pQc7pl2-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : 'gksxcfwJlMV3zkhz1pQc7pl2-gzGzoHsz',
+            'X-LC-Key'    : 'kjOanp812G7TIGMSQpPCVIhj',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://liubaoshuaiBlog.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://lbs0912.github.io/2020/11/04/thread-local-random-opt/";
+    this.page.identifier = "2020/11/04/thread-local-random-opt/";
+    this.page.title = "多线程下ThreadLocalRandom性能分析";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://liubaoshuaiBlog.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

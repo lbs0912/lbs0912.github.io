@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/green/pace-theme-flash.css" rel="stylesheet">
+
+
+
+<script>
+    (function () {
+        if ('') {
+            if (prompt('请输入文章密码') !== '') {
+                alert('密码错误！');
+                if (history.length === 1) {
+                    location.replace("http://liubaoshuai.com/"); // 这里替换成你的首页
+                } else {
+                    history.back();
+                }
+            }
+        }
+    })();
+</script>
+  <link rel="apple-touch-icon" sizes="180x180" href="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/Blog-20190315/blog-logo-1.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/Blog-20190315/blog-logo-1.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/Blog-20190315/blog-logo-1.jpg">
+  <link rel="mask-icon" href="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/Blog-20190315/blog-logo-1.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"lbs0912.github.io","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="介绍Java Fork&#x2F;Join的基本概念和使用Demo。">
+<meta name="keywords" content="Java,多线程,fork&#x2F;join">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java fork&#x2F;join 框架入门篇">
+<meta property="og:url" content="https:&#x2F;&#x2F;lbs0912.github.io&#x2F;2020&#x2F;11&#x2F;02&#x2F;java-fork-join&#x2F;index.html">
+<meta property="og:site_name" content="Liu Baoshuai&#39;s Blog">
+<meta property="og:description" content="介绍Java Fork&#x2F;Join的基本概念和使用Demo。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;back-end-2020&#x2F;java-fork-join-task-1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;back-end-2020&#x2F;java-fork-join-task-1-1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;back-end-2020&#x2F;java-fork-join-task-3.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;back-end-2020&#x2F;java-fork-join-task-1-2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;back-end-2020&#x2F;java-fork-join-task-2.png">
+<meta property="og:updated_time" content="2020-11-01T03:35:00.658Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com&#x2F;back-end-2020&#x2F;java-fork-join-task-1.png">
+
+<link rel="canonical" href="https://lbs0912.github.io/2020/11/02/java-fork-join/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Java fork/join 框架入门篇 | Liu Baoshuai's Blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?17082ee15df20dad9762c5512f336eb2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <a href="https://github.com/lbs0912" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub">
+      <svg width="80" height="80" viewBox="0 0 250 250" 
+            style="fill:#151513; color:#fff; position: fixed; top: 0; border: 0; right: 0;" aria-hidden="true">
+              <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+              <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+              <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
+      </svg>
+    </a>
+    <style>
+      .github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}
+    </style>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Liu Baoshuai's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Do one thing at a time and do well</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://lbs0912.github.io/2020/11/02/java-fork-join/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/Blog-20190315/blog-logo-1.jpg">
+      <meta itemprop="name" content="Liu Baoshuai">
+      <meta itemprop="description" content="Record and become better myself">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Liu Baoshuai's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java fork/join 框架入门篇
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-11-02 08:35:26" itemprop="dateCreated datePublished" datetime="2020-11-02T08:35:26+08:00">2020-11-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-01 11:35:00" itemprop="dateModified" datetime="2020-11-01T11:35:00+08:00">2020-11-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/11/02/java-fork-join/" class="post-meta-item leancloud_visitors" data-flag-title="Java fork/join 框架入门篇" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2020/11/02/java-fork-join/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/11/02/java-fork-join/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <ul>
+<li>介绍Java Fork/Join的基本概念和使用Demo。</li>
+</ul>
+<a id="more"></a>
+
+
+<h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2><ul>
+<li>《Java 8实战》书籍第7章节 - <em>分支/合并框架</em></li>
+<li><a href="https://www.infoq.cn/article/fork-join-introduction" target="_blank" rel="noopener">聊聊并发（八）——Fork/Join框架介绍</a></li>
+<li><a href="https://wangxin1248.github.io/java/2019/10/forkjoin.html" target="_blank" rel="noopener">Java并发 - Fork/Join框架介绍</a></li>
+<li><a href="https://houbb.github.io/2019/01/18/jcip-14-deque-workstealing" target="_blank" rel="noopener">双端队列和工作窃取</a></li>
+</ul>
+<h2 id="什么是Fork-Join框架"><a href="#什么是Fork-Join框架" class="headerlink" title="什么是Fork/Join框架"></a>什么是Fork/Join框架</h2><p><code>Fork/Join</code> 框架，即分支/合并框架，是 Java 7 中提供的一个用于并行执行任务的框架，是一个把大任务分割成若干个小任务，最终汇总每个小任务结果后得到大任务结果的框架。<br><code>Fork/Join</code> 框架，和 <code>MapReduce</code> 的原理类似，都是通过将大任务拆分为小任务来实现并行计算，主要是利用<strong>分治法</strong>的思想来实现多任务并行计算。</p>
+<p><code>Fork</code> 就是把一个大任务切分为若干子任务并行的执行，<code>Join</code> 就是合并这些子任务的执行结果，最后得到这个大任务的结果。比如计算 <code>1+2+。。＋10000</code>，可以分割成 10 个子任务，每个子任务分别对 1000 个数进行求和，最终汇总这 10 个子任务的结果。<code>Fork/Join</code> 的运行流程图如下。</p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/back-end-2020/java-fork-join-task-1.png" alt=""></p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/back-end-2020/java-fork-join-task-1-1.png" alt=""></p>
+<p><code>Fork/Join</code> 框架创建的任务需要通过 <code>ForkJoinPool</code> 来启动，<code>ForkJoinPool</code> 是一个线程池，比较特殊的是其线程数量是根据 CPU 的核心数来设置的。<code>ForkJoinPool</code> 是通过工作窃取（<code>work-stealing</code>）算法来提高 CPU 的利用率的。</p>
+<h2 id="工作窃取算法"><a href="#工作窃取算法" class="headerlink" title="工作窃取算法"></a>工作窃取算法</h2><p>工作窃取（<code>work-stealing</code>）算法是指某个线程从其他队列里窃取任务来执行。工作窃取的运行流程图如下。</p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/back-end-2020/java-fork-join-task-3.png" alt=""></p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/back-end-2020/java-fork-join-task-1-2.png" alt=""></p>
+<p>每个线程中维护了一个双端队列来存储所需要执行的任务，而工作窃取算法允许从其他线程的双端队列中窃取一个<strong>最晚（<code>Oldest</code>，队列的尾部）</strong> 的任务来执行，这样可以避免和当前任务所属的线程发生竞争。</p>
+<blockquote>
+<p>为了减少窃取任务线程和被窃取任务线程之间的竞争，通常会使用双端队列，被窃取任务线程永远从双端队列的头部拿任务执行，而窃取任务的线程永远从双端队列的尾部拿任务执行。</p>
+</blockquote>
+<p>如上图所示，Thread2 从 Thread1 队列中拿出最晚的 Task1 来执行，Thread1 则拿出 Task2 来执行，这样就会避免发生竞争。</p>
+<p>工作窃取算法优点</p>
+<ul>
+<li>充分利用线程进行并行计算</li>
+<li>减少了线程间的竞争</li>
+</ul>
+<p>工作窃取算法缺点</p>
+<ul>
+<li>在某些情况下会存在竞争（双端队列中只有一个任务）</li>
+<li>消耗了更多的系统资源</li>
+</ul>
+<p>在实际应用中，工作窃取算意味着这些任务差不多被平均分配到 <code>ForkJoinPool</code> 中的所有线程上，用于在池中的工作线程之间重新分配和平衡任务。下图展示了这个过程，当工作线程队列中有一个任务被分成两个子任务时，一个子任务就被闲置的工作线程“偷走”了。如前所述，这个过程可以不断递归，直到规定子任务应顺序执行的条件为真。</p>
+<p><img src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/back-end-2020/java-fork-join-task-2.png" alt=""></p>
+<h2 id="Fork-Join框架基础类"><a href="#Fork-Join框架基础类" class="headerlink" title="Fork/Join框架基础类"></a>Fork/Join框架基础类</h2><p>下面考虑如何设计一个 <code>Fork/Join</code> 框架，需要考虑如下 2 点</p>
+<ol>
+<li><p>第 1 步分割任务。首先需要有一个 <code>fork</code> 类来把大任务分割成子任务，有可能子任务还是很大，所以还需要不停的分割，直到分割出的子任务足够小。</p>
+</li>
+<li><p>第 2 步执行任务并合并结果。分割的子任务分别放在双端队列里，然后几个启动线程分别从双端队列里获取任务执行。子任务执行完的结果都统一放在一个队列里，启动一个线程从队列里拿数据，然后合并这些数据。</p>
+</li>
+</ol>
+<p><code>Fork/Join</code> 使用 2 个类来完成以上两件事情</p>
+<ul>
+<li><code>ForkJoinTask</code>：我们要使用 <code>Fork/Join</code> 框架，必须首先创建一个 <code>ForkJoinTask</code> 任务。它提供在任务中执行 <code>fork()</code> 和 <code>join()</code> 操作的机制。通常情况下我们不需要直接继承 <code>ForkJoinTask</code> 类，而只需要继承它的子类，<code>Fork/Join</code> 框架提供了以下两个子类<ul>
+<li><code>RecursiveAction</code>：用于没有返回结果的任务。</li>
+<li><code>RecursiveTask</code> ：用于有返回结果的任务。</li>
+</ul>
+</li>
+<li><code>ForkJoinPool</code> ：<code>ForkJoinTask</code> 需要通过 <code>ForkJoinPool</code> 来执行，任务分割出的子任务会添加到当前工作线程所维护的双端队列中，进入队列的头部。当一个工作线程的队列里暂时没有任务时，它会随机从其他工作线程的队列的尾部获取一个任务。</li>
+</ul>
+<p>此外，框架还提供了下面 2 个类</p>
+<ul>
+<li><code>ForkJoinWorkerThread</code>：是 <code>ForkJoinPool</code> 内的 <code>worker thread</code>，执行 <code>ForkJoinTask</code>，内部有 <code>ForkJoinPool.WorkQueue</code> 来保存要执行的 <code>ForkJoinTask</code>。</li>
+<li><code>ForkJoinPool.WorkQueue</code>：保存要执行的 <code>ForkJoinTask</code>。</li>
+</ul>
+<p>更形象的总结如下</p>
+<ol>
+<li><code>ForkJoinPool</code> : “管理者”</li>
+<li><code>ForkJoinTask</code> : “任务类型”，如 <code>RecursiveAction</code> 和 <code>RecursiveTask</code></li>
+<li><code>ForkJoinWorkerThread</code> : “工人”</li>
+</ol>
+<h2 id="Fork-Join-框架执行流程"><a href="#Fork-Join-框架执行流程" class="headerlink" title="Fork/Join 框架执行流程"></a>Fork/Join 框架执行流程</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// fork/join计算斐波那契</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//创建分治任务线程池</span></span><br><span class="line">ForkJoinPool fjp = <span class="keyword">new</span> ForkJoinPool(<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建分治任务</span></span><br><span class="line">Fibonacci fib = <span class="keyword">new</span> Fibonacci(<span class="number">30</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//启动分治任务</span></span><br><span class="line">Integer result = fjp.invoke(fib);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 如何提交</span></span><br><span class="line">submit(ForkJoinTask&lt;T&gt; task) -&gt;externalPush(ForkJoinTask&lt;?&gt; task) -&gt;  externalSubmit(ForkJoinTask&lt;?&gt; task)</span><br><span class="line"></span><br><span class="line">execute(ForkJoinTask)</span><br><span class="line">invoke(ForkJoinTask)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 任务消费</span></span><br><span class="line">compute()</span><br></pre></td></tr></table></figure>
+
+
+
+<ol>
+<li><code>ForkJoinPool</code> 的每个工作线程都维护着一个双端工作队列（<code>WorkQueue</code>），队列中存放着是任务（<code>ForkJoinTask</code>）。</li>
+<li>每个工作线程在运行中产生新的任务（调用 <code>fork()</code>）时，放入工作队列的队首（<strong>队首的任务的等待时间最短</strong>），并且工作线程在处理自己的工作队列时，使用的是 <code>FIFO</code> 方式，也就是说每次从队首取出任务来执行。</li>
+<li>每个工作线程在处理自己的工作队列同时，会尝试窃取一个任务（或是来自于刚刚提交到 <code>pool</code> 的任务，或是来自于其他工作线程的工作队列），窃取的任务位于其他线程的工作队列的队尾，也就是说工作线程在窃取其他工作线程的任务时，使用的是 <code>LIFO</code> 方式。</li>
+<li>在遇到 <code>join()</code> 时，如果需要 <code>join</code> 的任务尚未完成，则会先处理其他任务，并等待其完成。</li>
+<li>在既没有自己的任务，也没有可以窃取的任务时，进入休眠。</li>
+</ol>
+<blockquote>
+<p>FIFO : First in, First out，先进先出。 LIFO : Last in, First out，后进先出。</p>
+</blockquote>
+<h2 id="Fork-Join-使用Demo"><a href="#Fork-Join-使用Demo" class="headerlink" title="Fork/Join 使用Demo"></a>Fork/Join 使用Demo</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CountTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException, ExecutionException </span>&#123;</span><br><span class="line"></span><br><span class="line">        ForkJoinPool forkJoinPool = <span class="keyword">new</span> ForkJoinPool();</span><br><span class="line">        <span class="comment">//创建一个计算任务，计算 由1加到12</span></span><br><span class="line">        CountTask countTask = <span class="keyword">new</span> CountTask(<span class="number">1</span>, <span class="number">12</span>);</span><br><span class="line">        Future&lt;Integer&gt; future = forkJoinPool.submit(countTask);</span><br><span class="line">        System.out.println(<span class="string">"最终的计算结果："</span> + future.get());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CountTask</span> <span class="keyword">extends</span> <span class="title">RecursiveTask</span>&lt;<span class="title">Integer</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> THRESHOLD = <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> start;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> end;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CountTask</span><span class="params">(<span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.start = start;</span><br><span class="line">        <span class="keyword">this</span>.end = end;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> Integer <span class="title">compute</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">boolean</span> canCompute = (end - start) &lt;= THRESHOLD;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//任务已经足够小，可以直接计算，并返回结果</span></span><br><span class="line">        <span class="keyword">if</span> (canCompute) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = start; i &lt;= end; i++) &#123;</span><br><span class="line">                sum += i;</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(<span class="string">"执行计算任务，计算    "</span> + start + <span class="string">"到 "</span> + end + <span class="string">"的和  ，结果是："</span> + sum + <span class="string">"   执行此任务的线程："</span> + Thread.currentThread().getName());</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123; <span class="comment">//任务过大，需要切割</span></span><br><span class="line">            System.out.println(<span class="string">"任务过大，切割的任务：  "</span> + start + <span class="string">"加到 "</span> + end + <span class="string">"的和       执行此任务的线程："</span> + Thread.currentThread().getName());</span><br><span class="line">            <span class="keyword">int</span> middle = (start + end) / <span class="number">2</span>;</span><br><span class="line">            <span class="comment">//切割成两个子任务</span></span><br><span class="line">            CountTask leftTask = <span class="keyword">new</span> CountTask(start, middle);</span><br><span class="line">            CountTask rightTask = <span class="keyword">new</span> CountTask(middle + <span class="number">1</span>, end);</span><br><span class="line">            <span class="comment">//执行子任务</span></span><br><span class="line">            leftTask.fork();</span><br><span class="line">            rightTask.fork();</span><br><span class="line">            <span class="comment">//等待子任务的完成，并获取执行结果</span></span><br><span class="line">            <span class="keyword">int</span> leftResult = leftTask.join();</span><br><span class="line">            <span class="keyword">int</span> rightResult = rightTask.join();</span><br><span class="line">            <span class="comment">//合并子任务</span></span><br><span class="line">            sum = leftResult + rightResult;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sum;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>程序运行结果如下</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">任务过大，切割的任务： 1加到 12的和 执行此任务的线程：ForkJoinPool-1-worker-1</span><br><span class="line">任务过大，切割的任务： 7加到 12的和 执行此任务的线程：ForkJoinPool-1-worker-3</span><br><span class="line">任务过大，切割的任务： 1加到 6的和 执行此任务的线程：ForkJoinPool-1-worker-2</span><br><span class="line">执行计算任务，计算 7到 9的和 ，结果是：24 执行此任务的线程：ForkJoinPool-1-worker-3</span><br><span class="line">执行计算任务，计算 1到 3的和 ，结果是：6 执行此任务的线程：ForkJoinPool-1-worker-1</span><br><span class="line">执行计算任务，计算 4到 6的和 ，结果是：15 执行此任务的线程：ForkJoinPool-1-worker-1</span><br><span class="line">执行计算任务，计算 10到 12的和 ，结果是：33 执行此任务的线程：ForkJoinPool-1-worker-3</span><br><span class="line">最终的计算结果：78</span><br></pre></td></tr></table></figure>
+
+<p>从结果可以看出，提交的计算任务是由线程1执行，线程1进行了第一次切割，切割成两个子任务 “7加到12” 和 “1加到6”，并提交这两个子任务。然后这两个任务被线程2、线程3给窃取了。线程1 的内部队列中已经没有任务了，这时候，线程2、线程3 也分别进行了一次任务切割并各自提交了两个子任务，于是线程 1 也去窃取任务（这里窃取的都是线程2的子任务）。</p>
+<h2 id="Fork-Join-框架的异常处理"><a href="#Fork-Join-框架的异常处理" class="headerlink" title="Fork/Join 框架的异常处理"></a>Fork/Join 框架的异常处理</h2><p><code>ForkJoinTask</code> 在执行的时候可能会抛出异常，但是我们没办法在主线程里直接捕获异常，所以 <code>ForkJoinTask</code> 提供了 <code>isCompletedAbnormally()</code> 方法来检查任务是否已经抛出异常或已经被取消了，并且可以通过 <code>ForkJoinTask</code> 的 <code>getException</code> 方法获取异常。使用如下代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(task.isCompletedAbnormally()) &#123;</span><br><span class="line">   System.out.println(task.getException());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p><code>getException</code> 方法返回 <code>Throwable</code> 对象，如果任务被取消了则返回 <code>CancellationException</code>。如果任务没有完成或者没有抛出异常则返回 <code>null</code>。</p>
+<h2 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h2><h3 id="ForkJoinPool-使用-submit-与-invoke-提交的区别"><a href="#ForkJoinPool-使用-submit-与-invoke-提交的区别" class="headerlink" title="ForkJoinPool 使用 submit 与 invoke 提交的区别"></a>ForkJoinPool 使用 submit 与 invoke 提交的区别</h3><ul>
+<li><code>invoke</code> 是同步执行，调用之后需要等待任务完成，才能执行后面的代码。</li>
+<li><code>submit</code> 是异步执行，只有在 <code>Future</code> 调用 <code>get</code> 的时候会阻塞。</li>
+</ul>
+<h3 id="继承-RecursiveTask-与-RecursiveAction的区别？"><a href="#继承-RecursiveTask-与-RecursiveAction的区别？" class="headerlink" title="继承 RecursiveTask 与 RecursiveAction的区别？"></a>继承 RecursiveTask 与 RecursiveAction的区别？</h3><ul>
+<li>继承 <code>RecursiveTask</code>：适用于有返回值的场景。</li>
+<li>继承 <code>RecursiveAction</code>：适合于没有返回值的场景。</li>
+</ul>
+<h3 id="子任务调用-fork-与-invokeAll-的区别？"><a href="#子任务调用-fork-与-invokeAll-的区别？" class="headerlink" title="子任务调用 fork 与 invokeAll 的区别？"></a>子任务调用 fork 与 invokeAll 的区别？</h3><ul>
+<li><code>fork</code>：让子线程自己去完成任务，父线程监督子线程执行，浪费父线程。</li>
+<li><code>invokeAll</code>：子父线程共同完成任务，可以更好的利用线程池。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="Liu Baoshuai 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="Liu Baoshuai 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"> <i class="fa fa-tag"></i> Java</a>
+              <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" rel="tag"> <i class="fa fa-tag"></i> 多线程</a>
+              <a href="/tags/fork-join/" rel="tag"> <i class="fa fa-tag"></i> fork/join</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/08/15/leetcode-011/" rel="prev" title="LeetCode题解-011">
+      <i class="fa fa-chevron-left"></i> LeetCode题解-011
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/11/04/thread-local-random-opt/" rel="next" title="多线程下ThreadLocalRandom性能分析">
+      多线程下ThreadLocalRandom性能分析 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Ref"><span class="nav-number">1.</span> <span class="nav-text">Ref</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是Fork-Join框架"><span class="nav-number">2.</span> <span class="nav-text">什么是Fork/Join框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#工作窃取算法"><span class="nav-number">3.</span> <span class="nav-text">工作窃取算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fork-Join框架基础类"><span class="nav-number">4.</span> <span class="nav-text">Fork/Join框架基础类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fork-Join-框架执行流程"><span class="nav-number">5.</span> <span class="nav-text">Fork/Join 框架执行流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fork-Join-使用Demo"><span class="nav-number">6.</span> <span class="nav-text">Fork/Join 使用Demo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fork-Join-框架的异常处理"><span class="nav-number">7.</span> <span class="nav-text">Fork/Join 框架的异常处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FAQ"><span class="nav-number">8.</span> <span class="nav-text">FAQ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ForkJoinPool-使用-submit-与-invoke-提交的区别"><span class="nav-number">8.1.</span> <span class="nav-text">ForkJoinPool 使用 submit 与 invoke 提交的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#继承-RecursiveTask-与-RecursiveAction的区别？"><span class="nav-number">8.2.</span> <span class="nav-text">继承 RecursiveTask 与 RecursiveAction的区别？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#子任务调用-fork-与-invokeAll-的区别？"><span class="nav-number">8.3.</span> <span class="nav-text">子任务调用 fork 与 invokeAll 的区别？</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Liu Baoshuai"
+      src="https://image-bed-20181207-1257458714.cos.ap-shanghai.myqcloud.com/Blog-20190315/blog-logo-1.jpg">
+  <p class="site-author-name" itemprop="name">Liu Baoshuai</p>
+  <div class="site-description" itemprop="description">Record and become better myself</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/lbs0912" title="GitHub → https://github.com/lbs0912" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/mailto:lbs1203940926@163.com" title="E-Mail → mailto:lbs1203940926@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://juejin.im/user/59af7aa96fb9a0248f4aaeab" title="掘金博客 → https://juejin.im/user/59af7aa96fb9a0248f4aaeab" rel="noopener" target="_blank"><i class="fa fa-fw fa-free-code-camp"></i>掘金博客</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/2329754491" title="微博 → https://weibo.com/2329754491" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>微博</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://liubaoshuai.com/docsify-brain/#/" title="第2大脑 → http://liubaoshuai.com/docsify-brain/#/" rel="noopener" target="_blank"><i class="fa fa-fw fa-heartbeat"></i>第2大脑</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Liu Baoshuai</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=gksxcfwJlMV3zkhz1pQc7pl2-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : 'gksxcfwJlMV3zkhz1pQc7pl2-gzGzoHsz',
+            'X-LC-Key'    : 'kjOanp812G7TIGMSQpPCVIhj',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://liubaoshuaiBlog.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://lbs0912.github.io/2020/11/02/java-fork-join/";
+    this.page.identifier = "2020/11/02/java-fork-join/";
+    this.page.title = "Java fork/join 框架入门篇";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://liubaoshuaiBlog.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>
